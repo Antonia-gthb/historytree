@@ -3,6 +3,7 @@
 ## Basics
 
 - [ ] Refresh basic python skills
+  - [ ] know for loops
 - [ ] Get familiar with git
   - [ ]   Make first commit & push
 - [ ] Get familiar with VS Code
