@@ -3,8 +3,11 @@
 ## Basics
 
 - [ ] Refresh basic python skills
-- [ ] Get familiar with git2
+- [ ] Get familiar with git
+  - [ ]   Make first commit & push
 - [ ] Get familiar with VS Code
+  - [ ] Run first python script
+  - [ ] Run first jupyter notebook script
 - [ ] Get familiar with MHN
 
 ## `historytree` package
