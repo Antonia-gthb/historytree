@@ -2,19 +2,22 @@
 
 ## Basics
 
-- [ ] Refresh basic python skills
-- [ ] Get familiar with git
-  - [ ]   Make first commit & push
-- [ ] Get familiar with VS Code
-  - [ ] Run first python script
-  - [ ] Run first jupyter notebook script
+- [x] Refresh basic python skills
+  - [ ] understand packages
+- [x] Get familiar with git
+  - [x]   Make first commit & push
+- [x] Get familiar with VS Code
+  - [x] Run first python script
+  - [x] Run first jupyter notebook script
 - [ ] Get familiar with MHN
+  - [ ] understand how to read Fig. 5 in https://www.biorxiv.org/content/10.1101/2023.12.03.569824v1.full.pdf
 
 ## `historytree` package
 
-- [ ] understand package structure
+- [ ] clone repository
+- [ ] create a new branch to play around on
+- [ ] understand script structure
 - [ ] understand how trees are plotted
-- [ ] ...
 
 ## Performance
 
