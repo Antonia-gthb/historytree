@@ -1,3 +1,5 @@
+import 'histree/app/styles/global.css';
+
 export default function RootLayout({
     children,
   }: {
