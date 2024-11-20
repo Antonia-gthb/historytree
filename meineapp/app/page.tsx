@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from 'react';
-
 import Image from 'next/image';
 import { join } from 'path';
 import Plot from './Plot';
+import Button from './button';
 
 export default function Page() {
 
@@ -18,24 +18,24 @@ export default function Page() {
         This is an application to demonstrate MHN Patient Trees
       </h1>
       <div className="flex items-start">
-        <div className="flex-shrink-0 mr-6"> {/* Bild einfügen*/}
-          <Plot cmap={cmap} />
-          <Image
+        <div className="flex-shrink-0 mr-6 border border-red-700"> {/* Bild und Graph einfügen*/}
+          <Plot cmap={cmap} /> {/* Eingabe von cmap wird geplottet*/}
+         {/* <Image
             src="/mhn_tree.png"
             width={520}
             height={419}
             alt="Picture showing a Mutual Hazard Network Patient Tree"
-          />
+          />  */}
         </div>
         <div className="flex flex-col"> {/* macht die Flexbox für die rechte Seite */}
           <div className="text-center font-bold text-2xl p-1 w-full mb-2"> {/* in Flexbox auf rechter Seite wird nun Text geschrieben mit blauem Hintergrund, p legt den Abstand um den Text fest*/}
-            <button className="px-2 py-1 rounded bg-blue-300 hover:bg-blue-500 text-slate-700 hover:text-black">Upload</button>
+            <button className="px-2 py-1 rounded bg-blue-300 hover:bg-blue-500 text-slate-700 hover:text-black">Upload</button> {/* Mit hover verändert sich Bildfarbe*/}
           </div>
           <p className="bg-white text-black p-4 mt-2 text-lg mb-2">
             Platzhalter
           </p>
-          <div className="text-center font-bold text-2xl bg-blue-300 p-1 w-full mb-2"> {/* mb-2 macht Abstand nach unten zum Text*/}
-            <button className="upload-button p-2 rounded mr-1">Upload Patients</button>
+          <div className="text-center font-bold text-2xl p-1 w-full mb-2"> {/* mb-2 macht Abstand nach unten zum Text*/}
+            <button className="px-2 py-1 rounded bg-blue-300 hover:bg-blue-500 text-slate-700 hover:text-black">Upload Patients</button>
           </div>
           <p className="bg-white text-black p-4 mt-2 text-lg border border-black">
             Platzhalter für Datenfeld
@@ -45,7 +45,7 @@ export default function Page() {
       <div className="mt-6 ">
         <div className="flex">
           <h2 className="text-xl font-bold mr-4">CMAP</h2>
-          <input type="range" min="0" max="100" value={cmap} className="w-fit" onChange={(e) => setCmap(e.target.value)} /> {/* Skala */}
+          <input type="range" min="0" max="100" value={cmap} className="w-fit" onChange={(e) => setCmap(Number(e.target.value))} /> {/* Skala */}
           <div className='px-3'>
             {cmap}
           </div>
@@ -76,6 +76,21 @@ export default function Page() {
           <span className="text-black text-center" style={{ width: '100%' }}>5</span>
         </div>
       </div>
+      <div>
+        <span style={{ marginRight: '10px' }}>Treshold at</span>
+        <input type="number" placeholder="Gib eine Zahl ein" />
+      </div>
+      <div>
+        <h1 className="text text-xl"> Eventfilter </h1>
+        <span> Event A </span>
+        <input type="checkbox" />
+        <span> Event B </span>
+        <input type="checkbox" />
+        <span> Event C </span>
+        <input type="checkbox" />
+        <span> Event D </span>
+        <input type="checkbox" />
+      </div> 
     </div>
   );
 }
