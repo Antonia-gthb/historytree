@@ -1,14 +1,19 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import type { Config } from "tailwindcss";
+
+const config: Config = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx}", // Sucht in allen Dateien in den pages-Ordnern
-    "./components/**/*.{js,ts,jsx,tsx}", // Sucht in allen Dateien in den components-Ordnern
-    "./app/**/*.{js,ts,jsx,tsx}", // Wenn du die App-Ordnerstruktur verwendest
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+      },
+    },
   },
   plugins: [],
-}
-
-
+};
+export default config;
