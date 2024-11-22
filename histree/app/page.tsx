@@ -4,11 +4,11 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { join } from 'path';
 import Plot from './Plot';
-import Button from './button';
 
 export default function Page() {
 
   const [cmap, setCmap] = useState(30);
+  const [scaling, setScaling] = useState(5);
 
 
 
@@ -19,13 +19,7 @@ export default function Page() {
       </h1>
       <div className="flex items-start">
         <div className="flex-shrink-0 mr-6 border border-red-700"> {/* Bild und Graph einfügen*/}
-          <Plot cmap={cmap} /> {/* Eingabe von cmap wird geplottet*/}
-         {/* <Image
-            src="/mhn_tree.png"
-            width={520}
-            height={419}
-            alt="Picture showing a Mutual Hazard Network Patient Tree"
-          />  */}
+          <Plot cmap={cmap} scaling={scaling}/> {/* Eingabe von cmap wird geplottet*/}
         </div>
         <div className="flex flex-col"> {/* macht die Flexbox für die rechte Seite */}
           <div className="text-center font-bold text-2xl p-1 w-full mb-2"> {/* in Flexbox auf rechter Seite wird nun Text geschrieben mit blauem Hintergrund, p legt den Abstand um den Text fest*/}
@@ -60,27 +54,20 @@ export default function Page() {
           <span className="text-black mr-4">Scale edges by weight</span>
         </div>
         <div className="flex items-center mt-2">
-          <span className="text-black mr-4">Scaling:</span>
+          <span className="text-black font-bold mr-4">Scaling:</span>
           <div className="flex items-center w-full justify-between">
-            <span className="text-black mr-2">0</span>
             <input
-              type="range"
-              min="0"
-              max="10"
-              className="w-full mx-2"
+              type="range" min="1" max="10" value={scaling} className="w-fit" onChange={(e) => setScaling(Number(e.target.value))}
             />
-            <span className="text-black mx-2">10</span>
+            <span className='px-3'> {scaling} </span>
           </div>
         </div>
-        <div className="flex justify-between w-full mt-2"> {/* Beschriftung für 5 */}
-          <span className="text-black text-center" style={{ width: '100%' }}>5</span>
-        </div>
       </div>
-      <div>
+      <div className='mt-6'>
         <span style={{ marginRight: '10px' }}>Treshold at</span>
         <input type="number" placeholder="Gib eine Zahl ein" />
       </div>
-      <div>
+      <div className='flex flex-col mt-6'>
         <h1 className="text text-xl"> Eventfilter </h1>
         <span> Event A </span>
         <input type="checkbox" />

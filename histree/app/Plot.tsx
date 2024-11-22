@@ -9,7 +9,8 @@ export function LinePlot({
   marginTop = 20,
   marginRight = 20,
   marginBottom = 30,
-  marginLeft = 40
+  marginLeft = 40,
+  strokeWidth= 1.5,
 }) {
   const gx = useRef();
   const gy = useRef();
@@ -22,22 +23,21 @@ export function LinePlot({
     <svg width={width} height={height}>
       <g ref={gx} transform={`translate(0,${height - marginBottom})`} />  
       <g ref={gy} transform={`translate(${marginLeft},0)`} />
-      <path fill="none" stroke="currentColor" strokeWidth="1.5" d={line(data)} />
-      <g fill="white" stroke="currentColor" strokeWidth="1.5">
+      <path fill="none" stroke="currentColor" strokeWidth={strokeWidth} d={line(data)} />
+      <g fill="white" stroke="currentColor" strokeWidth={strokeWidth}>
         {data.map((d, i) => (<circle key={i} cx={x(i)} cy={y(d)} r="2.5" />))}
       </g>
     </svg>
   );
 }
 
-export default function Plot({ cmap }: { cmap: number }) {
+export default function Plot ({ cmap, scaling }: { cmap: number, scaling: number }){
   //const data = Array.from({ length: 100 }, (_, i) => [i, cmap]);  Funktion übergibt Wert von cmap an Line-Plot Komponente
   const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, cmap];
 
   return (
     <div>
-      {cmap}
-      <LinePlot data={data} />
+      <LinePlot data={data} strokeWidth={scaling}/>
     </div>
   )
 }
