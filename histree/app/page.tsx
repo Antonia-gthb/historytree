@@ -8,8 +8,11 @@ import Plot from './Plot';
 export default function Page() {
 
   const [cmap, setCmap] = useState(30);
-  const [scaling, setScaling] = useState(5);
-
+  const [scaling, setScaling] = useState(1.5);
+  const [isChecked, setIsChecked] = useState(false);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsChecked(e.target.checked);
+  };
 
 
   return (
@@ -36,7 +39,7 @@ export default function Page() {
           </p>
         </div>
       </div>
-      <div className="mt-6 ">
+      <div className="mt-6 "> {/* CMAP */}
         <div className="flex">
           <h2 className="text-xl font-bold mr-4">CMAP</h2>
           <input type="range" min="0" max="100" value={cmap} className="w-fit" onChange={(e) => setCmap(Number(e.target.value))} /> {/* Skala */}
@@ -45,11 +48,13 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col items-start mt-6"> {/* Flexbox für Checkbox und Skala */}
-        <div className="flex items-center"> {/* Checkbox und Text */}
+      <div className="flex flex-col items-start mt-6"> {/* Scaling */}
+        <div> 
           <input
             type="checkbox"
-            className="w-4 h-4 border border-black cursor-pointer mr-2"
+            checked={isChecked}
+            onChange={handleChange}
+            className="w-4 h-4 border cursor-pointer mr-2"
           />
           <span className="text-black mr-4">Scale edges by weight</span>
         </div>
@@ -58,6 +63,7 @@ export default function Page() {
           <div className="flex items-center w-full justify-between">
             <input
               type="range" min="1" max="10" value={scaling} className="w-fit" onChange={(e) => setScaling(Number(e.target.value))}
+              disabled={!isChecked}
             />
             <span className='px-3'> {scaling} </span>
           </div>
