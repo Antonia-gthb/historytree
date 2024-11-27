@@ -13,7 +13,10 @@ export default function Page() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsChecked(e.target.checked);
   };
-
+  const [threshold, setThreshold] = useState(0)
+  const handleThresholdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setThreshold(Number(e.target.value));
+  };
 
   return (
     <div className="flex flex-col p-6 md:w-3/5 md:px-28 md:py-12 border"> {/* Ein großes div element mit mehreren div Unterelementen*/}
@@ -22,7 +25,7 @@ export default function Page() {
       </h1>
       <div className="flex items-start">
         <div className="flex-shrink-0 mr-6 border border-red-700"> {/* Bild und Graph einfügen*/}
-          <Plot cmap={cmap} scaling={scaling}/> {/* Eingabe von cmap wird geplottet*/}
+          <Plot cmap={cmap} scaling={scaling} threshold={threshold}/> {/* Eingabe von cmap wird geplottet*/}
         </div>
         <div className="flex flex-col"> {/* macht die Flexbox für die rechte Seite */}
           <div className="text-center font-bold text-2xl p-1 w-full mb-2"> {/* in Flexbox auf rechter Seite wird nun Text geschrieben mit blauem Hintergrund, p legt den Abstand um den Text fest*/}
@@ -71,7 +74,14 @@ export default function Page() {
       </div>
       <div className='mt-6'>
         <span style={{ marginRight: '10px' }}>Treshold at</span>
-        <input type="number" placeholder="Gib eine Zahl ein" />
+        <input 
+        className='w-fit'
+        type="number" 
+        min="0" 
+        max="100"
+        value={threshold}
+        onChange={handleThresholdChange}
+        />
       </div>
       <div className='flex flex-col mt-6'>
         <h1 className="text text-xl"> Eventfilter </h1>

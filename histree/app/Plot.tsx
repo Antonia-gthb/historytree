@@ -31,13 +31,15 @@ export function LinePlot({
   );
 }
 
-export default function Plot ({ cmap, scaling }: { cmap: number, scaling: number }){
+export default function Plot ({ cmap, scaling, threshold }: { cmap: number, scaling: number, threshold:number }){
   //const data = Array.from({ length: 100 }, (_, i) => [i, cmap]);  Funktion übergibt Wert von cmap an Line-Plot Komponente
   const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, cmap];
+  const thresholdData = data.filter(d => d > threshold);
+
 
   return (
     <div>
-      <LinePlot data={data} strokeWidth={scaling}/>
+      <LinePlot data={thresholdData} strokeWidth={scaling}/>
     </div>
   )
 }
