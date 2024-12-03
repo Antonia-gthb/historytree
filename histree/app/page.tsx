@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { join } from 'path';
 import Plot from './Plot';
+import EventCheckboxes from './EventFilter';
 
 export default function Page() {
 
@@ -17,6 +18,14 @@ export default function Page() {
   const handleThresholdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setThreshold(Number(e.target.value));
   };
+
+  
+  // const EventCheckboxes = () = {
+    //const [eventfilter, setEventFilter] = useState(false);
+    //const handleEventChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //setEventFilter(e.target.checked);
+  //};
+//};
 
   return (
     <div className="flex flex-col p-6 md:w-3/5 md:px-28 md:py-12 border"> {/* Ein großes div element mit mehreren div Unterelementen*/}
@@ -83,17 +92,10 @@ export default function Page() {
         onChange={handleThresholdChange}
         />
       </div>
-      <div className='flex flex-col mt-6'>
-        <h1 className="text text-xl"> Eventfilter </h1>
-        <span> Event A </span>
-        <input type="checkbox" />
-        <span> Event B </span>
-        <input type="checkbox" />
-        <span> Event C </span>
-        <input type="checkbox" />
-        <span> Event D </span>
-        <input type="checkbox" />
-      </div> 
+      <div className="flex flex-col mt-6">
+        <h1 className="text text-xl font-bold"> Eventfilter </h1>
+        <EventCheckboxes/>
+    </div>
     </div>
   );
 }
