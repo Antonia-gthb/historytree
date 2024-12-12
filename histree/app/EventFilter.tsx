@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Event {
     id: string;
@@ -15,12 +15,7 @@ interface Event {
   
 
 const EventCheckboxes = () => {
-    const [eventfilter, setEventFilter] = useState<Record<string, boolean>>({
-        A: false,
-        B: false,
-        C: false,
-        D: false
-      });
+    const [eventfilter, setEventFilter] = useState<Record<string, boolean>>({});
     const handleEventChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, checked } = e.target;  // name ist die Event-ID, checked gibt an, ob die Checkbox angeklickt wurde
         setEventFilter((prevState) => ({
@@ -29,6 +24,9 @@ const EventCheckboxes = () => {
         }));
   };
 
+ useEffect(() => {
+    console.log("Aktueller eventfilter Zustand:", eventfilter);
+  }, [eventfilter]); 
 
 return (
     <div className="mt-3">
