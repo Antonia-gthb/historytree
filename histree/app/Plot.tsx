@@ -19,6 +19,7 @@ export function LinePlot({
   const line = d3.line((d, i) => x(i), y);  //erzeugt Pfad für Liniendiagramm
   useEffect(() => void d3.select(gx.current).call(d3.axisBottom(x)), [gx, x]); {/* Achsen werden generiert, useEffect um Achsen nur dann zu rendern, wenn sie sich ändern */}
   useEffect(() => void d3.select(gy.current).call(d3.axisLeft(y)), [gy, y]);
+
   return (
     <svg width={width} height={height}>
       <g ref={gx} transform={`translate(0,${height - marginBottom})`} />  
@@ -34,12 +35,12 @@ export function LinePlot({
 export default function Plot ({ cmap, scaling, threshold }: { cmap: number, scaling: number, threshold:number }){
   //const data = Array.from({ length: 100 }, (_, i) => [i, cmap]);  Funktion übergibt Wert von cmap an Line-Plot Komponente
   const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, cmap];
-  const thresholdData = data.filter(d => d > threshold);
+  const thresholdData = data.filter(d => d > threshold);  //wieso d???          
 
-
-  return (
+    return (
     <div>
-      <LinePlot data={thresholdData} strokeWidth={scaling}/>
+      <LinePlot data={thresholdData} strokeWidth={scaling} />
     </div>
   )
 }
+

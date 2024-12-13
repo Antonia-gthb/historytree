@@ -20,12 +20,7 @@ export default function Page() {
   };
 
   
-  // const EventCheckboxes = () = {
-    //const [eventfilter, setEventFilter] = useState(false);
-    //const handleEventChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //setEventFilter(e.target.checked);
-  //};
-//};
+
 
   return (
     <div className="flex flex-col p-6 md:w-3/5 md:px-28 md:py-12 border"> {/* Ein großes div element mit mehreren div Unterelementen*/}
