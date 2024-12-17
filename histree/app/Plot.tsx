@@ -12,11 +12,25 @@ export function LinePlot({
   marginLeft = 40,
   strokeWidth= 1.5,
 }) {
-  const gx = useRef();
-  const gy = useRef();
-  const x = d3.scaleLinear([0, data.length - 1], [marginLeft, width - marginRight]); //x-Skalierung
-  const y = d3.scaleLinear(d3.extent(data), [height - marginBottom, marginTop]); //y-Skalierung, entent(data) gibt das Minimum und Maximum der Daten zurück
-  const line = d3.line((d, i) => x(i), y);  //erzeugt Pfad für Liniendiagramm
+  //const gx = useRef();
+  //const gy = useRef();
+  const gx = useRef<SVGGElement | null>(null);
+  const gy = useRef<SVGGElement | null>(null);
+  const x = d3.scaleLinear()
+    .domain([Math.min(...data.map(d => d[0])), Math.max(...data.map(d => d[0]))])  // Skalierung auf Basis der X-Werte
+    .range([marginLeft, width - marginRight]);
+
+  const y = d3.scaleLinear()
+    .domain([Math.min(...data.map(d => d[1])), Math.max(...data.map(d => d[1]))])  // Skalierung auf Basis der Y-Werte
+    .range([height - marginBottom, marginTop]); 
+
+  const line = d3.line()
+  .x((d: any) => x(d[0]))  // X-Werte werden durch die x-Skalierung gemappt
+  .y((d: any) => y(d[1]));
+
+  //const x = d3.scaleLinear([0, data.length - 1], [marginLeft, width - marginRight]); //x-Skalierung
+  //const y = d3.scaleLinear(d3.extent(data), [height - marginBottom, marginTop]); //y-Skalierung, entent(data) gibt das Minimum und Maximum der Daten zurück
+  //const line = d3.line((d, i) => x(i), y);  //erzeugt Pfad für Liniendiagramm
   useEffect(() => void d3.select(gx.current).call(d3.axisBottom(x)), [gx, x]); {/* Achsen werden generiert, useEffect um Achsen nur dann zu rendern, wenn sie sich ändern */}
   useEffect(() => void d3.select(gy.current).call(d3.axisLeft(y)), [gy, y]);
 
@@ -26,21 +40,41 @@ export function LinePlot({
       <g ref={gy} transform={`translate(${marginLeft},0)`} />
       <path fill="none" stroke="currentColor" strokeWidth={strokeWidth} d={line(data)} />
       <g fill="white" stroke="currentColor" strokeWidth={strokeWidth}>
-        {data.map((d, i) => (<circle key={i} cx={x(i)} cy={y(d)} r="2.5" />))}
+        {data.map((d, i) => (<circle key={i} cx={x(d[0])} cy={y(d[1])} r="2.5" />))}
       </g>
     </svg>
   );
 }
 
-export default function Plot ({ cmap, scaling, threshold }: { cmap: number, scaling: number, threshold:number }){
+export default function Plot ({ cmap, scaling, threshold, selectedXValues, selectedYValues }: { cmap: number, scaling: number, threshold:number, selectedXValues: Array<number>, selectedYValues: Array<number>}){
   //const data = Array.from({ length: 100 }, (_, i) => [i, cmap]);  Funktion übergibt Wert von cmap an Line-Plot Komponente
-  const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, cmap];
-  const thresholdData = data.filter(d => d > threshold);  //wieso d???          
+  const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, cmap].map(x => [x, x-1]);
+  console.log("Datenarray", data)
+  //const thresholdData = data.filter(([x, y]) => y > threshold);
+  //const thresholdData = data.filter(d => d > threshold);  //wieso d???
+  const thresholdData = threshold >= 0
+  ? data.filter(([x, y]) => y > threshold) // Nur Y-Werte größer als threshold
+  : data;
+  const selectedData = selectedXValues.map((x, index) => [x, selectedYValues[index]]); 
 
-    return (
-    <div>
-      <LinePlot data={thresholdData} strokeWidth={scaling} />
-    </div>
-  )
-}
+
+
+  if (selectedXValues.length > 0 ) {
+      return (    
+      <div>
+        <LinePlot data={selectedData} strokeWidth={scaling} />
+      </div>
+    )}
+  else
+      return (
+      <div>
+        <LinePlot data={thresholdData} strokeWidth={scaling} />
+      </div>
+    )
+  }
+  
+  
+
+
+
 

@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react';
 
 
-const EventCheckboxes = () => {
+const EventCheckboxes = ({
+  setSelectedXValues, 
+  setSelectedYValues, 
+}: {
+  setSelectedXValues: React.Dispatch<React.SetStateAction<number[]>>;
+  setSelectedYValues: React.Dispatch<React.SetStateAction<number[]>>;
+}) => {
   const [events, setEvents] = useState<Array<{id: string; x: number; y: number; checked: boolean}>>([
     { id: 'Event A', x: 0, y: 1, checked: false },
     { id: 'Event B', x: 1, y: 2, checked: false },
@@ -19,12 +25,17 @@ const EventCheckboxes = () => {
     );
   };
 
-  const selectedEvents= events
-    .filter(Event => Event.checked);
+  const selectedXValues = events.filter((event) => event.checked).map((event) => event.x)
+  const selectedYValues = events.filter((event) => event.checked).map((event) => event.y)
+
+  useEffect(() => {
+    setSelectedXValues(selectedXValues);
+    setSelectedYValues(selectedYValues);
+  }, [events, setSelectedXValues, setSelectedYValues]);
 
   useEffect(() => {
     console.log("Uebersicht Events", events);
-    console.log ("Ausgewählte Events", selectedEvents)
+    console.log(selectedXValues, selectedYValues)
   }, [events],);
 
 

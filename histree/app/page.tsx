@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { join } from 'path';
 import Plot from './Plot';
 import EventCheckboxes from './EventFilter';
@@ -19,6 +18,9 @@ export default function Page() {
     setThreshold(Number(e.target.value));
   };
 
+  const [selectedXValues, setSelectedXValues] = useState<number[]>([]);
+  const [selectedYValues, setSelectedYValues] = useState<number[]>([]);
+
   
 
 
@@ -29,7 +31,8 @@ export default function Page() {
       </h1>
       <div className="flex items-start">
         <div className="flex-shrink-0 mr-6 border border-red-700"> {/* Bild und Graph einfügen*/}
-          <Plot cmap={cmap} scaling={scaling} threshold={threshold}/> {/* Eingabe von cmap wird geplottet*/}
+          <Plot cmap={cmap} scaling={scaling} threshold={threshold} selectedXValues={selectedXValues} 
+        selectedYValues={selectedYValues}/> {/* Eingabe von cmap wird geplottet*/}
         </div>
         <div className="flex flex-col"> {/* macht die Flexbox für die rechte Seite */}
           <div className="text-center font-bold text-2xl p-1 w-full mb-2"> {/* in Flexbox auf rechter Seite wird nun Text geschrieben mit blauem Hintergrund, p legt den Abstand um den Text fest*/}
@@ -89,7 +92,10 @@ export default function Page() {
       </div>
       <div className="flex flex-col mt-6">
         <h1 className="text text-xl font-bold"> Eventfilter </h1>
-        <EventCheckboxes/>
+        <EventCheckboxes
+        setSelectedXValues={setSelectedXValues} 
+        setSelectedYValues={setSelectedYValues} 
+        />
     </div>
     </div>
   );
