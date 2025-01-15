@@ -11,9 +11,13 @@ export function LinePlot({
   marginBottom = 30,
   marginLeft = 40,
   strokeWidth= 1.5,
+  eventColor,
 }) {
   //const gx = useRef();
   //const gy = useRef();
+  interface GraphProps {
+    eventColor: string; // Die ausgewählte Eventfarbe
+  }
   const gx = useRef<SVGGElement | null>(null);
   const gy = useRef<SVGGElement | null>(null);
   const x = d3.scaleLinear()
@@ -40,13 +44,13 @@ export function LinePlot({
       <g ref={gy} transform={`translate(${marginLeft},0)`} />
       <path fill="none" stroke="currentColor" strokeWidth={strokeWidth} d={line(data)} />
       <g fill="white" stroke="currentColor" strokeWidth={strokeWidth}>
-        {data.map((d, i) => (<circle key={i} cx={x(d[0])} cy={y(d[1])} r="2.5" />))}
+        {data.map((d, i) => (<circle key={i} cx={x(d[0])} cy={y(d[1])} r="2.5" fill={eventColor} />))}
       </g>
     </svg>
   );
 }
 
-export default function Plot ({ cmap, scaling, threshold, selectedXValues, selectedYValues }: { cmap: number, scaling: number, threshold:number, selectedXValues: Array<number>, selectedYValues: Array<number>}){
+export default function Plot ({ cmap, scaling, threshold, selectedXValues, selectedYValues, eventColor }: { cmap: number, scaling: number, threshold:number, selectedXValues: Array<number>, selectedYValues: Array<number>, eventColor:string}){
   //const data = Array.from({ length: 100 }, (_, i) => [i, cmap]);  Funktion übergibt Wert von cmap an Line-Plot Komponente
   const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, cmap].map(x => [x, x-1]);
   console.log("Datenarray", data)
@@ -62,13 +66,13 @@ export default function Plot ({ cmap, scaling, threshold, selectedXValues, selec
   if (selectedXValues.length > 0 ) {
       return (    
       <div>
-        <LinePlot data={selectedData} strokeWidth={scaling} />
+        <LinePlot data={selectedData} strokeWidth={scaling} eventColor={eventColor} />
       </div>
     )}
   else
       return (
       <div>
-        <LinePlot data={thresholdData} strokeWidth={scaling} />
+        <LinePlot data={thresholdData} strokeWidth={scaling} eventColor={eventColor} />
       </div>
     )
   }

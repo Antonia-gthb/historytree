@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { join } from 'path';
 import Plot from './Plot';
 import EventCheckboxes from './EventFilter';
+import ColorScale from './cmap';
 
 export default function Page() {
 
@@ -21,6 +22,8 @@ export default function Page() {
   const [selectedXValues, setSelectedXValues] = useState<number[]>([]);
   const [selectedYValues, setSelectedYValues] = useState<number[]>([]);
 
+
+  const [eventColor, setEventColor] = useState<string>('#ff0000');
   
 
 
@@ -30,8 +33,8 @@ export default function Page() {
         This is an application to demonstrate MHN Patient Trees
       </h1>
       <div className="flex items-start">
-        <div className="flex-shrink-0 mr-6 border border-red-700"> {/* Bild und Graph einfügen*/}
-          <Plot cmap={cmap} scaling={scaling} threshold={threshold} selectedXValues={selectedXValues} 
+        <div className="flex-shrink-0 mr-6"> {/* Bild und Graph einfügen*/}
+          <Plot eventColor={eventColor} cmap={cmap} scaling={scaling} threshold={threshold} selectedXValues={selectedXValues} 
         selectedYValues={selectedYValues}/> {/* Eingabe von cmap wird geplottet*/}
         </div>
         <div className="flex flex-col"> {/* macht die Flexbox für die rechte Seite */}
@@ -49,13 +52,19 @@ export default function Page() {
           </p>
         </div>
       </div>
+      <div className="mt-6">
+      <h2 className="text-xl font-bold mr-4">CMAP</h2>
+      <ColorScale setEventColor={setEventColor} />
+      </div>
       <div className="mt-6 "> {/* CMAP */}
         <div className="flex">
-          <h2 className="text-xl font-bold mr-4">CMAP</h2>
+          <h2 className="text-xl font-bold mr-4">End X-Wert </h2>
           <input type="range" min="0" max="100" value={cmap} className="w-fit" onChange={(e) => setCmap(Number(e.target.value))} /> {/* Skala */}
           <div className='px-3'>
             {cmap}
           </div>
+          <div>
+    </div>
         </div>
       </div>
       <div className="flex flex-col items-start mt-6"> {/* Scaling */}
