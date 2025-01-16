@@ -52,11 +52,11 @@ export default function Page() {
           </p>
         </div>
       </div>
-      <div className="mt-6">
-      <h2 className="text-xl font-bold mr-4">CMAP</h2>
-      <ColorScale setEventColor={setEventColor} />
+      <div className="flex items-center mt-6">  {/* CMAP */}
+      <h2 className="text-xl font-bold mr-6">CMAP</h2>
+      <ColorScale setEventColor={setEventColor}/>
       </div>
-      <div className="mt-6 "> {/* CMAP */}
+      <div className="mt-6 "> {/* End X-Wert */}
         <div className="flex">
           <h2 className="text-xl font-bold mr-4">End X-Wert </h2>
           <input type="range" min="0" max="100" value={cmap} className="w-fit" onChange={(e) => setCmap(Number(e.target.value))} /> {/* Skala */}
@@ -67,7 +67,7 @@ export default function Page() {
     </div>
         </div>
       </div>
-      <div className="flex flex-col items-start mt-6"> {/* Scaling */}
+      <div className="flex flex-col mt-6"> {/* Scaling */}
         <div> 
           <input
             type="checkbox"

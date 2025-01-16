@@ -18,7 +18,7 @@ interface ColorScaleProps {
       
   
     return (
-      <div>
+      <div style={{ width: '200px', height: 'auto' }}>
         <Hue
           hue={hue} // Der Schieberegler verwendet den aktuellen Hue-Wert
           onChange={handleColorChange} // Bei jeder Änderung des Farbtons wird die handleColorChange-Funktion aufgerufen
