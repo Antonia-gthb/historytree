@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { join } from 'path';
+import { useState } from 'react';
 import Plot from './Plot';
 import EventCheckboxes from './EventFilter';
 import ColorScale from './cmap';
