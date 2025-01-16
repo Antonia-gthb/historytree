@@ -79,7 +79,7 @@ export default function Page() {
         </div>
         <div className="flex items-center mt-2">
           <span className="text-black font-bold mr-4">Scaling:</span>
-          <div className="flex items-center w-full justify-between">
+          <div className="flex items-center">
             <input
               type="range" min="1" max="10" value={scaling} className="w-fit" onChange={(e) => setScaling(Number(e.target.value))}
               disabled={!isChecked}
