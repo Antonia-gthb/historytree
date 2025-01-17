@@ -1,6 +1,7 @@
 
 import * as d3 from "d3";
 import { useRef, useEffect } from "react";
+import { myEvent } from "./EventFilter";
 
 export function LinePlot({
   data,
@@ -23,6 +24,10 @@ export function LinePlot({
   strokeWidth?: number;
   eventColor: string
 }) {
+
+  useEffect(() => {
+    console.log("Datenarray", data)
+  }, [data])
   //const gx = useRef();
   //const gy = useRef();
   // interface GraphProps {
@@ -60,32 +65,29 @@ export function LinePlot({
   );
 }
 
-export default function Plot({ cmap, scaling, threshold, selectedXValues, selectedYValues, eventColor }: { cmap: number, scaling: number, threshold: number, selectedXValues: Array<number>, selectedYValues: Array<number>, eventColor: string }) {
-  //const data = Array.from({ length: 100 }, (_, i) => [i, cmap]);  Funktion übergibt Wert von cmap an Line-Plot Komponente
-  const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, cmap].map(x => [x, x - 1]);
-  console.log("Datenarray", data)
-  //const thresholdData = data.filter(([x, y]) => y > threshold);
-  //const thresholdData = data.filter(d => d > threshold);  //wieso d???
-  const thresholdData = threshold >= 0
-    ? data.filter((point) => point[1] > threshold) // Nur Y-Werte größer als threshold
-    : data;
-  const selectedData = selectedXValues.map((x, index) => [x, selectedYValues[index]]);
+export default function Plot({ cmap, scaling, threshold, events = [], eventColor }: { cmap: number, scaling: number, threshold: number, events: Array<myEvent>, eventColor: string }) {
 
-
-
-  if (selectedXValues.length > 0) {
+  if (events.length > 0) {
+    // filtered data
     return (
       <div>
-        <LinePlot data={selectedData} strokeWidth={scaling} eventColor={eventColor} />
+        <LinePlot data={events.map((e) => [e.x, e.y])} strokeWidth={scaling} eventColor={eventColor} />
       </div>
     )
   }
-  else
+  else { 
+    // default data
+    const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, cmap].map(x => [x, x - 1]);
+
+    const thresholdData = threshold >= 0
+      ? data.filter((point) => point[1] > threshold) // Nur Y-Werte größer als threshold
+      : data;
     return (
       <div>
         <LinePlot data={thresholdData} strokeWidth={scaling} eventColor={eventColor} />
       </div>
     )
+  }
 }
 
 

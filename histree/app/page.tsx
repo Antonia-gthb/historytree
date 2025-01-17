@@ -2,29 +2,30 @@
 
 import { useState } from 'react';
 import Plot from './Plot';
+import { myEvent } from './EventFilter';
 import EventCheckboxes from './EventFilter';
 import ColorScale from './cmap';
 
 export default function Page() {
 
   const [cmap, setCmap] = useState(30);
-  const [scaling, setScaling] = useState(1.5);
-  const [isChecked, setIsChecked] = useState(false);
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsChecked(e.target.checked);
+  const [scaleFactor, setScaleFactor] = useState(1.5);
+  const [scaling, setScaling] = useState(false);
+  const onScalingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setScaling(e.target.checked);
   };
   const [threshold, setThreshold] = useState(0)
   const handleThresholdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setThreshold(Number(e.target.value));
   };
-
-  const [selectedXValues, setSelectedXValues] = useState<number[]>([]);
-  const [selectedYValues, setSelectedYValues] = useState<number[]>([]);
-
+  const [events, setEvents] = useState<Array<myEvent>>([
+    { id: 'Event A', x: 0, y: 1, checked: false },
+    { id: 'Event B', x: 1, y: 2, checked: false },
+    { id: 'Event C', x: 2, y: 3, checked: false },
+    { id: 'Event D', x: 8, y: 9, checked: false },
+  ]);
 
   const [eventColor, setEventColor] = useState<string>('#ff0000');
-  
-
 
   return (
     <div className="flex flex-col p-6 md:w-3/5 md:px-28 md:py-12 border"> {/* Ein großes div element mit mehreren div Unterelementen*/}
@@ -33,8 +34,12 @@ export default function Page() {
       </h1>
       <div className="flex items-start">
         <div className="flex-shrink-0 mr-6"> {/* Bild und Graph einfügen*/}
-          <Plot eventColor={eventColor} cmap={cmap} scaling={scaling} threshold={threshold} selectedXValues={selectedXValues} 
-        selectedYValues={selectedYValues}/> {/* Eingabe von cmap wird geplottet*/}
+          <Plot
+            eventColor={eventColor}
+            cmap={cmap}
+            scaling={scaleFactor}
+            threshold={threshold}
+            events={events.filter((event) => event.checked)}/> {/* Eingabe von cmap wird geplottet*/}
         </div>
         <div className="flex flex-col"> {/* macht die Flexbox für die rechte Seite */}
           <div className="text-center font-bold text-2xl p-1 w-full mb-2"> {/* in Flexbox auf rechter Seite wird nun Text geschrieben mit blauem Hintergrund, p legt den Abstand um den Text fest*/}
@@ -52,8 +57,8 @@ export default function Page() {
         </div>
       </div>
       <div className="flex items-center mt-6">  {/* CMAP */}
-      <h2 className="text-xl font-bold mr-6">CMAP</h2>
-      <ColorScale setEventColor={setEventColor}/>
+        <h2 className="text-xl font-bold mr-6">CMAP</h2>
+        <ColorScale setEventColor={setEventColor} />
       </div>
       <div className="mt-6 "> {/* End X-Wert */}
         <div className="flex">
@@ -63,15 +68,15 @@ export default function Page() {
             {cmap}
           </div>
           <div>
-    </div>
+          </div>
         </div>
       </div>
       <div className="flex flex-col mt-6"> {/* Scaling */}
-        <div> 
+        <div>
           <input
             type="checkbox"
-            checked={isChecked}
-            onChange={handleChange}
+            checked={scaling}
+            onChange={onScalingChange}
             className="w-4 h-4 border cursor-pointer mr-2"
           />
           <span className="text-black mr-4">Scale edges by weight</span>
@@ -80,31 +85,31 @@ export default function Page() {
           <span className="text-black font-bold mr-4">Scaling:</span>
           <div className="flex items-center">
             <input
-              type="range" min="1" max="10" value={scaling} className="w-fit" onChange={(e) => setScaling(Number(e.target.value))}
-              disabled={!isChecked}
+              type="range" min="1" max="10" value={scaleFactor} className="w-fit" onChange={(e) => setScaleFactor(Number(e.target.value))}
+              disabled={!scaling}
             />
-            <span className='px-3'> {scaling} </span>
+            <span className='px-3'> {scaleFactor} </span>
           </div>
         </div>
       </div>
       <div className='mt-6'>
         <span style={{ marginRight: '10px' }}>Treshold at</span>
-        <input 
-        className='w-fit'
-        type="number" 
-        min="0" 
-        max="100"
-        value={threshold}
-        onChange={handleThresholdChange}
+        <input
+          className='w-fit'
+          type="number"
+          min="0"
+          max="100"
+          value={threshold}
+          onChange={handleThresholdChange}
         />
       </div>
       <div className="flex flex-col mt-6">
         <h1 className="text text-xl font-bold"> Eventfilter </h1>
         <EventCheckboxes
-        setSelectedXValues={setSelectedXValues} 
-        setSelectedYValues={setSelectedYValues} 
+          events={events}
+          setEvents={setEvents}
         />
-    </div>
+      </div>
     </div>
   );
 }
