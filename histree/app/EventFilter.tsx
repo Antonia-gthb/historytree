@@ -1,43 +1,27 @@
-import { useState, useEffect } from 'react';
-
+interface myEvent {
+  id: string;
+  x: number;
+  y: number;
+  checked: boolean;
+}
 
 const EventCheckboxes = ({
-  setSelectedXValues, 
-  setSelectedYValues, 
+  events,
+  setEvents
 }: {
-  setSelectedXValues: React.Dispatch<React.SetStateAction<number[]>>;
-  setSelectedYValues: React.Dispatch<React.SetStateAction<number[]>>;
+  events: myEvent[];
+  setEvents: React.Dispatch<React.SetStateAction<myEvent[]>>;
 }) => {
-  const [events, setEvents] = useState<Array<{id: string; x: number; y: number; checked: boolean}>>([
-    { id: 'Event A', x: 0, y: 1, checked: false },
-    { id: 'Event B', x: 1, y: 2, checked: false },
-    { id: 'Event C', x: 2, y: 3, checked: false },
-    { id: 'Event D', x: 8, y: 9, checked: false },
-  ]);
-
 
   const handleEventChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;  // name ist die Event-ID, checked gibt an, ob die Checkbox angeklickt wurde
+    console.log(name, checked);
     setEvents((prevState) =>
       prevState.map((Event) =>
         Event.id === name ? { ...Event, checked } : Event
       )
     );
   };
-
-  const selectedXValues = events.filter((event) => event.checked).map((event) => event.x)
-  const selectedYValues = events.filter((event) => event.checked).map((event) => event.y)
-
-  useEffect(() => {
-    setSelectedXValues(selectedXValues);
-    setSelectedYValues(selectedYValues);
-  }, [events, setSelectedXValues, setSelectedYValues]);
-
-  useEffect(() => {
-    console.log("Uebersicht Events", events);
-    console.log(selectedXValues, selectedYValues)
-  }, [events],);
-
 
   return (
     <div className="mt-3">
@@ -61,4 +45,5 @@ const EventCheckboxes = ({
 
 
 export default EventCheckboxes;
+export type { myEvent };
 
