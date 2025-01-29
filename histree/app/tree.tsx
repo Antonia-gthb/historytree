@@ -1,18 +1,151 @@
-const dataset = [
-    {
-      person: "Person 1",
-      events: [
-        { event: "Mutation 1", date: "2020-01-01", shape: "circle" },
-        { event: "Mutation 2", date: "2021-01-01", shape: "triangle" },
-        { event: "Mutation 3", date: "2022-01-01", shape: "square" }
-      ]
-    },
-    {
-      person: "Person 2",
-      events: [
-        { event: "Mutation 1", date: "2020-06-01", shape: "circle" },
-        { event: "Mutation 2", date: "2021-08-01", shape: "triangle" },
-        { event: "Mutation 3", date: "2022-03-01", shape: "square" }
-      ]
+import * as d3 from "d3";
+import { useRef, useEffect } from "react";
+
+
+type TreeNode = {
+  name: string;
+  children?: TreeNode[];
+  value?: number;
+  _children?: TreeNode[];  // _children für die Speicherung der zusammengeklappten Knoten
+  };
+
+
+export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; width?: number }) {
+  const svgRef = useRef<SVGSVGElement | null>(null);
+
+  useEffect(() => {
+    if (!svgRef.current) return;
+
+    // Chart settings
+    const margin = { top: 10, right: 10, bottom: 10, left: 40 };
+    const dx = 20;
+    const root = d3.hierarchy(treedata);
+    const dy = (width - margin.right - margin.left) / (1 + root.height);
+
+    const tree = d3.tree<TreeNode>().nodeSize([dx, dy]);
+    const diagonal = d3.linkHorizontal().x(d => d.y).y(d => d.x);
+
+    // Clear SVG before re-rendering
+    d3.select(svgRef.current).selectAll("*").remove();
+
+    // Create SVG
+    const svg = d3.select(svgRef.current)
+      .attr("width", width)
+      .attr("height", dx)
+      .attr("viewBox", [-margin.left, -margin.top, width, dx])
+      .style("max-width", "100%")
+      .style("height", "auto")
+      .style("font", "14px sans-serif")
+      .style("user-select", "none");
+
+    const gLink = svg.append("g")
+      .attr("fill", "none")
+      .attr("stroke", "#555")
+      .attr("stroke-opacity", 0.4)
+      .attr("stroke-width", 1.5);
+
+    const gNode = svg.append("g")
+      .attr("cursor", "pointer")
+      .attr("pointer-events", "all");
+
+    function update(source: any) {
+      const duration = 250;
+      const nodes = root.descendants().reverse();
+      const links = root.links();
+
+      // Compute new tree layout
+      tree(root);
+
+      let left = root;
+      let right = root;
+      root.eachBefore(node => {
+        if (node.x < left.x) left = node;
+        if (node.x > right.x) right = node;
+      });
+
+      const height = right.x - left.x + margin.top + margin.bottom;
+
+      const transition = svg.transition()
+        .duration(duration)
+        .attr("height", height)
+        .attr("viewBox", [-margin.left, left.x - margin.top, width, height]);
+
+      // Update nodes
+      const node = gNode.selectAll("g").data(nodes, d => d.data.name);
+
+      const nodeEnter = node.enter().append("g")
+        .attr("transform", d => `translate(${source.y0},${source.x0})`)
+        .attr("fill-opacity", 0)
+        .attr("stroke-opacity", 0)
+        .on("click", (_, d) => {
+          d.children = d.children ? null : d._children;
+          update(d);
+        });
+
+      nodeEnter.append("circle")
+        .attr("r", 2.5)
+        .attr("fill", d => d._children ? "#555" : "#999");
+
+      nodeEnter.append("text")
+        .attr("dy", "0.31em")
+        .attr("x", d => d._children ? -6 : 6)
+        .attr("text-anchor", d => d._children ? "end" : "start")
+        .text(d => d.data.name);
+
+      nodeEnter.merge(node).transition(transition)
+        .attr("transform", d => `translate(${d.y},${d.x})`)
+        .attr("fill-opacity", 1)
+        .attr("stroke-opacity", 1);
+
+      node.exit().transition(transition).remove()
+        .attr("transform", d => `translate(${source.y},${source.x})`)
+        .attr("fill-opacity", 0)
+        .attr("stroke-opacity", 0);
+
+      // Update links
+      const link = gLink.selectAll("path").data(links, d => d.target.data.name);
+
+      const linkEnter = link.enter().append("path")
+        .attr("d", d => {
+          const o = { x: source.x0, y: source.y0 };
+          return diagonal({ source: o, target: o });
+        });
+
+      link.merge(linkEnter).transition(transition)
+        .attr("d", diagonal);
+
+      link.exit().transition(transition).remove()
+        .attr("d", d => {
+          const o = { x: source.x, y: source.y };
+          return diagonal({ source: o, target: o });
+        });
+
+      // Stash old positions
+      root.eachBefore(d => {
+        d.x0 = d.x;
+        d.y0 = d.y;
+      });
     }
-  ];
+
+    // Initialize tree
+    root.x0 = dy / 2;
+    root.y0 = 0;
+    root.descendants().forEach((d, i) => {
+      d.id = i;
+      d._children = d.children;
+      if (d.depth && d.data.name.length !== 7) d.children = null;
+    });
+
+    update(root);
+  }, [treedata]);
+
+  return <svg ref={svgRef}></svg>;
+}
+
+export default CollaTree;
+
+
+
+
+
+
