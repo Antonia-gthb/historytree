@@ -7,6 +7,8 @@ import EventCheckboxes from './components/EventFilter';
 import ColorScale from './components/cmap';
 import BarChart from './plottwo';
 import CollaTree from './tree';
+import rawdata from './lib/localdata';
+
 
 export default function Page() {
 
@@ -147,8 +149,12 @@ export default function Page() {
       <BarChart newdata={newdata} width={1000} height={600} />
       </div>
      <div className="flex flex-col mt-6">
-     <h1 className="text-xl font-bold mr-6">Bar Chart Example</h1>
+     <h1 className="text-xl font-bold mr-6">Collapsible Tree</h1>
      <CollaTree treedata={treedata} />
+     </div>
+     <div className="flex flex-col mt-6">
+     <h1 className="text-xl font-bold mr-6">Collapsible Tree</h1>
+     <CollaTree treedata={rawdata} />
      </div>
    </div>
   );
