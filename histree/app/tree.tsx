@@ -16,9 +16,9 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
   useEffect(() => {
     if (!svgRef.current) return;
 
-    // Chart settings
+    // Tree Eckdaten
     const margin = { top: 10, right: 10, bottom: 10, left: 40 };
-    const dx = 20;
+    const dx = 20;  // sorgt für Abstand zwischen den Knoten
     const root = d3.hierarchy(treedata);
     const dy = (width - margin.right - margin.left) / (1 + root.height);
 
@@ -28,14 +28,14 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
     // Clear SVG before re-rendering
     d3.select(svgRef.current).selectAll("*").remove();
 
-    // Create SVG
+    // SVG erstellen
     const svg = d3.select(svgRef.current)
       .attr("width", width)
       .attr("height", dx)
       .attr("viewBox", [-margin.left, -margin.top, width, dx])
       .style("max-width", "100%")
       .style("height", "auto")
-      .style("font", "14px sans-serif")
+      .style("font", "14px sans-serif")  // hier kann ich die Schriftgröße einstellen
       .style("user-select", "none");
 
     const gLink = svg.append("g")
@@ -53,7 +53,7 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
       const nodes = root.descendants().reverse();
       const links = root.links();
 
-      // Compute new tree layout
+      // Neues Tree Layout
       tree(root);
 
       let left = root;
@@ -70,7 +70,7 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
         .attr("height", height)
         .attr("viewBox", [-margin.left, left.x - margin.top, width, height]);
 
-      // Update nodes
+      // Nodes updaten
       const node = gNode.selectAll("g").data(nodes, d => d.data.name);
 
       const nodeEnter = node.enter().append("g")
@@ -102,7 +102,7 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
         .attr("fill-opacity", 0)
         .attr("stroke-opacity", 0);
 
-      // Update links
+      // Links updaten
       const link = gLink.selectAll("path").data(links, d => d.target.data.name);
 
       const linkEnter = link.enter().append("path")
@@ -120,14 +120,14 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
           return diagonal({ source: o, target: o });
         });
 
-      // Stash old positions
+      // Altes speichern
       root.eachBefore(d => {
         d.x0 = d.x;
         d.y0 = d.y;
       });
     }
 
-    // Initialize tree
+    // Tree initialisieren
     root.x0 = dy / 2;
     root.y0 = 0;
     root.descendants().forEach((d, i) => {
