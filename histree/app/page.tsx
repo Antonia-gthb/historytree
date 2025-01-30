@@ -153,7 +153,7 @@ export default function Page() {
      <CollaTree treedata={treedata} />
      </div>
      <div className="flex flex-col mt-6">
-     <h1 className="text-xl font-bold mr-6">Collapsible Tree</h1>
+     <h1 className="text-xl font-bold mr-6">MHN Patient Tree Draft</h1>
      <CollaTree treedata={rawdata} />
      </div>
    </div>
