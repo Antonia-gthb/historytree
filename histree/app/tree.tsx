@@ -53,11 +53,10 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
       const nodes = root.descendants().reverse();
       const links = root.links();
 
-      // Neues Tree Layout
       tree(root);
 
-      let left = root;
-      let right = root;
+      let left = root; //Speichert linksten Knoten
+      let right = root; //Speichert den rechtesten Knoten
       root.eachBefore(node => {
         if (node.x < left.x) left = node;
         if (node.x > right.x) right = node;
@@ -78,19 +77,37 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
         .attr("fill-opacity", 0)
         .attr("stroke-opacity", 0)
         .on("click", (_, d) => {
+          if (!d._children) return;
+        
+          // Speichert aktuelle Positionen der Knoten, um unnötige Updates zu vermeiden
+          root.eachBefore(node => {
+            node.x0 = node.x;
+            node.y0 = node.y;
+          });
+        
           d.children = d.children ? null : d._children;
-          update(d);
+          update(d); // Jetzt wird nur noch der geklickte Teil aktualisiert
         });
 
       nodeEnter.append("circle")
         .attr("r", 2.5)
-        .attr("fill", d => d._children ? "#555" : "#999");
+        //.attr("fill", d => d._children ? "#555" : "#999");
+        .attr("fill", d => d._children ? "#555" : "#ccc");
 
-      nodeEnter.append("text")
+        nodeEnter.append("text")
         .attr("dy", "0.31em")
         .attr("x", d => d._children ? -6 : 6)
         .attr("text-anchor", d => d._children ? "end" : "start")
-        .text(d => d.data.name);
+        .text(d => d.data.name)
+        .attr("fill-opacity", 0) // Startet unsichtbar
+        .transition()
+        .duration(300)
+        .attr("fill-opacity", 1); // Erscheint sanft
+      
+        const nodeUpdate = node.merge(nodeEnter)
+          .attr("transform", d => `translate(${d.y},${d.x})`) // Statisch, keine Transition!
+          .attr("fill-opacity", 1)
+          .attr("stroke-opacity", 1);
 
       nodeEnter.merge(node).transition(transition)
         .attr("transform", d => `translate(${d.y},${d.x})`)
@@ -110,6 +127,7 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
           const o = { x: source.x0, y: source.y0 };
           return diagonal({ source: o, target: o });
         });
+
 
       link.merge(linkEnter).transition(transition)
         .attr("d", diagonal);
