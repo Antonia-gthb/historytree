@@ -5,7 +5,7 @@ import Plot from './components/Plot';
 import { myEvent } from './components/EventFilter';
 import EventCheckboxes from './components/EventFilter';
 import ColorScale from './components/cmap';
-import BarChart from './plottwo';
+import BarChart from './example/plottwo';
 import CollaTree from './tree';
 import rawdata from './lib/localdata';
 
@@ -143,10 +143,6 @@ export default function Page() {
           events={events}
           setEvents={setEvents}
         />
-      </div>
-      <div className="flex flex-col mt-6">
-      <h1 className="text-xl font-bold mr-6">Bar Chart Example</h1>
-      <BarChart newdata={newdata} width={1000} height={600} />
       </div>
      <div className="flex flex-col mt-6">
      <h1 className="text-xl font-bold mr-6">Collapsible Tree</h1>

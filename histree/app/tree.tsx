@@ -49,7 +49,7 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
       .attr("pointer-events", "all");
 
     function update(source: any) {
-      const duration = 250;
+      const duration = 2500;
       const nodes = root.descendants().reverse();
       const links = root.links();
 
@@ -89,10 +89,22 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
           update(d); // Jetzt wird nur noch der geklickte Teil aktualisiert
         });
 
-      nodeEnter.append("circle")
-        .attr("r", 2.5)
-        //.attr("fill", d => d._children ? "#555" : "#999");
+        nodeEnter.append("path")
+        .attr("d", d => {
+          if (d.depth === 1) {
+            // Kreis
+            return d3.symbol().type(d3.symbolCircle).size(100)();  // Hier wird der Kreis gezeichnet
+          } else if (d.depth === 2) {
+            // Quadrat
+            return d3.symbol().type(d3.symbolSquare).size(100)();  // Hier wird das Quadrat gezeichnet
+          } else if (d.depth === 3) {
+            // Dreieck
+            return d3.symbol().type(d3.symbolTriangle).size(100)();  // Hier wird das Dreieck gezeichnet
+          }
+          return null;  // Falls der Knoten eine andere Tiefe hat, wird keine Form gezeichnet
+        })
         .attr("fill", d => d._children ? "#555" : "#ccc");
+      
 
         nodeEnter.append("text")
         .attr("dy", "0.31em")
@@ -151,7 +163,7 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
     root.descendants().forEach((d, i) => {
       d.id = i;
       d._children = d.children;
-      if (d.depth && d.data.name.length !== 7) d.children = null;
+      if (d.depth && d.data.name.length !== 1) d.children = null;
     });
 
     update(root);
