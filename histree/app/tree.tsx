@@ -70,7 +70,7 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
         .attr("viewBox", [-margin.left, left.x - margin.top, width, height]);
 
       // Nodes updaten
-      const node = gNode.selectAll("g").data(nodes, d => d.data.name);
+      const node = gNode.selectAll("g").data(nodes, d => d.data.name + "-" + d.depth);
 
       const nodeEnter = node.enter().append("g")
         .attr("transform", d => `translate(${source.y0},${source.x0})`)
@@ -115,11 +115,6 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
         .transition()
         .duration(300)
         .attr("fill-opacity", 1); // Erscheint sanft
-      
-        const nodeUpdate = node.merge(nodeEnter)
-          .attr("transform", d => `translate(${d.y},${d.x})`) // Statisch, keine Transition!
-          .attr("fill-opacity", 1)
-          .attr("stroke-opacity", 1);
 
       nodeEnter.merge(node).transition(transition)
         .attr("transform", d => `translate(${d.y},${d.x})`)
@@ -132,7 +127,7 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
         .attr("stroke-opacity", 0);
 
       // Links updaten
-      const link = gLink.selectAll("path").data(links, d => d.target.data.name);
+      const link = gLink.selectAll("path").data(links, d => d.target.data.name + "-" + d.depth);
 
       const linkEnter = link.enter().append("path")
         .attr("d", d => {
