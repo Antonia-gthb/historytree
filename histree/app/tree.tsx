@@ -5,7 +5,9 @@ import { useRef, useEffect } from "react";
 type TreeNode = {
   name: string;
   children?: TreeNode[];
+  originalName?: string,  // ? bedeutet hier: eigenschaft muss nicht im JSON Datensatz vorhanden sein und ist optional! 
   value?: number;
+  count?: number;
   _children?: TreeNode[];  // _children für die Speicherung der zusammengeklappten Knoten
   };
 
@@ -19,7 +21,8 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
     // Tree Eckdaten
     const margin = { top: 10, right: 10, bottom: 10, left: 40 };
     const dx = 20;  // sorgt für Abstand zwischen den Knoten
-    const root = d3.hierarchy(treedata);
+    const root = d3.hierarchy(treedata)
+    .sum(d => d.count || 0);
     const dy = (width - margin.right - margin.left) / (1 + root.height);
 
     const tree = d3.tree<TreeNode>().nodeSize([dx, dy]);
@@ -47,6 +50,25 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
     const gNode = svg.append("g")
       .attr("cursor", "pointer")
       .attr("pointer-events", "all");
+
+      function numberNodes(node: TreeNode, parentName = "") {
+        if (!node.originalName) {
+            node.originalName = node.name; // Speichert den ursprünglichen Namen nur einmal
+        }
+    
+        if (parentName) {
+            node.name = `${parentName}_${node.name}`;  // Füge den Elternnamen hinzu
+        }
+    
+        if (node.children) {
+            node.children.forEach((child, index) => {
+                numberNodes(child, `${node.name}_${index + 1}`);  // Rekursiv durchlaufen
+            });
+        }
+    }
+    
+      
+      numberNodes(treedata);  
 
     function update(source: any) {
       const duration = 2500;
@@ -110,7 +132,7 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
         .attr("dy", "0.31em")
         .attr("x", d => d._children ? -6 : 6)
         .attr("text-anchor", d => d._children ? "end" : "start")
-        .text(d => d.data.name)
+        .text(d => d.data.originalName || d.data.name)
         .attr("fill-opacity", 0) // Startet unsichtbar
         .transition()
         .duration(300)

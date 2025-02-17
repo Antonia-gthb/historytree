@@ -16,15 +16,13 @@
                             "children": [
                                 {
                                     "name": "KRAS",
-                                    "count": 4,
-                                    "children": []
+                                    "count": 4
                                 }
                             ]
                         },
                         {
                             "name": "KRAS",
-                            "count": 20,
-                            "children": []
+                            "count": 20
                         },
                         {
                             "name": "STK11",
@@ -32,8 +30,7 @@
                             "children": [
                                 {
                                     "name": "KEAP1",
-                                    "count": 3,
-                                    "children": []
+                                    "count": 3
                                 }
                             ]
                         },
@@ -48,20 +45,17 @@
                             "children": [
                                 {
                                     "name": "KRAS",
-                                    "count": 3,
-                                    "children": []
+                                    "count": 3
                                 }
                             ]
                         },
                         {
                             "name": "EGFR",
-                            "count": 10,
-                            "children": []
+                            "count": 10
                         },
                         {
                             "name": "SMARCA4",
-                            "count": 3,
-                            "children": []
+                            "count": 3
                         }
                     ]
                 },
@@ -71,15 +65,13 @@
                     "children": [
                         {
                             "name": "EGFR",
-                            "count": 23,
-                            "children": []
+                            "count": 23
                         }
                     ]
                 },
                 {
                     "name": "EGFR",
-                    "count": 408,
-                    "children": []
+                    "count": 408
                 },
                 {
                     "name": "KEAP1",
@@ -87,18 +79,15 @@
                     "children": [
                         {
                             "name": "KRAS",
-                            "count": 9,
-                            "children": []
+                            "count": 9
                         },
                         {
                             "name": "BRAF",
-                            "count": 4,
-                            "children": []
+                            "count": 4
                         },
                         {
                             "name": "EGFR",
-                            "count": 4,
-                            "children": []
+                            "count": 4
                         }
                     ]
                 },
@@ -108,8 +97,7 @@
                     "children": [
                         {
                             "name": "EGFR",
-                            "count": 12,
-                            "children": []
+                            "count": 12
                         },
                         {
                             "name": "KRAS",
@@ -117,25 +105,22 @@
                             "children": [
                                 {
                                     "name": "BRAF",
-                                    "count": 3,
-                                    "children": []
+                                    "count": 3
                                 }
                             ]
                         },
                         {
                             "name": "KEAP1",
-                            "count": 5,
-                            "children": []
+                            "count": 5
                         },
                         {
                             "name": "BRAF",
-                            "count": 5,
-                            "children": []
+                            "count": 5
                         }
                     ]
                 },
                 {
-                    "name": "STK11",
+                    "name": "STK112",
                     "count": 103,
                     "children": [
                         {
@@ -144,40 +129,33 @@
                             "children": [
                                 {
                                     "name": "KRAS",
-                                    "count": 10,
-                                    "children": []
+                                    "count": 10
                                 },
                                 {
                                     "name": "SMARCA4",
-                                    "count": 3,
-                                    "children": []
+                                    "count": 3
                                 }
                             ]
                         },
                         {
                             "name": "ATM",
-                            "count": 3,
-                            "children": []
+                            "count": 3
                         },
                         {
                             "name": "SMARCA4",
-                            "count": 6,
-                            "children": []
+                            "count": 6
                         },
                         {
                             "name": "KRAS",
-                            "count": 24,
-                            "children": []
+                            "count": 24
                         },
                         {
                             "name": "BRAF",
-                            "count": 4,
-                            "children": []
+                            "count": 4
                         },
                         {
                             "name": "RBM10",
-                            "count": 3,
-                            "children": []
+                            "count": 3
                         }
                     ]
                 },
@@ -187,8 +165,7 @@
                     "children": [
                         {
                             "name": "EGFR",
-                            "count": 3,
-                            "children": []
+                            "count": 3
                         }
                     ]
                 },
@@ -198,13 +175,11 @@
                     "children": [
                         {
                             "name": "EGFR",
-                            "count": 29,
-                            "children": []
+                            "count": 29
                         },
                         {
                             "name": "PIK3CA",
-                            "count": 4,
-                            "children": []
+                            "count": 4
                         }
                     ]
                 },
@@ -214,8 +189,7 @@
                     "children": [
                         {
                             "name": "EGFR",
-                            "count": 5,
-                            "children": []
+                            "count": 5
                         }
                     ]
                 }
@@ -231,20 +205,17 @@
                     "children": [
                         {
                             "name": "BRAF",
-                            "count": 9,
-                            "children": []
+                            "count": 9
                         },
                         {
-                            "name": "ATM",
-                            "count": 9,
-                            "children": []
+                            "name": "ATM1",
+                            "count": 9
                         }
                     ]
                 },
                 {
                     "name": "KEAP1",
-                    "count": 21,
-                    "children": []
+                    "count": 21
                 },
                 {
                     "name": "PIK3CA",
@@ -252,8 +223,7 @@
                     "children": [
                         {
                             "name": "TP53",
-                            "count": 13,
-                            "children": []
+                            "count": 13
                         }
                     ]
                 },
@@ -263,8 +233,7 @@
                     "children": [
                         {
                             "name": "KEAP1",
-                            "count": 7,
-                            "children": []
+                            "count": 7
                         }
                     ]
                 },
@@ -274,20 +243,17 @@
                     "children": [
                         {
                             "name": "ATM",
-                            "count": 3,
-                            "children": []
+                            "count": 3
                         },
                         {
                             "name": "KEAP1",
-                            "count": 3,
-                            "children": []
+                            "count": 3
                         }
                     ]
                 },
                 {
                     "name": "NF1",
-                    "count": 11,
-                    "children": []
+                    "count": 11
                 },
                 {
                     "name": "SMARCA4",
@@ -295,15 +261,13 @@
                     "children": [
                         {
                             "name": "KEAP1",
-                            "count": 10,
-                            "children": []
+                            "count": 10
                         }
                     ]
                 },
                 {
                     "name": "BRAF",
-                    "count": 3,
-                    "children": []
+                    "count": 3
                 }
             ]
         },
@@ -313,8 +277,7 @@
             "children": [
                 {
                     "name": "EGFR",
-                    "count": 3,
-                    "children": []
+                    "count": 3
                 }
             ]
         },
@@ -324,8 +287,7 @@
             "children": [
                 {
                     "name": "EGFR",
-                    "count": 76,
-                    "children": []
+                    "count": 76
                 },
                 {
                     "name": "KRAS",
@@ -333,8 +295,7 @@
                     "children": [
                         {
                             "name": "PTPRD",
-                            "count": 7,
-                            "children": []
+                            "count": 7
                         },
                         {
                             "name": "ATM",
@@ -342,8 +303,7 @@
                             "children": [
                                 {
                                     "name": "TP53",
-                                    "count": 4,
-                                    "children": []
+                                    "count": 4
                                 }
                             ]
                         },
@@ -353,8 +313,7 @@
                             "children": [
                                 {
                                     "name": "TP53",
-                                    "count": 3,
-                                    "children": []
+                                    "count": 3
                                 }
                             ]
                         },
@@ -364,20 +323,17 @@
                             "children": [
                                 {
                                     "name": "TP53",
-                                    "count": 3,
-                                    "children": []
+                                    "count": 3
                                 }
                             ]
                         },
                         {
                             "name": "TP53",
-                            "count": 18,
-                            "children": []
+                            "count": 18
                         },
                         {
                             "name": "KEAP1",
-                            "count": 4,
-                            "children": []
+                            "count": 4
                         }
                     ]
                 },
@@ -391,20 +347,17 @@
                             "children": [
                                 {
                                     "name": "KRAS",
-                                    "count": 9,
-                                    "children": []
+                                    "count": 9
                                 }
                             ]
                         },
                         {
                             "name": "BRAF",
-                            "count": 3,
-                            "children": []
+                            "count": 3
                         },
                         {
                             "name": "KRAS",
-                            "count": 16,
-                            "children": []
+                            "count": 16
                         },
                         {
                             "name": "PTPRD",
@@ -412,8 +365,7 @@
                             "children": [
                                 {
                                     "name": "KRAS",
-                                    "count": 3,
-                                    "children": []
+                                    "count": 3
                                 }
                             ]
                         }
@@ -425,8 +377,7 @@
                     "children": [
                         {
                             "name": "EGFR",
-                            "count": 5,
-                            "children": []
+                            "count": 5
                         }
                     ]
                 },
@@ -436,8 +387,7 @@
                     "children": [
                         {
                             "name": "EGFR",
-                            "count": 4,
-                            "children": []
+                            "count": 4
                         }
                     ]
                 }
@@ -445,8 +395,7 @@
         },
         {
             "name": "EGFR",
-            "count": 349,
-            "children": []
+            "count": 349
         },
         {
             "name": "NF1",
@@ -458,8 +407,7 @@
                     "children": [
                         {
                             "name": "KEAP1",
-                            "count": 7,
-                            "children": []
+                            "count": 7
                         }
                     ]
                 },
@@ -473,15 +421,13 @@
                             "children": [
                                 {
                                     "name": "KEAP1",
-                                    "count": 4,
-                                    "children": []
+                                    "count": 4
                                 }
                             ]
                         },
                         {
                             "name": "KRAS",
-                            "count": 13,
-                            "children": []
+                            "count": 13
                         },
                         {
                             "name": "ATM",
@@ -489,8 +435,7 @@
                             "children": [
                                 {
                                     "name": "KEAP1",
-                                    "count": 3,
-                                    "children": []
+                                    "count": 3
                                 }
                             ]
                         },
@@ -500,42 +445,35 @@
                             "children": [
                                 {
                                     "name": "STK11",
-                                    "count": 3,
-                                    "children": []
+                                    "count": 3
                                 },
                                 {
                                     "name": "RBM10",
-                                    "count": 3,
-                                    "children": []
+                                    "count": 3
                                 }
                             ]
                         },
                         {
                             "name": "RBM10",
-                            "count": 5,
-                            "children": []
+                            "count": 5
                         },
                         {
                             "name": "KEAP1",
-                            "count": 3,
-                            "children": []
+                            "count": 3
                         }
                     ]
                 },
                 {
                     "name": "BRAF",
-                    "count": 5,
-                    "children": []
+                    "count": 5
                 },
                 {
                     "name": "EGFR",
-                    "count": 3,
-                    "children": []
+                    "count": 3
                 },
                 {
                     "name": "RBM10",
-                    "count": 8,
-                    "children": []
+                    "count": 8
                 }
             ]
         },
@@ -553,15 +491,13 @@
                             "children": [
                                 {
                                     "name": "KRAS",
-                                    "count": 24,
-                                    "children": []
+                                    "count": 24
                                 }
                             ]
                         },
                         {
                             "name": "KRAS",
-                            "count": 48,
-                            "children": []
+                            "count": 48
                         }
                     ]
                 },
@@ -571,13 +507,11 @@
                     "children": [
                         {
                             "name": "ATM",
-                            "count": 20,
-                            "children": []
+                            "count": 20
                         },
                         {
                             "name": "SMARCA4",
-                            "count": 6,
-                            "children": []
+                            "count": 6
                         }
                     ]
                 },
@@ -587,8 +521,7 @@
                     "children": [
                         {
                             "name": "KRAS",
-                            "count": 5,
-                            "children": []
+                            "count": 5
                         },
                         {
                             "name": "KEAP1",
@@ -596,13 +529,11 @@
                             "children": [
                                 {
                                     "name": "KRAS",
-                                    "count": 4,
-                                    "children": []
+                                    "count": 4
                                 },
                                 {
                                     "name": "BRAF",
-                                    "count": 3,
-                                    "children": []
+                                    "count": 3
                                 }
                             ]
                         }
@@ -610,18 +541,15 @@
                 },
                 {
                     "name": "ATM",
-                    "count": 3,
-                    "children": []
+                    "count": 3
                 },
                 {
                     "name": "SMARCA4",
-                    "count": 5,
-                    "children": []
+                    "count": 5
                 },
                 {
                     "name": "BRAF",
-                    "count": 7,
-                    "children": []
+                    "count": 7
                 }
             ]
         },
@@ -631,13 +559,11 @@
             "children": [
                 {
                     "name": "EGFR",
-                    "count": 32,
-                    "children": []
+                    "count": 32
                 },
                 {
                     "name": "BRAF",
-                    "count": 3,
-                    "children": []
+                    "count": 3
                 }
             ]
         },
@@ -647,8 +573,7 @@
             "children": [
                 {
                     "name": "EGFR",
-                    "count": 7,
-                    "children": []
+                    "count": 7
                 }
             ]
         },
@@ -658,8 +583,7 @@
             "children": [
                 {
                     "name": "EGFR",
-                    "count": 4,
-                    "children": []
+                    "count": 4
                 }
             ]
         },
@@ -669,20 +593,17 @@
             "children": [
                 {
                     "name": "EGFR",
-                    "count": 9,
-                    "children": []
+                    "count": 9
                 },
                 {
                     "name": "KEAP1",
-                    "count": 6,
-                    "children": []
+                    "count": 6
                 }
             ]
         },
         {
             "name": "KEAP1",
-            "count": 5,
-            "children": []
+            "count": 5
         }
     ]
 }
