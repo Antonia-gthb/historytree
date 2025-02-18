@@ -1,6 +1,18 @@
 import * as d3 from "d3";
 import { useRef, useEffect } from "react";
 
+// Das Interface für den HierarchyPointNode, das auf deinen TreeNode angewendet wird.
+interface HierarchyPointNode extends d3.HierarchyNode<TreeNode> {
+  x: number;
+  y: number;
+  x0?: number;
+  depth: number;
+  data: any;
+  y0?: number;
+  _children?: HierarchyPointNode[];
+}
+
+
 
 type TreeNode = {
   name: string;
@@ -21,18 +33,23 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
     // Tree Eckdaten
     const margin = { top: 10, right: 10, bottom: 10, left: 40 };
     const dx = 20;  // sorgt für Abstand zwischen den Knoten
-    const root = d3.hierarchy(treedata)
-    .sum(d => d.count || 0);
+    const root = d3.hierarchy(treedata) as HierarchyPointNode;
+    root.sum(d => d.count || 0);
     const dy = (width - margin.right - margin.left) / (1 + root.height);
 
-    const tree = d3.tree<TreeNode>().nodeSize([dx, dy]);
-    const diagonal = d3.linkHorizontal().x(d => d.y).y(d => d.x);
+    const tree = d3.tree<TreeNode>().nodeSize([dx, dy]);    // Fehler war hier: muss den Typ 2 Mal definieren (!!!!!!, Quelltyp und Zieltyp)
+    const diagonal = d3.linkHorizontal<d3.HierarchyPointNode<TreeNode>,
+    d3.HierarchyPointNode<TreeNode>>().x(d => d.y).y(d => d.x); 
+
+    //const diagonal = d3.linkHorizontal<{ x: number; y: number }, { x: number; y: number }>()
+    //.x(d => d.y)
+    //.y(d => d.x);
 
     // Clear SVG before re-rendering
     d3.select(svgRef.current).selectAll("*").remove();
 
     // SVG erstellen
-    const svg = d3.select(svgRef.current)
+    const svg = d3.select<SVGSVGElement, unknown>(svgRef.current)
       .attr("width", width)
       .attr("height", dx)
       .attr("viewBox", [-margin.left, -margin.top, width, dx])
@@ -45,7 +62,7 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
       .attr("fill", "none")
       .attr("stroke", "#555")
       .attr("stroke-opacity", 0.4)
-      .attr("stroke-width", 1.5);
+      .attr("stroke-width", 1.5) //d => d.source?.data?.count ? Math.max(1, d.source.data.count / 5) : 1);
 
     const gNode = svg.append("g")
       .attr("cursor", "pointer")
@@ -70,31 +87,36 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
       
       numberNodes(treedata);  
 
-    function update(source: any) {
+    function update(source: HierarchyPointNode) {
       const duration = 2500;
       const nodes = root.descendants().reverse();
       const links = root.links();
 
       tree(root);
 
-      let left = root; //Speichert linksten Knoten
-      let right = root; //Speichert den rechtesten Knoten
+      let left = root;
+      let right = root;
+
+      //let left = root; //Speichert linksten Knoten
+      //let right = root; //Speichert den rechtesten Knoten
+      
       root.eachBefore(node => {
-        if (node.x < left.x) left = node;
-        if (node.x > right.x) right = node;
+        if (node.x !== undefined && node.x < (left.x ?? Infinity)) left = node;
+        if (node.x !== undefined && node.x > (right.x ?? -Infinity)) right = node;
       });
 
       const height = right.x - left.x + margin.top + margin.bottom;
 
-      const transition = svg.transition()
+      const transition: d3.Transition<SVGSVGElement, unknown, null, undefined> = svg.transition()
         .duration(duration)
         .attr("height", height)
-        .attr("viewBox", [-margin.left, left.x - margin.top, width, height]);
+        .attr("viewBox", `${-margin.left} ${left.x - margin.top} ${width} ${height}`)
+
 
       // Nodes updaten
-      const node = gNode.selectAll("g").data(nodes, d => d.data.name + "-" + d.depth);
+      const node = gNode.selectAll<SVGGElement, HierarchyPointNode>("g").data(nodes, d => d.data.name + "-" + d.depth);
 
-      const nodeEnter = node.enter().append("g")
+      const nodeEnter = node.enter().append<SVGGElement>("g")
         .attr("transform", d => `translate(${source.y0},${source.x0})`)
         .attr("fill-opacity", 0)
         .attr("stroke-opacity", 0)
@@ -107,7 +129,7 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
             node.y0 = node.y;
           });
         
-          d.children = d.children ? null : d._children;
+          d.children = d.children ? undefined : d._children;
           update(d); // Jetzt wird nur noch der geklickte Teil aktualisiert
         });
 
@@ -138,34 +160,36 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
         .duration(300)
         .attr("fill-opacity", 1); // Erscheint sanft
 
-      nodeEnter.merge(node).transition(transition)
+      nodeEnter.merge(node).transition().duration(duration)
         .attr("transform", d => `translate(${d.y},${d.x})`)
         .attr("fill-opacity", 1)
         .attr("stroke-opacity", 1);
 
-      node.exit().transition(transition).remove()
+      node.exit().transition().remove()
         .attr("transform", d => `translate(${source.y},${source.x})`)
         .attr("fill-opacity", 0)
         .attr("stroke-opacity", 0);
 
       // Links updaten
-      const link = gLink.selectAll("path").data(links, d => d.target.data.name + "-" + d.depth);
+      const link = gLink.selectAll<SVGPathElement, d3.HierarchyLink<HierarchyPointNode>>("path").data(links, d => d.target.data.name + "-" + d.target.depth);
 
       const linkEnter = link.enter().append("path")
-        .attr("d", d => {
-          const o = { x: source.x0, y: source.y0 };
-          return diagonal({ source: o, target: o });
-        });
+      .attr("d", d => {
+        const o = { x: (d.source as HierarchyPointNode).x0, 
+        y: (d.source as HierarchyPointNode).y0 }; // Startpunkt = alter Punkt
+        return diagonal({ source: o, target: o });  // Linien beginnen und enden am gleichen Punkt
+      });
 
+      link.merge(linkEnter).transition(transition as any)
+        .attr("d", diagonal as any);
 
-      link.merge(linkEnter).transition(transition)
-        .attr("d", diagonal);
-
-      link.exit().transition(transition).remove()
+      link.exit().transition().remove()
         .attr("d", d => {
           const o = { x: source.x, y: source.y };
           return diagonal({ source: o, target: o });
-        });
+        })
+
+      
 
       // Altes speichern
       root.eachBefore(d => {
@@ -178,9 +202,9 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
     root.x0 = dy / 2;
     root.y0 = 0;
     root.descendants().forEach((d, i) => {
-      d.id = i;
+      (d as any).id = i;
       d._children = d.children;
-      if (d.depth && d.data.name.length !== 1) d.children = null;
+      if (d.depth && d.data.name.length !== 1) d.children = undefined;
     });
 
     update(root);
