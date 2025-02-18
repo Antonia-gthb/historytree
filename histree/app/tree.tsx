@@ -84,7 +84,6 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
         }
     }
     
-      
       numberNodes(treedata);  
 
     function update(source: HierarchyPointNode) {
@@ -94,11 +93,8 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
 
       tree(root);
 
-      let left = root;
-      let right = root;
-
-      //let left = root; //Speichert linksten Knoten
-      //let right = root; //Speichert den rechtesten Knoten
+      let left = root; //Speichert linksten Knoten
+      let right = root; //Speichert den rechtesten Knoten
       
       root.eachBefore(node => {
         if (node.x !== undefined && node.x < (left.x ?? Infinity)) left = node;
@@ -175,21 +171,18 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
 
       const linkEnter = link.enter().append("path")
       .attr("d", d => {
-        const o = { x: (d.source as HierarchyPointNode).x0, 
-        y: (d.source as HierarchyPointNode).y0 }; // Startpunkt = alter Punkt
+        const o = { x: d.source.x0, y: d.source.y0 }; // Startpunkt = alter Punkt
         return diagonal({ source: o, target: o });  // Linien beginnen und enden am gleichen Punkt
-      });
+      })
 
       link.merge(linkEnter).transition(transition as any)
         .attr("d", diagonal as any);
 
-      link.exit().transition().remove()
+      link.exit().transition(transition as any).remove()
         .attr("d", d => {
           const o = { x: source.x, y: source.y };
           return diagonal({ source: o, target: o });
         })
-
-      
 
       // Altes speichern
       root.eachBefore(d => {
