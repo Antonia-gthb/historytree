@@ -1,7 +1,6 @@
 import * as d3 from "d3";
 import { useRef, useEffect } from "react";
 
-// Das Interface für den HierarchyPointNode, das auf deinen TreeNode angewendet wird.
 interface HierarchyPointNode extends d3.HierarchyNode<TreeNode> {
   x: number;
   y: number;
@@ -11,8 +10,6 @@ interface HierarchyPointNode extends d3.HierarchyNode<TreeNode> {
   y0?: number;
   _children?: HierarchyPointNode[];
 }
-
-
 
 type TreeNode = {
   name: string;
@@ -85,6 +82,11 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
     }
     
       numberNodes(treedata);  
+
+    const linkWidthScale = d3.scaleLinear()
+      .domain([1, d3.max(root.descendants(), d => d.data.count || 0)]) // Min & Max Count-Wert
+      .range([1, 10]); // Min & Max Linienstärke
+    
 
     function update(source: HierarchyPointNode) {
       const duration = 2500;
@@ -161,7 +163,7 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
         .attr("fill-opacity", 1)
         .attr("stroke-opacity", 1);
 
-      node.exit().transition().remove()
+      node.exit().transition(transition as any).remove()
         .attr("transform", d => `translate(${source.y},${source.x})`)
         .attr("fill-opacity", 0)
         .attr("stroke-opacity", 0);
@@ -174,15 +176,21 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
         const o = { x: d.source.x0, y: d.source.y0 }; // Startpunkt = alter Punkt
         return diagonal({ source: o, target: o });  // Linien beginnen und enden am gleichen Punkt
       })
-
+      .attr("stroke-width", d => {
+        console.log(`Linienbreite für ${d.target.data.name}:`, d.target.data.count);
+        return d.target.data.count ? Math.max(1, d.target.data.count / 200) : 1;
+      });
+ 
       link.merge(linkEnter).transition(transition as any)
         .attr("d", diagonal as any);
 
+
+     
       link.exit().transition(transition as any).remove()
-        .attr("d", d => {
-          const o = { x: source.x, y: source.y };
-          return diagonal({ source: o, target: o });
-        })
+      .attr("d", d => {
+        const o = { x: source.x, y: source.y };
+        return diagonal({ source: o, target: o });
+      }) 
 
       // Altes speichern
       root.eachBefore(d => {
