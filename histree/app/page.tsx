@@ -6,8 +6,9 @@ import { myEvent } from './components/EventFilter';
 import EventCheckboxes from './components/EventFilter';
 import ColorScale from './components/cmap';
 import BarChart from './plottwo';
-import CollaTree from './tree';
-import rawdata from './lib/localdata';
+import CollapsibleTree from "@/lib/CollapsableTree";
+import rawdata from "@/data/tonis_orders_tree_2.json";
+import Link from 'next/link';
 
 
 export default function Page() {
@@ -59,13 +60,14 @@ export default function Page() {
     { letter: "Y", frequency: 0.01974 },
     { letter: "Z", frequency: 0.00074 }
   ];
-  
+
 
   return (
     <div className="flex flex-col p-6 md:w-3/5 md:px-28 md:py-12 border"> {/* Ein großes div element mit mehreren div Unterelementen*/}
       <h1 className='text-center mb-6 text-2xl font-bold'> {/* Macht den Titel oben in zentriert*/}
         This is an application to demonstrate MHN Patient Trees
       </h1>
+      <Link className='text-blue-600 hover:underline' href="/hello"> Hello </Link>
       <div className="flex items-start">
         <div className="flex-shrink-0 mr-6"> {/* Bild und Graph einfügen*/}
           <Plot
@@ -73,7 +75,7 @@ export default function Page() {
             cmap={cmap}
             scaling={scaleFactor}
             threshold={threshold}
-            events={events.filter((event) => event.checked)}/> {/* Eingabe von cmap wird geplottet*/}
+            events={events.filter((event) => event.checked)} /> {/* Eingabe von cmap wird geplottet*/}
         </div>
         <div className="flex flex-col"> {/* macht die Flexbox für die rechte Seite */}
           <div className="text-center font-bold text-2xl p-1 w-full mb-2"> {/* in Flexbox auf rechter Seite wird nun Text geschrieben mit blauem Hintergrund, p legt den Abstand um den Text fest*/}
@@ -145,18 +147,18 @@ export default function Page() {
         />
       </div>
       <div className="flex flex-col mt-6">
-     <h1 className="text-xl font-bold mr-6">MHN Patient Tree Draft</h1>
-     <BarChart newdata={newdata} />
-   </div>
-     <div className="flex flex-col mt-6">
-     <h1 className="text-xl font-bold mr-6">Collapsible Tree</h1>
-     <CollaTree treedata={treedata} />
-     </div>
-     <div className="flex flex-col mt-6">
-     <h1 className="text-xl font-bold mr-6">MHN Patient Tree Draft</h1>
-     <CollaTree treedata={rawdata} />
-     </div>
-   </div>
+        <h1 className="text-xl font-bold mr-6">MHN Patient Tree Draft</h1>
+        <BarChart newdata={newdata} />
+      </div>
+      <div className="flex flex-col mt-6">
+        <h1 className="text-xl font-bold mr-6">Collapsible Tree</h1>
+        <CollapsibleTree treedata={treedata} />
+      </div>
+      <div className="flex flex-col mt-6">
+        <h1 className="text-xl font-bold mr-6">MHN Patient Tree Draft</h1>
+        <CollapsibleTree treedata={rawdata} />
+      </div>
+    </div>
   );
 }
 

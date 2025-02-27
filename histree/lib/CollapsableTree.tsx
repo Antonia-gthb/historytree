@@ -18,10 +18,10 @@ type TreeNode = {
   value?: number;
   count?: number;
   _children?: TreeNode[];  // _children für die Speicherung der zusammengeklappten Knoten
-  };
+};
 
 
-export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; width?: number }) {
+export default function CollapsibleTree({ treedata, width = 1028 }: { treedata: TreeNode; width?: number }) {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
 
     const tree = d3.tree<TreeNode>().nodeSize([dx, dy]);    // Fehler war hier: muss den Typ 2 Mal definieren (!!!!!!, Quelltyp und Zieltyp)
     const diagonal = d3.linkHorizontal<d3.HierarchyPointNode<TreeNode>,
-    d3.HierarchyPointNode<TreeNode>>().x(d => d.y).y(d => d.x); 
+      d3.HierarchyPointNode<TreeNode>>().x(d => d.y).y(d => d.x);
 
     //const diagonal = d3.linkHorizontal<{ x: number; y: number }, { x: number; y: number }>()
     //.x(d => d.y)
@@ -65,28 +65,28 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
       .attr("cursor", "pointer")
       .attr("pointer-events", "all");
 
-      function numberNodes(node: TreeNode, parentName = "") {
-        if (!node.originalName) {
-            node.originalName = node.name; // Speichert den ursprünglichen Namen nur einmal
-        }
-    
-        if (parentName) {
-            node.name = `${parentName}_${node.name}`;  // Füge den Elternnamen hinzu
-        }
-    
-        if (node.children) {
-            node.children.forEach((child, index) => {
-                numberNodes(child, `${node.name}_${index + 1}`);  // Rekursiv durchlaufen
-            });
-        }
+    function numberNodes(node: TreeNode, parentName = "") {
+      if (!node.originalName) {
+        node.originalName = node.name; // Speichert den ursprünglichen Namen nur einmal
+      }
+
+      if (parentName) {
+        node.name = `${parentName}_${node.name}`;  // Füge den Elternnamen hinzu
+      }
+
+      if (node.children) {
+        node.children.forEach((child, index) => {
+          numberNodes(child, `${node.name}_${index + 1}`);  // Rekursiv durchlaufen
+        });
+      }
     }
-    
-      numberNodes(treedata);  
+
+    numberNodes(treedata);
 
     const linkWidthScale = d3.scaleLinear()
       .domain([1, d3.max(root.descendants(), d => d.data.count || 0)]) // Min & Max Count-Wert
       .range([1, 10]); // Min & Max Linienstärke
-    
+
 
     function update(source: HierarchyPointNode) {
       const duration = 2500;
@@ -97,7 +97,7 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
 
       let left = root; //Speichert linksten Knoten
       let right = root; //Speichert den rechtesten Knoten
-      
+
       root.eachBefore(node => {
         if (node.x !== undefined && node.x < (left.x ?? Infinity)) left = node;
         if (node.x !== undefined && node.x > (right.x ?? -Infinity)) right = node;
@@ -120,18 +120,18 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
         .attr("stroke-opacity", 0)
         .on("click", (_, d) => {
           if (!d._children) return;
-        
+
           // Speichert aktuelle Positionen der Knoten, um unnötige Updates zu vermeiden
           root.eachBefore(node => {
             node.x0 = node.x;
             node.y0 = node.y;
           });
-        
+
           d.children = d.children ? undefined : d._children;
           update(d); // Jetzt wird nur noch der geklickte Teil aktualisiert
         });
 
-        nodeEnter.append("path")
+      nodeEnter.append("path")
         .attr("d", d => {
           if (d.depth === 1) {
             // Kreis
@@ -146,9 +146,9 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
           return null;  // Falls der Knoten eine andere Tiefe hat, wird keine Form gezeichnet
         })
         .attr("fill", d => d._children ? "#555" : "#ccc");
-      
 
-        nodeEnter.append("text")
+
+      nodeEnter.append("text")
         .attr("dy", "0.31em")
         .attr("x", d => d._children ? -6 : 6)
         .attr("text-anchor", d => d._children ? "end" : "start")
@@ -172,25 +172,25 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
       const link = gLink.selectAll<SVGPathElement, d3.HierarchyLink<HierarchyPointNode>>("path").data(links, d => d.target.data.name + "-" + d.target.depth);
 
       const linkEnter = link.enter().append("path")
-      .attr("d", d => {
-        const o = { x: d.source.x0, y: d.source.y0 }; // Startpunkt = alter Punkt
-        return diagonal({ source: o, target: o });  // Linien beginnen und enden am gleichen Punkt
-      })
-      .attr("stroke-width", d => {
-        console.log(`Linienbreite für ${d.target.data.name}:`, d.target.data.count);
-        return d.target.data.count ? Math.max(1, d.target.data.count / 200) : 1;
-      });
- 
+        .attr("d", d => {
+          const o = { x: d.source.x0, y: d.source.y0 }; // Startpunkt = alter Punkt
+          return diagonal({ source: o, target: o });  // Linien beginnen und enden am gleichen Punkt
+        })
+        .attr("stroke-width", d => {
+          console.log(`Linienbreite für ${d.target.data.name}:`, d.target.data.count);
+          return d.target.data.count ? Math.max(1, d.target.data.count / 200) : 1;
+        });
+
       link.merge(linkEnter).transition(transition as any)
         .attr("d", diagonal as any);
 
 
-     
+
       link.exit().transition(transition as any).remove()
-      .attr("d", d => {
-        const o = { x: source.x, y: source.y };
-        return diagonal({ source: o, target: o });
-      }) 
+        .attr("d", d => {
+          const o = { x: source.x, y: source.y };
+          return diagonal({ source: o, target: o });
+        })
 
       // Altes speichern
       root.eachBefore(d => {
@@ -214,7 +214,6 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
   return <svg ref={svgRef}></svg>;
 }
 
-export default CollaTree;
 
 
 
