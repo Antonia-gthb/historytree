@@ -5,6 +5,7 @@ import Plot from './components/Plot';
 import { myEvent } from './components/EventFilter';
 import EventCheckboxes from './components/EventFilter';
 import ColorScale from './components/cmap';
+import Link from 'next/link';
 
 export default function Page() {
 
@@ -31,6 +32,7 @@ export default function Page() {
     <div className="flex flex-col p-6 md:w-3/5 md:px-28 md:py-12 border"> {/* Ein großes div element mit mehreren div Unterelementen*/}
       <h1 className='text-center mb-6 text-2xl font-bold'> {/* Macht den Titel oben in zentriert*/}
         This is an application to demonstrate MHN Patient Trees
+        <Link href="/histree">HisTree</Link>
       </h1>
       <div className="flex items-start">
         <div className="flex-shrink-0 mr-6"> {/* Bild und Graph einfügen*/}

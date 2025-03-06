@@ -1,0 +1,214 @@
+import * as d3 from "d3";
+import { useRef, useEffect } from "react";
+
+interface HierarchyPointNode extends d3.HierarchyNode<TreeNode> {
+  x: number;
+  y: number;
+  x0?: number;
+  depth: number;
+  data: any;
+  y0?: number;
+  _children?: HierarchyPointNode[];
+}
+
+type TreeNode = {
+  name: string;
+  children?: TreeNode[];
+  originalName?: string,  // ? bedeutet hier: eigenschaft muss nicht im JSON Datensatz vorhanden sein und ist optional! 
+  value?: number;
+  count?: number;
+  _children?: TreeNode[];  // _children für die Speicherung der zusammengeklappten Knoten
+  };
+
+export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; width?: number }) {
+  const svgRef = useRef<SVGSVGElement | null>(null);
+
+  useEffect(() => {
+    if (!svgRef.current) return;
+
+    // Tree Eckdaten
+    const margin = { top: 10, right: 10, bottom: 10, left: 40 };
+    const dx = 20;  // sorgt für Abstand zwischen den Knoten
+    const root = d3.hierarchy(treedata) as HierarchyPointNode;
+    root.sum(d => d.count || 0);
+    const dy = (width - margin.right - margin.left) / (1 + root.height);
+
+    const tree = d3.tree<TreeNode>().nodeSize([dx, dy]);    // Fehler war hier: muss den Typ 2 Mal definieren (!!!!!!, Quelltyp und Zieltyp)
+    const diagonal = d3.linkHorizontal<d3.HierarchyPointNode<TreeNode>,
+    d3.HierarchyPointNode<TreeNode>>().x(d => d.y).y(d => d.x); 
+
+    //const diagonal = d3.linkHorizontal<{ x: number; y: number }, { x: number; y: number }>()
+    //.x(d => d.y)
+    //.y(d => d.x);
+
+    // Clear SVG before re-rendering
+    d3.select(svgRef.current).selectAll("*").remove();
+
+    // SVG erstellen
+    const svg = d3.select<SVGSVGElement, unknown>(svgRef.current)
+      .attr("width", width)
+      .attr("height", dx)
+      .attr("viewBox", [-margin.left, -margin.top, width, dx])
+      .style("max-width", "100%")
+      .style("height", "auto")
+      .style("font", "14px sans-serif")  // hier kann ich die Schriftgröße einstellen
+      .style("user-select", "none");
+
+    const gLink = svg.append("g")
+      .attr("fill", "none")
+      .attr("stroke", "#555")
+      .attr("stroke-opacity", 0.4)
+      .attr("stroke-width", 1.5) //d => d.source?.data?.count ? Math.max(1, d.source.data.count / 5) : 1);
+
+    const gNode = svg.append("g")
+      .attr("cursor", "pointer")
+      .attr("pointer-events", "all");
+
+      function numberNodes(node: TreeNode, parentName = "") {
+        if (!node.originalName) {
+            node.originalName = node.name; // Speichert den ursprünglichen Namen nur einmal
+        }
+    
+        if (parentName) {
+            node.name = `${parentName}_${node.name}`;  // Füge den Elternnamen hinzu
+        }
+    
+        if (node.children) {
+            node.children.forEach((child, index) => {
+                numberNodes(child, `${node.name}_${index + 1}`);  // Rekursiv durchlaufen
+            });
+        }
+    }
+    
+      numberNodes(treedata);  
+
+    const linkWidthScale = d3.scaleLinear()
+      .domain([1, d3.max(root.descendants(), d => d.data.count || 0)]) // Min & Max Count-Wert
+      .range([1, 10]); // Min & Max Linienstärke
+    
+
+    function update(source: HierarchyPointNode) {
+      const duration = 2500;
+      const nodes = root.descendants().reverse();
+      const links = root.links();
+
+      tree(root);
+
+      let left = root; //Speichert linksten Knoten
+      let right = root; //Speichert den rechtesten Knoten
+      
+      root.eachBefore(node => {
+        if (node.x !== undefined && node.x < (left.x ?? Infinity)) left = node;
+        if (node.x !== undefined && node.x > (right.x ?? -Infinity)) right = node;
+      });
+
+      const height = right.x - left.x + margin.top + margin.bottom;
+
+      const transition: d3.Transition<SVGSVGElement, unknown, null, undefined> = svg.transition()
+        .duration(duration)
+        .attr("height", height)
+        .attr("viewBox", `${-margin.left} ${left.x - margin.top} ${width} ${height}`)
+
+      // Nodes updaten
+      const node = gNode.selectAll<SVGGElement, HierarchyPointNode>("g").data(nodes, d => d.data.name + "-" + d.depth);
+
+      const nodeEnter = node.enter().append<SVGGElement>("g")
+        .attr("transform", d => `translate(${source.y0},${source.x0})`)
+        .attr("fill-opacity", 0)
+        .attr("stroke-opacity", 0)
+        .on("click", (_, d) => {
+          if (!d._children) return;
+        
+          // Speichert aktuelle Positionen der Knoten, um unnötige Updates zu vermeiden
+          root.eachBefore(node => {
+            node.x0 = node.x;
+            node.y0 = node.y;
+          });
+        
+          d.children = d.children ? undefined : d._children;
+          update(d); // Jetzt wird nur noch der geklickte Teil aktualisiert
+        });
+
+        nodeEnter.append("path")
+        .attr("d", d => {
+          if (d.depth === 1) {
+            // Kreis
+            return d3.symbol().type(d3.symbolCircle).size(100)();  // Hier wird der Kreis gezeichnet
+          } else if (d.depth === 2) {
+            // Quadrat
+            return d3.symbol().type(d3.symbolSquare).size(100)();  // Hier wird das Quadrat gezeichnet
+          } else if (d.depth === 3) {
+            // Dreieck
+            return d3.symbol().type(d3.symbolTriangle).size(100)();  // Hier wird das Dreieck gezeichnet
+          }
+          return null;  // Falls der Knoten eine andere Tiefe hat, wird keine Form gezeichnet
+        })
+        .attr("fill", d => d._children ? "#555" : "#ccc");
+      
+
+        nodeEnter.append("text")
+        .attr("dy", "0.31em")
+        .attr("x", d => d._children ? -6 : 6)
+        .attr("text-anchor", d => d._children ? "end" : "start")
+        .text(d => d.data.originalName || d.data.name)
+        .attr("fill-opacity", 0) // Startet unsichtbar
+        .transition()
+        .duration(300)
+        .attr("fill-opacity", 1); // Erscheint sanft
+
+      nodeEnter.merge(node).transition().duration(duration)
+        .attr("transform", d => `translate(${d.y},${d.x})`)
+        .attr("fill-opacity", 1)
+        .attr("stroke-opacity", 1);
+
+      node.exit().transition(transition as any).remove()
+        .attr("transform", d => `translate(${source.y},${source.x})`)
+        .attr("fill-opacity", 0)
+        .attr("stroke-opacity", 0);
+
+      // Links updaten
+      const link = gLink.selectAll<SVGPathElement, d3.HierarchyLink<HierarchyPointNode>>("path").data(links, d => d.target.data.name + "-" + d.target.depth);
+
+      const linkEnter = link.enter().append("path")
+      .attr("d", d => {
+        const o = { x: d.source.x0, y: d.source.y0 }; // Startpunkt = alter Punkt
+        return diagonal({ source: o, target: o });  // Linien beginnen und enden am gleichen Punkt
+      })
+      .attr("stroke-width", d => {
+        console.log(`Linienbreite für ${d.target.data.name}:`, d.target.data.count);
+        return d.target.data.count ? Math.max(1, d.target.data.count / 200) : 1;
+      });
+ 
+      link.merge(linkEnter).transition(transition as any)
+        .attr("d", diagonal as any);
+
+     
+      link.exit().transition(transition as any).remove()
+      .attr("d", d => {
+        const o = { x: source.x, y: source.y };
+        return diagonal({ source: o, target: o });
+      }) 
+
+      // Altes speichern
+      root.eachBefore(d => {
+        d.x0 = d.x;
+        d.y0 = d.y;
+      });
+    }
+
+    // Tree initialisieren
+    root.x0 = dy / 2;
+    root.y0 = 0;
+    root.descendants().forEach((d, i) => {
+      (d as any).id = i;
+      d._children = d.children;
+      if (d.depth && d.data.name.length !== 1) d.children = undefined;
+    });
+
+    update(root);
+  }, [treedata]);
+
+  return <svg ref={svgRef}></svg>;
+}
+
+export default CollaTree;
