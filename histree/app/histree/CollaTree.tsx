@@ -27,38 +27,37 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
     if (!svgRef.current) return;
 
     // Tree Eckdaten
-    const margin = { top: 10, right: 10, bottom: 10, left: 40 };
+    const margin = { top: 20, right: 20, bottom: 20, left: 40 };
     const dx = 20;  // sorgt für Abstand zwischen den Knoten
     const root = d3.hierarchy(treedata) as HierarchyPointNode;
     root.sum(d => d.count || 0);
     const dy = (width - margin.right - margin.left) / (1 + root.height);
 
-    const tree = d3.tree<TreeNode>().nodeSize([dx, dy]);    // Fehler war hier: muss den Typ 2 Mal definieren (!!!!!!, Quelltyp und Zieltyp)
+    const tree = d3.tree<TreeNode>().nodeSize([dx, dy]);   // Fehler war hier: muss den Typ 2 Mal definieren (!!!!!!, Quelltyp und Zieltyp)
     const diagonal = d3.linkHorizontal<d3.HierarchyPointNode<TreeNode>,
     d3.HierarchyPointNode<TreeNode>>().x(d => d.y).y(d => d.x); 
-
-    //const diagonal = d3.linkHorizontal<{ x: number; y: number }, { x: number; y: number }>()
-    //.x(d => d.y)
-    //.y(d => d.x);
 
     // Clear SVG before re-rendering
     d3.select(svgRef.current).selectAll("*").remove();
 
     // SVG erstellen
     const svg = d3.select<SVGSVGElement, unknown>(svgRef.current)
-      .attr("width", width)
-      .attr("height", dx)
+      .attr("width", "100%")
+      .attr("height", null)
       .attr("viewBox", [-margin.left, -margin.top, width, dx])
       .style("max-width", "100%")
       .style("height", "auto")
       .style("font", "14px sans-serif")  // hier kann ich die Schriftgröße einstellen
-      .style("user-select", "none");
+      .style("user-select", "none")
+      .style("display", "block")  // SVG als Block-Element
+      .style("margin", "0 auto")
+      .style("background-color", "8D8AD9");
 
     const gLink = svg.append("g")
       .attr("fill", "none")
       .attr("stroke", "#555")
       .attr("stroke-opacity", 0.4)
-      .attr("stroke-width", 1.5) //d => d.source?.data?.count ? Math.max(1, d.source.data.count / 5) : 1);
+      .attr("stroke-width", 1.5) 
 
     const gNode = svg.append("g")
       .attr("cursor", "pointer")
@@ -94,23 +93,33 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
 
       tree(root);
 
-      let left = root; //Speichert linksten Knoten
-      let right = root; //Speichert den rechtesten Knoten
+
+     let left = root;   
+     let right = root;  
+     const center = (right.x + left.y) / 2;
+
+     const shiftAmount = width / 10;
+     
+     // Setze die Wurzel so, dass sie horizontal in der Mitte des Containers ist
+     root.eachBefore((d) => {
+       d.y = d.y - center + width / 3;  // Verschiebt alle Knoten im SVG
+     });
       
       root.eachBefore(node => {
-        if (node.x !== undefined && node.x < (left.x ?? Infinity)) left = node;
-        if (node.x !== undefined && node.x > (right.x ?? -Infinity)) right = node;
+       if (node.x !== undefined && node.x < (left.x ?? Infinity)) left = node;
+       if (node.x !== undefined && node.x > (right.x ?? -Infinity)) right = node;
       });
+
 
       const height = right.x - left.x + margin.top + margin.bottom;
 
-      const transition: d3.Transition<SVGSVGElement, unknown, null, undefined> = svg.transition()
-        .duration(duration)
-        .attr("height", height)
-        .attr("viewBox", `${-margin.left} ${left.x - margin.top} ${width} ${height}`)
-
       // Nodes updaten
       const node = gNode.selectAll<SVGGElement, HierarchyPointNode>("g").data(nodes, d => d.data.name + "-" + d.depth);
+
+      const transition: d3.Transition<SVGSVGElement, unknown, null, undefined> = svg.transition()
+      .duration(duration)
+      .attr("height", null)
+      .attr("viewBox", `${-margin.left} ${left.x - margin.top} ${width} ${height}`)
 
       const nodeEnter = node.enter().append<SVGGElement>("g")
         .attr("transform", d => `translate(${source.y0},${source.x0})`)
@@ -118,16 +127,15 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
         .attr("stroke-opacity", 0)
         .on("click", (_, d) => {
           if (!d._children) return;
-        
-          // Speichert aktuelle Positionen der Knoten, um unnötige Updates zu vermeiden
-          root.eachBefore(node => {
-            node.x0 = node.x;
-            node.y0 = node.y;
-          });
-        
+
+          
+              root.eachBefore((node) => {
+              node.x0 = node.x;
+              node.y0 = node.y;})
+          
           d.children = d.children ? undefined : d._children;
-          update(d); // Jetzt wird nur noch der geklickte Teil aktualisiert
-        });
+          update(d);
+  });
 
         nodeEnter.append("path")
         .attr("d", d => {
@@ -175,7 +183,6 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
         return diagonal({ source: o, target: o });  // Linien beginnen und enden am gleichen Punkt
       })
       .attr("stroke-width", d => {
-        console.log(`Linienbreite für ${d.target.data.name}:`, d.target.data.count);
         return d.target.data.count ? Math.max(1, d.target.data.count / 200) : 1;
       });
  
@@ -198,7 +205,7 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
 
     // Tree initialisieren
     root.x0 = dy / 2;
-    root.y0 = 0;
+    root.y0 = 2;
     root.descendants().forEach((d, i) => {
       (d as any).id = i;
       d._children = d.children;

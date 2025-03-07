@@ -4,26 +4,23 @@ import { useState } from 'react';
 import CollaTree from './CollaTree';
 import rawdata from '@/app/tonis_orders_tree_2.json';
 import Link from 'next/link';
+import JSONUpload from '../components/upload';
 
 export default function Page() {
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6 border">
-            <h1 className='inset-x-0 top-0 text-2xl font-bold border border-pink-600'> {/* Macht den Titel oben in zentriert*/}
-                MHN Patient Trees
+        <div className="min-h-screen flex flex-col items-center justify-center bg-blue-200 p-6">
+            <h1 className='text-4xl font-bold -mt-8 mb-4'> {/*Überschrift*/}
+                MHN Patient Tree
             </h1>
-            <div className= " object-center w-full max-w-4xl p-6 rounded-lg shadow-lg mb-8">
-                <div className="border border-green-600">
+            <div className= "flex flex-col justify-center items-center w-full max-w-4xl p-6 mb-8">
+                <div className="mx-auto block w-full bg-slate-100 rounded-lg">
                     <CollaTree treedata={rawdata} />
                 </div>
-                <div className="border border-red-500"> {/* macht die Flexbox für die rechte Seite */}
-                    <div className="text-center font-bold text-2xl p-1 w-full mb-2"> {/* in Flexbox auf rechter Seite wird nun Text geschrieben mit blauem Hintergrund, p legt den Abstand um den Text fest*/}
-                        <button className="px-2 py-1 rounded bg-blue-300 hover:bg-blue-500 text-slate-700 hover:text-black">Upload</button>
+                    <div className="text-center font-bold text-xl p-1 w-full mb-2"> 
+                        <JSONUpload />
                     </div>
                 </div>
-
-
             </div>
-        </div>
     );
 }
