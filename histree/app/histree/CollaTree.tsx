@@ -51,7 +51,6 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
       .style("user-select", "none")
       .style("display", "block")  // SVG als Block-Element
       .style("margin", "0 auto")
-      .style("background-color", "8D8AD9");
 
     const gLink = svg.append("g")
       .attr("fill", "none")
@@ -101,9 +100,9 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
      const shiftAmount = width / 10;
      
      // Setze die Wurzel so, dass sie horizontal in der Mitte des Containers ist
-     root.eachBefore((d) => {
-       d.y = d.y - center + width / 3;  // Verschiebt alle Knoten im SVG
-     });
+     //root.eachBefore((d) => {
+      // d.y = d.y - center + width / 4;  // Verschiebt alle Knoten im SVG
+     //});
       
       root.eachBefore(node => {
        if (node.x !== undefined && node.x < (left.x ?? Infinity)) left = node;
