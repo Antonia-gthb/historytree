@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 
 interface FileUploadProps {
-  onUpload: (data: any, fileName: string) => void; // Callback-Funktion für den Upload
+  onUpload: (data: any, fileName: string) => void; 
 }
 
 

@@ -20,7 +20,7 @@ type TreeNode = {
   _children?: TreeNode[];  // _children für die Speicherung der zusammengeklappten Knoten
   };
 
-export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; width?: number }) {
+export default function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; width?: number }) {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   useEffect(() => {
@@ -68,12 +68,12 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
         }
     
         if (parentName) {
-            node.name = `${parentName}_${node.name}`;  // Füge den Elternnamen hinzu
+            node.name = `${parentName}_${node.name}`;  // Elternnamen hinzufügen
         }
     
         if (node.children) {
             node.children.forEach((child, index) => {
-                numberNodes(child, `${node.name}_${index + 1}`);  // Rekursiv durchlaufen
+                numberNodes(child, `${node.name}_${index + 1}`);  // rekursiv durchlaufen
             });
         }
     }
@@ -99,7 +99,7 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
 
      const shiftAmount = width / 10;
      
-     // Setze die Wurzel so, dass sie horizontal in der Mitte des Containers ist
+     // Setzt die Wurzel so, dass sie horizontal in der Mitte des Containers ist
      //root.eachBefore((d) => {
       // d.y = d.y - center + width / 4;  // Verschiebt alle Knoten im SVG
      //});
@@ -217,4 +217,4 @@ export function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; widt
   return <svg ref={svgRef}></svg>;
 }
 
-export default CollaTree;
+

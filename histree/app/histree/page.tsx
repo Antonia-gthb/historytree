@@ -4,15 +4,16 @@ import { useState } from 'react';
 import CollaTree from './CollaTree';
 import rawdata from '@/app/tonis_orders_tree_2.json';
 import FileUpload from '../components/upload';
+import ColorTheme from './themesProps';
 
 export default function Page() {
 
-  const [jsonData, setJsonData] = useState<any>(null); // Hochgeladener Datensatz
+  const [jsonData, setJsonData] = useState<any>(null); // hochgeladener Datensatz
   const [fileName, setFileName] = useState<string>('Keine Datei ausgewählt');
 
   const handleUpload = (data: any, fileName: string) => {
-    setJsonData(data); // Hochgeladene Daten speichern
-    setFileName(fileName); // Dateinamen speichern
+    setJsonData(data); // speichert hochgeladene Daten 
+    setFileName(fileName); // dateiname speichern
   };
 
     return (
@@ -29,6 +30,9 @@ export default function Page() {
                         <FileUpload onUpload={handleUpload}/>
                     </div>
                 </div>
+              <div>
+                    <ColorTheme />
+              </div>
             </div>
     );
 }
