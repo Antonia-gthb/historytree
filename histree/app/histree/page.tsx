@@ -5,6 +5,7 @@ import CollaTree from './CollaTree';
 import rawdata from '@/app/tonis_orders_tree_2.json';
 import FileUpload from '../components/upload';
 import ColorTheme from './themesProps';
+import ColormapChart from './barChart';
 
 export default function Page() {
 
@@ -31,7 +32,7 @@ export default function Page() {
                     </div>
                 </div>
               <div>
-                    <ColorTheme />
+                    <ColormapChart/>
               </div>
             </div>
     );

@@ -14,35 +14,15 @@ export default function ColorTheme({ onThemeChange }: ColorScaleProps) {
 
   return (
     <div>
-      <div style={{ display: "flex", flexDirection: "row", gap: "10px", flexWrap: "wrap" }}>
-        {Object.keys(myColorThemes).map((theme, index) => (
-          <div
-            key={index}
-            onClick={() => handleThemeChange(theme)}
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(7, 1fr)", // Zeigt die Farben in 7 Spalten an
-              gap: "5px",
-              cursor: "pointer",
-              padding: "5px",
-              border: selectedTheme === theme ? "2px solid #000" : "1px solid #ddd",
-              marginBottom: "10px", // Abstand zum nächsten Farbschema
-            }}
-          >
-            {myColorThemes[theme].map((color, idx) => (
-              <div
-                key={idx}
-                style={{
-                  backgroundColor: color,
-                  height: "30px",
-                  borderRadius: "5px",
-                }}
-              ></div>
-            ))}
-          </div>
-        ))}
+      <div className= "column" id="row">
+          <div className="w-3 h-3 m-0.5 border border-red-300" id="square">1</div>
+          <div className="w-3 h-3 m-0.5 border border-red-300" id="square">2</div>
+          <div className="w-3 h-3 m-0.5 border border-red-300" id="square">3</div>
+          <div className="w-3 h-3 m-0.5 border border-red-300" id="square">4</div>
+          <div className="w-3 h-3 m-0.5 border border-red-300" id="square">5</div>
+          <div className="w-3 h-3 m-0.5 border border-red-300" id="square">6</div>
+          <div className="w-3 h-3 m-0.5 border border-red-300" id="square">7</div>
       </div>
-
       {/* Hier kannst du den SwatchesPicker verwenden, um die Farben anzuzeigen */}
       <SwatchesPicker
         width={400}
@@ -52,6 +32,7 @@ export default function ColorTheme({ onThemeChange }: ColorScaleProps) {
     </div>
   );
 }
+
 
 
 const myColorThemes = {
