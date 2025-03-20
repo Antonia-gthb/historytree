@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useColorScheme } from './ColorSchemeContext';
 import colormap from "colormap";
 import {
     Select,
@@ -16,20 +17,17 @@ import {
 const colormaps = ["jet", "viridis", "cool", "hot", "rainbow", "spring"];
 
 const ColorThemes = () => {
-    const [selectedTheme, setSelectedTheme] = useState("viridis");
+  const { selectedScheme, setSelectedScheme, colors } = useColorScheme();
+    //const [selectedTheme, setSelectedTheme] = useState("viridis");
 
-    const colors = colormap({
-        colormap: selectedTheme,
-        nshades: Math.max(9, data.length),
-        format: "hex",
-    });
+
 
     return (
         <div className="p-4">
             <Select
-                value={selectedColormap}
+                value={selectedScheme}
+                onValueChange={(value) => setSelectedScheme(value)} // Verwende onValueChange
             >
-
             </Select>
 
             <Select>
@@ -47,6 +45,21 @@ const ColorThemes = () => {
                     </SelectGroup>
                 </SelectContent>
             </Select>
+            <div style={{ display: 'flex', marginTop: '10px' }}>
+        {colors.map((color, index) => (
+          <div
+            key={index}
+            style={{
+              width: '50px',
+              height: '50px',
+              backgroundColor: color,
+              margin: '5px',
+            }}
+          ></div>
+        ))}
           </div>
+        </div>
     )};
-    export default ColorThemes
+
+
+export default ColorThemes
