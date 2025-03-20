@@ -1,8 +1,7 @@
-/** @type {import('postcss-load-config').Config} */
-const config = {
+/** @type {import('tailwindcss').Config} */
+/* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
+export default {
   plugins: {
     '@tailwindcss/postcss': {},
   },
-};
-
-export default config;
+}

@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import colormap from "colormap";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@radix-ui/react-select";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 
 
 const data = [
@@ -24,23 +32,28 @@ const ColormapChart = () => {
 
     return (
         <div className="p-4">
-            <select value={selectedColormap} onChange={(e) => setSelectedColormap(e.target.value)}>
-                {colormaps.map((map) => (
-                    <option key={map} value={map}>{map}</option>
-                ))}
-            </select>
-            <div className="relative">
-                <Select value={selectedColormap} onValueChange={setSelectedColormap}>
-                    <SelectTrigger className="w-[200px]">
-                        <SelectValue placeholder="Select a colormap" />
-                    </SelectTrigger>
-                    <SelectContent className="z-50">
-                        {colormaps.map((map) => (
-                            <SelectItem key={map} value={map}>{map}</SelectItem>
+            <Select
+                value={selectedColormap}
+            >
+
+            </Select>
+
+            <Select>
+                <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select color theme" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectGroup>
+                        <SelectLabel>Themes</SelectLabel>
+                        {colormaps.map((map, index) => (
+                            <SelectItem key={index} value={map}>
+                                {map}
+                            </SelectItem>
                         ))}
-                    </SelectContent>
-                </Select>
-            </div>
+                    </SelectGroup>
+                </SelectContent>
+            </Select>
+
 
 
             <BarChart width={500} height={300} data={data}>

@@ -5,12 +5,11 @@ import CollaTree from './CollaTree';
 import rawdata from '@/app/tonis_orders_tree_2.json';
 import FileUpload from '../components/upload';
 import ColorTheme from './themesProps';
-import ColormapChart from './barChart';
 
 export default function Page() {
 
-  const [jsonData, setJsonData] = useState<any>(null); // hochgeladener Datensatz
-  const [fileName, setFileName] = useState<string>('Keine Datei ausgewählt');
+  const [jsonData, setJsonData] = useState(null); // hochgeladener Datensatz
+  const [fileName, setFileName] = useState('Keine Datei ausgewählt');
 
   const handleUpload = (data: any, fileName: string) => {
     setJsonData(data); // speichert hochgeladene Daten 
@@ -23,6 +22,7 @@ export default function Page() {
                 MHN Patient Tree
             </h1>
             <div className= "flex flex-col justify-center items-center w-full max-w-4xl p-6 mb-8">
+                <ColorTheme/>
                 <div className="mx-auto block w-full rounded-lg">
                     <CollaTree treedata={jsonData || rawdata} />
                     <p> {jsonData ? fileName : 'tonis_orders_tree_2.json'}</p>
@@ -31,9 +31,6 @@ export default function Page() {
                         <FileUpload onUpload={handleUpload}/>
                     </div>
                 </div>
-              <div>
-                    <ColormapChart/>
-              </div>
             </div>
     );
 }

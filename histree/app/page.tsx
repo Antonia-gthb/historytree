@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from 'react';
-import Plot from './components/Plot';
-import { myEvent } from './components/EventFilter';
-import EventCheckboxes from './components/EventFilter';
-import ColorScale from './components/cmap';
+import Plot from './oldComponents/Plot';
+import { myEvent } from './oldComponents/EventFilter';
+import EventCheckboxes from './oldComponents/EventFilter';
+import ColorScale from './oldComponents/cmap';
 import Link from 'next/link';
 
 export default function Page() {

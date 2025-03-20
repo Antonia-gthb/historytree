@@ -1,106 +1,52 @@
-import { SetStateAction, useState } from 'react';
-import {SwatchesPicker} from 'react-color';
-
-interface ColorScaleProps {
-  setSelectedTheme: (selectedTheme: string) => void; 
-}
-export default function ColorTheme({ onThemeChange }: ColorScaleProps) {
-  const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
-
-  const handleThemeChange = (theme: string) => {
-    setSelectedTheme(theme);
-    onThemeChange(myColorThemes[theme]); // Übergebe das gesamte Farbschema
-  };
-
-  return (
-    <div>
-      <div className= "column" id="row">
-          <div className="w-3 h-3 m-0.5 border border-red-300" id="square">1</div>
-          <div className="w-3 h-3 m-0.5 border border-red-300" id="square">2</div>
-          <div className="w-3 h-3 m-0.5 border border-red-300" id="square">3</div>
-          <div className="w-3 h-3 m-0.5 border border-red-300" id="square">4</div>
-          <div className="w-3 h-3 m-0.5 border border-red-300" id="square">5</div>
-          <div className="w-3 h-3 m-0.5 border border-red-300" id="square">6</div>
-          <div className="w-3 h-3 m-0.5 border border-red-300" id="square">7</div>
-      </div>
-      {/* Hier kannst du den SwatchesPicker verwenden, um die Farben anzuzeigen */}
-      <SwatchesPicker
-        width={400}
-        colors={ myColorThemes} // Zeige nur die Farben des ausgewählten Themes an
-        onChangeComplete={(color) => onThemeChange([color.hex])} // Rückgabe der ausgewählten Farbe (falls nötig)
-      />
-    </div>
-  );
-}
+import { useState } from "react";
+import colormap from "colormap";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 
 
 
-const myColorThemes = {
-  // Lila-Töne von Helllila bis Dunkellila
-  Violett: [
-    '#F3E5F5', // Sehr helles Lila
-    '#E1BEE7', // Helllila
-    '#CE93D8', // Mittelhelles Lila
-    '#BA68C8', // Lila
-    '#AB47BC', // Dunkleres Lila
-    '#9C27B0', // Dunkellila
-    '#8E24AA', // Sehr dunkles Lila
-  ],
 
-  // Blau-Töne von Hellblau bis Dunkelblau
-  Blue: [
-    '#E3F2FD', // Sehr helles Blau
-    '#BBDEFB', // Hellblau
-    '#90CAF9', // Mittelhelles Blau
-    '#64B5F6', // Blau
-    '#42A5F5', // Dunkleres Blau
-    '#2196F3', // Dunkelblau
-    '#1E88E5', // Sehr dunkles Blau
-  ],
+const colormaps = ["jet", "viridis", "cool", "hot", "rainbow", "spring"];
 
-  // Grün-Töne von Hellgrün bis Dunkelgrün
-  Green: [
-    '#E8F5E9', // Sehr helles Grün
-    '#C8E6C9', // Hellgrün
-    '#A5D6A7', // Mittelhelles Grün
-    '#81C784', // Grün
-    '#66BB6A', // Dunkleres Grün
-    '#4CAF50', // Dunkelgrün
-    '#43A047', // Sehr dunkles Grün
-  ],
+const ColorThemes = () => {
+    const [selectedTheme, setSelectedTheme] = useState("viridis");
 
-  // Rot-Töne von Hellrot bis Dunkelrot
-  Red: [
-    '#FFEBEE', // Sehr helles Rot
-    '#FFCDD2', // Hellrot
-    '#EF9A9A', // Mittelhelles Rot
-    '#E57373', // Rot
-    '#EF5350', // Dunkleres Rot
-    '#F44336', // Dunkelrot
-    '#E53935', // Sehr dunkles Rot
-  ],
+    const colors = colormap({
+        colormap: selectedTheme,
+        nshades: Math.max(9, data.length),
+        format: "hex",
+    });
 
-  // Gelb-Töne von Hellgelb bis Dunkelgelb
-  Yellow: [
-    '#FFFDE7', // Sehr helles Gelb
-    '#FFF9C4', // Hellgelb
-    '#FFF59D', // Mittelhelles Gelb
-    '#FFF176', // Gelb
-    '#FFEE58', // Dunkleres Gelb
-    '#FFEB3B', // Dunkelgelb
-    '#FDD835', // Sehr dunkles Gelb
-  ],
+    return (
+        <div className="p-4">
+            <Select
+                value={selectedColormap}
+            >
 
-  // Regenbogenfarben
-  Rainbow: [
-    '#FF0000', // Rot
-    '#FF7F00', // Orange
-    '#FFFF00', // Gelb
-    '#00FF00', // Grün
-    '#0000FF', // Blau
-    '#4B0082', // Indigo
-    '#9400D3', // Violett
-  ],
-};
+            </Select>
 
-
+            <Select>
+                <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select color theme" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectGroup>
+                        <SelectLabel>Themes</SelectLabel>
+                        {colormaps.map((map, index) => (
+                            <SelectItem key={index} value={map}>
+                                {map}
+                            </SelectItem>
+                        ))}
+                    </SelectGroup>
+                </SelectContent>
+            </Select>
+          </div>
+    )};
+    export default ColorThemes
