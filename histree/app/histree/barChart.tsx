@@ -29,6 +29,19 @@ const ColormapChart = () => {
                     <option key={map} value={map}>{map}</option>
                 ))}
             </select>
+            <div className="relative">
+                <Select value={selectedColormap} onValueChange={setSelectedColormap}>
+                    <SelectTrigger className="w-[200px]">
+                        <SelectValue placeholder="Select a colormap" />
+                    </SelectTrigger>
+                    <SelectContent className="z-50">
+                        {colormaps.map((map) => (
+                            <SelectItem key={map} value={map}>{map}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+
 
             <BarChart width={500} height={300} data={data}>
                 <XAxis dataKey="name" />
@@ -40,6 +53,7 @@ const ColormapChart = () => {
                 ))}
             </BarChart>
         </div>
+
     );
 };
 

@@ -35,9 +35,6 @@
     ".next/types/**/*.ts"
 , "app/components/myColors.js"  ],
   "exclude": [
-    "node_modules", 
-    "server",
-    "static",
-    "types",
+    "node_modules"
   ]
 }
