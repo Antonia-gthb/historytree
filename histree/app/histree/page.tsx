@@ -18,7 +18,7 @@ export default function Page() {
   };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-cyan-100 via-blue-300 to-indigo-400 p-6">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-r from-cyan-100 via-blue-300 to-indigo-400 p-6">
             <h1 className='text-4xl font-bold -mt-8 mb-4'> {/*Überschrift*/}
                 MHN Patient Tree
             </h1>

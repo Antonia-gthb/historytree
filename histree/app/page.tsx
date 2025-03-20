@@ -35,7 +35,7 @@ export default function Page() {
         <Link href="/histree">HisTree</Link>
       </h1>
       <div className="flex items-start">
-        <div className="flex-shrink-0 mr-6"> {/* Bild und Graph einfügen*/}
+        <div className="shrink-0 mr-6"> {/* Bild und Graph einfügen*/}
           <Plot
             eventColor={eventColor}
             cmap={cmap}
@@ -45,13 +45,13 @@ export default function Page() {
         </div>
         <div className="flex flex-col"> {/* macht die Flexbox für die rechte Seite */}
           <div className="text-center font-bold text-2xl p-1 w-full mb-2"> {/* in Flexbox auf rechter Seite wird nun Text geschrieben mit blauem Hintergrund, p legt den Abstand um den Text fest*/}
-            <button className="px-2 py-1 rounded bg-blue-300 hover:bg-blue-500 text-slate-700 hover:text-black">Upload</button> {/* Mit hover verändert sich Bildfarbe*/}
+            <button className="px-2 py-1 rounded-sm bg-blue-300 hover:bg-blue-500 text-slate-700 hover:text-black">Upload</button> {/* Mit hover verändert sich Bildfarbe*/}
           </div>
           <p className="bg-white text-black p-4 mt-2 text-lg mb-2">
             Platzhalter
           </p>
           <div className="text-center font-bold text-2xl p-1 w-full mb-2"> {/* mb-2 macht Abstand nach unten zum Text*/}
-            <button className="px-2 py-1 rounded bg-blue-300 hover:bg-blue-500 text-slate-700 hover:text-black">Upload Patients</button>
+            <button className="px-2 py-1 rounded-sm bg-blue-300 hover:bg-blue-500 text-slate-700 hover:text-black">Upload Patients</button>
           </div>
           <p className="bg-white text-black p-4 mt-2 text-lg border border-black">
             Platzhalter für Datenfeld
