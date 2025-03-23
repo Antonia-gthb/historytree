@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useContext, useState, useMemo, ReactNode } from 'react';
 import colormap from 'colormap'; 
 
@@ -16,7 +18,9 @@ const ColorSchemeContext = createContext<ColorSchemeContextType | undefined>(und
 // Custom Hook, um den Context einfach nutzen zu können
 export const useColorScheme = () => {
   const context = useContext(ColorSchemeContext);
+  console.log('Context in useColorScheme:', context); // Debugging
   if (!context) {
+    console.error('useColorScheme must be used within a ColorSchemeProvider'); // Debugging
     throw new Error('useColorScheme must be used within a ColorSchemeProvider');
   }
   return context;
@@ -34,9 +38,10 @@ export const ColorSchemeProvider = ({children}: ColorSchemeProviderProps) => {
   const [treeDepth, setTreeDepth] = useState(1); // Startwert: 1 Ebene
 
   const colors = useMemo(() => {
+    console.log('Generating colors...');
     return colormap({
       colormap: selectedScheme,
-      nshades: Math.max(treeDepth), // Mindestens 10 Farben generieren
+      nshades: Math.max(9, treeDepth), // Mindestens 10 Farben generieren
       format: 'hex',
     });
   }, [selectedScheme, treeDepth]);
@@ -49,6 +54,8 @@ export const ColorSchemeProvider = ({children}: ColorSchemeProviderProps) => {
     setTreeDepth,
     colors,
   };
+
+  console.log('Context value:', value);
 
   return (
     <ColorSchemeContext.Provider value={value}>

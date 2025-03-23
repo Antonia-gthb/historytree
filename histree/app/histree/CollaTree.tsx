@@ -1,6 +1,5 @@
 import * as d3 from "d3";
 import { useRef, useEffect } from "react";
-import { useColorScheme } from './ColorSchemeContext';
 
 
 interface HierarchyPointNode extends d3.HierarchyNode<TreeNode> {
@@ -22,8 +21,9 @@ type TreeNode = {
   _children?: TreeNode[];  // _children für die Speicherung der zusammengeklappten Knoten
 };
 
-export default function CollaTree({ treedata, width = 1028 }: { treedata: TreeNode; width?: number }) {
+export default function CollaTree({ treedata, width = 1028, colors }: { treedata: TreeNode; width?: number; colors: string }) {
   const svgRef = useRef<SVGSVGElement | null>(null);
+  console.log("Farben in der Tree-Komponente:", colors)
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -86,8 +86,6 @@ export default function CollaTree({ treedata, width = 1028 }: { treedata: TreeNo
       .domain([1, d3.max(root.descendants(), d => d.data.count || 0)]) // Min & Max Count-Wert
       .range([1, 10]); // Min & Max Linienstärke
 
-    const { setTreeDepth, colors } = useColorScheme();
-
 
 
     function update(source: HierarchyPointNode) {
@@ -137,8 +135,8 @@ export default function CollaTree({ treedata, width = 1028 }: { treedata: TreeNo
             node.y0 = node.y;
           })
 
-          const newDepth = d.depth + 1;
-          setTreeDepth(newDepth);
+          //const newDepth = d.depth + 1;
+          //setTreeDepth(newDepth);
 
           d.children = d.children ? undefined : d._children;
           update(d);
@@ -158,11 +156,12 @@ export default function CollaTree({ treedata, width = 1028 }: { treedata: TreeNo
           }
           return null;  // Falls der Knoten eine andere Tiefe hat, wird keine Form gezeichnet
         })
-        .attr("fill", d => {
+        .attr("fill", d => d._children ? "#555" : "#ccc");
+        {/*.attr("fill", d => {
           // Verwende die Farbe aus dem Farbschema basierend auf der Tiefe
           return colors[d.depth] || "#ccc"; // Fallback-Farbe, falls keine Farbe vorhanden ist
-        });
-        //.attr("fill", d => d._children ? "#555" : "#ccc");*/}
+        });*/}
+    
 
       nodeEnter.append("path")
         .attr("d", d => {
@@ -178,10 +177,10 @@ export default function CollaTree({ treedata, width = 1028 }: { treedata: TreeNo
           const symbolType = symbols[symbolIndex]; // Symbol basierend auf dem Index
           return d3.symbol().type(symbolType).size(100)();
         })
-        .attr("fill", d => {
-          // Verwende die Farbe aus dem Farbschema basierend auf der Tiefe
-          return colors[d.depth] || "#ccc"; // Fallback-Farbe, falls keine Farbe vorhanden ist
-        });
+        //.attr("fill", d => d._children ? colors[0] : "#ccc");
+        .attr("fill", d => colors[d.depth] || "#ccc");
+
+        console.log(colors[0]);
 
 
       nodeEnter.append("text")
@@ -243,7 +242,7 @@ export default function CollaTree({ treedata, width = 1028 }: { treedata: TreeNo
     });
 
     update(root);
-  }, [treedata]);
+  }, [treedata,colors]);
 
   return <svg ref={svgRef}></svg>;
 }

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useColorScheme } from './ColorSchemeContext';
 import colormap from "colormap";
 import {
     Select,
@@ -11,26 +10,37 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-
+interface ColorThemesProps {
+    onSelectScheme: (scheme: string) => void; // Callback für Elternkomponente
+    onSelectColors: (colors: string[]) => void;
+  }
 
 
 const colormaps = ["jet", "viridis", "cool", "hot", "rainbow", "spring"];
 
-const ColorThemes = () => {
-  const { selectedScheme, setSelectedScheme, colors } = useColorScheme();
-    //const [selectedTheme, setSelectedTheme] = useState("viridis");
+const ColorThemes = ({ onSelectScheme, onSelectColors }: ColorThemesProps) => {
+  //const { selectedScheme, setSelectedScheme, colors } = useColorScheme();
+  const [selectedTheme, setSelectedTheme] = useState("viridis");
 
 
 
     return (
         <div className="p-4">
             <Select
-                value={selectedScheme}
-                onValueChange={(value) => setSelectedScheme(value)} // Verwende onValueChange
+                value={selectedTheme}
+                onValueChange={(value) => {setSelectedTheme(value); // Verwende onValueChange
+                onSelectScheme(value);
+                
+                const colors = colormap({
+                    colormap: selectedTheme,
+                    nshades: 9, // Mindestens 9 Farben generieren
+                    format: 'hex',
+                });
+              
+                console.log(colors)// Elternkomponente benachrichtigen
+                onSelectColors(colors); // Farben an Elternkomponente übergeben
+            }}
             >
-            </Select>
-
-            <Select>
                 <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Select color theme" />
                 </SelectTrigger>
@@ -45,19 +55,6 @@ const ColorThemes = () => {
                     </SelectGroup>
                 </SelectContent>
             </Select>
-            <div style={{ display: 'flex', marginTop: '10px' }}>
-        {colors.map((color, index) => (
-          <div
-            key={index}
-            style={{
-              width: '50px',
-              height: '50px',
-              backgroundColor: color,
-              margin: '5px',
-            }}
-          ></div>
-        ))}
-          </div>
         </div>
     )};
 
