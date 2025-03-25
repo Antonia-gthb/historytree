@@ -5,6 +5,7 @@ import CollaTree from './CollaTree';
 import rawdata from '@/app/tonis_orders_tree_2.json';
 import FileUpload from './upload';
 import ColorTheme from './themesProps';
+import Download from './download';
 
 
 export default function Page() {
@@ -33,6 +34,7 @@ export default function Page() {
                 </div>
                     <div className="text-center font-bold text-xl p-1 w-full mb-2"> 
                         <FileUpload onUpload={handleUpload}/>
+                        <Download />
                     </div>
                 </div>
             </div>

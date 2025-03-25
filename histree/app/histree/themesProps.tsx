@@ -1,14 +1,6 @@
 import { useState } from "react";
 import colormap from "colormap";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+import * as select from "@/components/ui/select"
 
 interface ColorThemesProps {
     onSelectScheme: (scheme: string) => void; // Callback für Elternkomponente
@@ -26,7 +18,7 @@ const ColorThemes = ({ onSelectScheme, onSelectColors }: ColorThemesProps) => {
 
     return (
         <div className="p-4">
-            <Select
+            <select.Select
                 value={selectedTheme}
                 onValueChange={(value) => {setSelectedTheme(value); // Verwende onValueChange
                 onSelectScheme(value);
@@ -41,20 +33,20 @@ const ColorThemes = ({ onSelectScheme, onSelectColors }: ColorThemesProps) => {
                 onSelectColors(colors); // Farben an Elternkomponente übergeben
             }}
             >
-                <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select color theme" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectGroup>
-                        <SelectLabel>Themes</SelectLabel>
+                <select.SelectTrigger className="w-[180px]">
+                    <select.SelectValue placeholder="Select color theme" />
+                </select.SelectTrigger>
+                <select.SelectContent>
+                    <select.SelectGroup>
+                        <select.SelectLabel>Themes</select.SelectLabel>
                         {colormaps.map((map, index) => (
-                            <SelectItem key={index} value={map}>
+                            <select.SelectItem key={index} value={map}>
                                 {map}
-                            </SelectItem>
+                            </select.SelectItem>
                         ))}
-                    </SelectGroup>
-                </SelectContent>
-            </Select>
+                    </select.SelectGroup>
+                </select.SelectContent>
+            </select.Select>
         </div>
     )};
 

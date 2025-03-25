@@ -53,6 +53,7 @@ export default function CollaTree({ treedata, width = 1028, colors }: { treedata
       .style("user-select", "none")
       .style("display", "block")  // SVG als Block-Element
       .style("margin", "0 auto")
+      .attr("id", "histree-chart")
 
     const gLink = svg.append("g")
       .attr("fill", "none")
@@ -141,46 +142,20 @@ export default function CollaTree({ treedata, width = 1028, colors }: { treedata
           d.children = d.children ? undefined : d._children;
           update(d);
         });
-
-      {/*nodeEnter.append("path")
-        .attr("d", d => {
-          if (d.depth === 1) {
-            // Kreis
-            return d3.symbol().type(d3.symbolCircle).size(100)();  // Hier wird der Kreis gezeichnet
-          } else if (d.depth === 2) {
-            // Quadrat
-            return d3.symbol().type(d3.symbolSquare).size(100)();  // Hier wird das Quadrat gezeichnet
-          } else if (d.depth === 3) {
-            // Dreieck
-            return d3.symbol().type(d3.symbolTriangle).size(100)();  // Hier wird das Dreieck gezeichnet
-          }
-          return null;  // Falls der Knoten eine andere Tiefe hat, wird keine Form gezeichnet
-        })
-        .attr("fill", d => d._children ? "#555" : "#ccc");
-        {/*.attr("fill", d => {
-          // Verwende die Farbe aus dem Farbschema basierend auf der Tiefe
-          return colors[d.depth] || "#ccc"; // Fallback-Farbe, falls keine Farbe vorhanden ist
-        });*/}
-    
-
+     
       nodeEnter.append("path")
         .attr("d", d => {
-          // Definiere die drei Symbole
           const symbols = [
-            d3.symbolCircle,   // Symbol 0: Kreis
-            d3.symbolSquare,   // Symbol 1: Quadrat
-            d3.symbolTriangle, // Symbol 2: Dreieck
+            d3.symbolCircle,   
+            d3.symbolSquare,   
+            d3.symbolTriangle,
           ];
 
-          // Wähle das Symbol zyklisch basierend auf der Tiefe aus
           const symbolIndex = d.depth % symbols.length; // Zyklischer Index
           const symbolType = symbols[symbolIndex]; // Symbol basierend auf dem Index
           return d3.symbol().type(symbolType).size(100)();
         })
-        //.attr("fill", d => d._children ? colors[0] : "#ccc");
-        .attr("fill", d => colors[d.depth] || "#ccc");
-
-        console.log(colors[0]);
+        .attr("fill", d => d._children ? colors[d.depth] : "#ccc" );
 
 
       nodeEnter.append("text")
