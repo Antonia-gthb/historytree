@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { DownloadIcon } from 'lucide-react';
+import { FileUp } from 'lucide-react';
 import { useRef } from 'react';
 
 interface FileUploadProps {
@@ -28,7 +28,8 @@ export default function FileUpload({ onUpload }: FileUploadProps) {
 
         try {
           const jsonData = JSON.parse(fileContent); // JSON-String in ein Objekt umwandeln
-          console.log('Upload erfolgreich');
+          const mutationNames = Object.values(jsonData.name);
+          console.log(jsonData.name);
           onUpload(jsonData, file.name); // Daten und Dateinamen zurückgeben
         } catch (error) {
           console.error('Fehler beim Parsen der JSON-Datei:', error);
@@ -44,6 +45,7 @@ export default function FileUpload({ onUpload }: FileUploadProps) {
   return (
     < div >
     <Button variant="outline" onClick={handleUploadClick} className="transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-800 text-slate-700 hover:text-white">
+    <FileUp className="mr-2 h-4 w-4" />
       <input
         type="file"
         accept=".json"
@@ -56,18 +58,4 @@ export default function FileUpload({ onUpload }: FileUploadProps) {
            </div >
     );
 }
-
-
-   {/*<div>
-        <button onClick={handleUploadClick} className="px-2 py-1 rounded-2xl bg-blue-30 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-800 text-slate-700 hover:text-white">Upload JSON</button>
-        <input
-          type="file"
-          accept=".json"
-          ref={fileInputRef}
-          style={{ display: 'none' }} // Versteckt das Dateiauswahlfeld
-          onChange={handleFileChange}
-        />
-      </div>*/}
-
-
 

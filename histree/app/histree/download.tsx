@@ -2,7 +2,12 @@ import { Button } from "@/components/ui/button"
 import { DownloadIcon } from "lucide-react"
 import { useEffect } from "react";
 
-export default function Download() {
+interface DownloadProps {
+    downloadName: string;
+  }
+
+
+export default function Download ({downloadName} : DownloadProps) {
     const downloadSVG = () => {
 
         let svgHisTree = document.getElementById("histree-chart");
@@ -13,17 +18,17 @@ export default function Download() {
         const svgString = serializer.serializeToString(svgHisTree);
 
 
-        // 3. Data-URL erstellen
+        //Data-URL erstellen
         const svgBlob = new Blob([svgString], { type: 'image/svg+xml' });
         const url = URL.createObjectURL(svgBlob);
 
-        // 4. Download auslösen
+        // Download auslösen
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'histree.svg'; // Dateiname anpassen
+        a.download = `${downloadName}.svg`; // Dateiname anpassen
         a.click();
 
-        // 5. Aufräumen
+        //Aufräumen
         URL.revokeObjectURL(url);
     };
 

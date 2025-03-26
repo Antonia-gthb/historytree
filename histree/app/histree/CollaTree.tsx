@@ -10,6 +10,7 @@ interface HierarchyPointNode extends d3.HierarchyNode<TreeNode> {
   data: any;
   y0?: number;
   _children?: HierarchyPointNode[];
+  color? : string;
 }
 
 type TreeNode = {
@@ -19,6 +20,7 @@ type TreeNode = {
   value?: number;
   count?: number;
   _children?: TreeNode[];  // _children für die Speicherung der zusammengeklappten Knoten
+  color? : string;
 };
 
 export default function CollaTree({ treedata, width = 1028, colors }: { treedata: TreeNode; width?: number; colors: string }) {
@@ -135,9 +137,6 @@ export default function CollaTree({ treedata, width = 1028, colors }: { treedata
             node.x0 = node.x;
             node.y0 = node.y;
           })
-
-          //const newDepth = d.depth + 1;
-          //setTreeDepth(newDepth);
 
           d.children = d.children ? undefined : d._children;
           update(d);
