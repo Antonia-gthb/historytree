@@ -8,14 +8,16 @@ import {
   SelectLabel,
   SelectGroup
 } from "@/components/ui/select"
-import { interpolatePRGn, interpolateRdBu, interpolateSpectral, interpolateBrBG } from 'd3-scale-chromatic'
+import { interpolatePRGn, interpolateRdBu, interpolateSpectral, interpolateBrBG, interpolateTurbo, interpolateRainbow } from 'd3-scale-chromatic'
 import * as d3 from "d3";
 
 const colorSchemes = {
   VioletttoGreen: (n: number) => d3.quantize(interpolatePRGn, n),
   RedtoBlue: (n: number) => d3.quantize(interpolateRdBu, n),
   Spectral: (n: number) => d3.quantize(interpolateSpectral, n),
-  BrowntoBlue: (n: number) => d3.quantize(interpolateBrBG, n)
+  BrowntoBlue: (n: number) => d3.quantize(interpolateBrBG, n),
+  Turbo: (n: number) => d3.quantize(interpolateTurbo, n),
+  Rainbow: (n: number) => d3.quantize(interpolateRainbow, n)
 };
 
   interface ColorThemesProps {
@@ -32,14 +34,6 @@ const ColorThemes = ({ onSchemeChange }: ColorThemesProps) => {
     const colors = colorSchemes[schemeName](12);
     onSchemeChange(colors);
   };
-
-  // const colorSchemes = [
-  // { name: "VioletttoGreen", interpolator: interpolatePRGn },
-  // { name: "RedtoBlue", interpolator: interpolateRdBu },
-  // { name: "Spectral", interpolator: interpolateSpectral },
-  // { name: "BrowntoBlue", interpolator: interpolateBrBG }
-  //];
-
 
   return (
     <div className="p-6">
