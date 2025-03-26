@@ -1,68 +1,66 @@
-import { useState } from "react";
+import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from "react";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    SelectLabel,
-    SelectGroup
-  } from "@/components/ui/select"
-  import {interpolatePRGn, interpolateRdBu, interpolateSpectral, interpolateBrBG} from 'd3-scale-chromatic'
-  import * as d3 from "d3";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectLabel,
+  SelectGroup
+} from "@/components/ui/select"
+import { interpolatePRGn, interpolateRdBu, interpolateSpectral, interpolateBrBG } from 'd3-scale-chromatic'
+import * as d3 from "d3";
 
-interface ColorThemesProps {
-    onSelectScheme: (scheme: string) => void; // Callback für Elternkomponente
-    onSelectColors: (colors: string[]) => void;
+const colorSchemes = {
+  VioletttoGreen: (n: number) => d3.quantize(interpolatePRGn, n),
+  RedtoBlue: (n: number) => d3.quantize(interpolateRdBu, n),
+  Spectral: (n: number) => d3.quantize(interpolateSpectral, n),
+  BrowntoBlue: (n: number) => d3.quantize(interpolateBrBG, n)
+};
+
+  interface ColorThemesProps {
+    onSchemeChange: (colors: string[]) => void; // Jetzt übergeben wir direkt die Farben
   }
 
-const ColorThemes = ({ onSelectScheme, onSelectColors }: ColorThemesProps) => {
-  const [selectedTheme, setSelectedTheme] = useState("");
 
-  const colorSchemes = [
-    { name: "VioletttoGreen", interpolator: interpolatePRGn },
-    { name: "RedtoBlue", interpolator: interpolateRdBu },
-    { name: "Spectral", interpolator: interpolateSpectral },
-    { name: "BrowntoBlue", interpolator: interpolateBrBG }
-  ];
+const ColorThemes = ({ onSchemeChange }: ColorThemesProps) => {
+  const [selectedScheme, setSelectedScheme] = useState<keyof typeof colorSchemes>("RedtoBlue");
 
-  const handleThemeChange = (value: string) => {
-    const selectedScheme = colorSchemes.find(scheme => scheme.name === value);
-    
-    if (selectedScheme) {
-      setSelectedTheme(value);
-      onSelectScheme(value);
-      
-      // Generiere 9 Farben mit d3.quantize
-      const colors = d3.quantize(selectedScheme.interpolator, 9);
-      onSelectColors(colors);
-      
-      console.log("Selected colors:", colors);
-    }
+  const handleChange = (schemeName: keyof typeof colorSchemes) => {
+    setSelectedScheme(schemeName);
+    // Generiere 12 Farben als Standard (kann später angepasst werden)
+    const colors = colorSchemes[schemeName](12);
+    onSchemeChange(colors);
   };
 
-    return (
-        <div className="p-6">
-            <Select
-                value={selectedTheme}
-                onValueChange= {handleThemeChange}
-            >
-                <SelectTrigger className="w-[180px] border-black">
-                    <SelectValue placeholder="Select color theme" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectGroup>
-                        <SelectLabel>Themes</SelectLabel>
-                        {colorSchemes.map((scheme) => (
-                            <SelectItem key={scheme.name} value={scheme.name}>
-                                {scheme.name}
-                            </SelectItem>
-                        ))}
-                    </SelectGroup>
-                </SelectContent>
-            </Select>
-        </div>
-    )};
+  // const colorSchemes = [
+  // { name: "VioletttoGreen", interpolator: interpolatePRGn },
+  // { name: "RedtoBlue", interpolator: interpolateRdBu },
+  // { name: "Spectral", interpolator: interpolateSpectral },
+  // { name: "BrowntoBlue", interpolator: interpolateBrBG }
+  //];
+
+
+  return (
+    <div className="p-6">
+        <Select value={selectedScheme} onValueChange={handleChange}>
+        <SelectTrigger className="w-[180px] border-black">
+          <SelectValue placeholder="Select color theme" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Themes</SelectLabel>
+            {Object.keys(colorSchemes).map((schemeName) => (
+              <SelectItem key={schemeName} value={schemeName}>
+                {schemeName}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
+  )
+};
 
 
 export default ColorThemes

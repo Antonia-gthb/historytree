@@ -10,7 +10,7 @@ interface HierarchyPointNode extends d3.HierarchyNode<TreeNode> {
   data: any;
   y0?: number;
   _children?: HierarchyPointNode[];
-  color? : string;
+  color?: string;
 }
 
 type TreeNode = {
@@ -20,15 +20,18 @@ type TreeNode = {
   value?: number;
   count?: number;
   _children?: TreeNode[];  // _children für die Speicherung der zusammengeklappten Knoten
-  color? : string;
+  color?: string;
 };
 
-export default function CollaTree({ treedata, width = 1028, colors }: { treedata: TreeNode; width?: number; colors: string }) {
+export default function CollaTree({ treedata, width = 1028, colorScheme }: { treedata: TreeNode; width?: number; colorScheme: string[] }) {
   const svgRef = useRef<SVGSVGElement | null>(null);
-  console.log("Farben in der Tree-Komponente:", colors)
+  const colorScaleRef = useRef<d3.ScaleOrdinal<string, string, never>>(null!);
+  console.log("Farben in der Tree-Komponente:", colorScheme)
 
   useEffect(() => {
     if (!svgRef.current) return;
+
+
 
     // Tree Eckdaten
     const margin = { top: 20, right: 20, bottom: 20, left: 40 };
@@ -40,6 +43,7 @@ export default function CollaTree({ treedata, width = 1028, colors }: { treedata
     const tree = d3.tree<TreeNode>().nodeSize([dx, dy]);   // Fehler war hier: muss den Typ 2 Mal definieren (!!!!!!, Quelltyp und Zieltyp)
     const diagonal = d3.linkHorizontal<d3.HierarchyPointNode<TreeNode>,
       d3.HierarchyPointNode<TreeNode>>().x(d => d.y).y(d => d.x);
+    
 
     // Clear SVG before re-rendering
     d3.select(svgRef.current).selectAll("*").remove();
@@ -67,10 +71,13 @@ export default function CollaTree({ treedata, width = 1028, colors }: { treedata
       .attr("cursor", "pointer")
       .attr("pointer-events", "all");
 
-    function numberNodes(node: TreeNode, parentName = "") {
+    function numberNodes(node: TreeNode, parentName = "", mutationNames:string[] = []) {
       if (!node.originalName) {
+
         node.originalName = node.name; // Speichert den ursprünglichen Namen nur einmal
+        mutationNames.push(node.name);
       }
+
 
       if (parentName) {
         node.name = `${parentName}_${node.name}`;  // Elternnamen hinzufügen
@@ -78,12 +85,26 @@ export default function CollaTree({ treedata, width = 1028, colors }: { treedata
 
       if (node.children) {
         node.children.forEach((child, index) => {
-          numberNodes(child, `${node.name}_${index + 1}`);  // rekursiv durchlaufen
+          numberNodes(child, `${node.name}_${index + 1}`, mutationNames);  // rekursiv durchlaufen
         });
       }
     }
+    let mutationNames: string[] = [];
+    numberNodes(treedata, "", mutationNames);
+    console.log(mutationNames)
 
-    numberNodes(treedata);
+    const colorScale = d3.scaleOrdinal()
+    .domain(mutationNames)
+    .range(colorScheme);
+
+    if (!colorScaleRef.current) {
+      colorScaleRef.current = d3.scaleOrdinal<string>()
+        .domain(mutationNames)
+        .range(colorScheme);
+    } else {
+      colorScaleRef.current.range(colorScheme);
+    }
+
 
     const linkWidthScale = d3.scaleLinear()
       .domain([1, d3.max(root.descendants(), d => d.data.count || 0)]) // Min & Max Count-Wert
@@ -95,6 +116,7 @@ export default function CollaTree({ treedata, width = 1028, colors }: { treedata
       const duration = 2500;
       const nodes = root.descendants().reverse();
       const links = root.links();
+      colorScale.range(colorScheme);
 
       tree(root);
 
@@ -141,12 +163,12 @@ export default function CollaTree({ treedata, width = 1028, colors }: { treedata
           d.children = d.children ? undefined : d._children;
           update(d);
         });
-     
+
       nodeEnter.append("path")
         .attr("d", d => {
           const symbols = [
-            d3.symbolCircle,   
-            d3.symbolSquare,   
+            d3.symbolCircle,
+            d3.symbolSquare,
             d3.symbolTriangle,
           ];
 
@@ -154,7 +176,14 @@ export default function CollaTree({ treedata, width = 1028, colors }: { treedata
           const symbolType = symbols[symbolIndex]; // Symbol basierend auf dem Index
           return d3.symbol().type(symbolType).size(100)();
         })
-        .attr("fill", d => d._children ? colors[d.depth] : "#ccc" );
+        .attr("fill", d => {
+          if (!d._children) return "#ccc";
+          const color = colorScaleRef.current!(d.data.originalName || d.data.name);
+          console.log(`Farbe für ${d.data.name}:`, color); // Debug-Ausgabe
+          return color;
+        });
+        //.attr("fill", d => d._children ? colorScaleRef.current!(d.data.name) : "#ccc");
+
 
 
       nodeEnter.append("text")
@@ -216,7 +245,7 @@ export default function CollaTree({ treedata, width = 1028, colors }: { treedata
     });
 
     update(root);
-  }, [treedata,colors]);
+  }, [treedata, colorScheme]);
 
   return <svg ref={svgRef}></svg>;
 }
