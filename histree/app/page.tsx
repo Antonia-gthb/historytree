@@ -1,118 +1,62 @@
 "use client";
 
-import { useState } from 'react';
-import Plot from './oldComponents/Plot';
-import { myEvent } from './oldComponents/EventFilter';
-import EventCheckboxes from './oldComponents/EventFilter';
-import ColorScale from './oldComponents/cmap';
-import Link from 'next/link';
+import { useState, useRef } from 'react';
+import { interpolateRdBu } from 'd3-scale-chromatic';
+import { Button } from "@/components/ui/button";
+import * as d3 from "d3";
+import CollaTree from '../components/CollaTree';
+import rawdata from '@/app/tonis_orders_tree_2.json';
+import FileUpload from '../components/upload';
+import ColorTheme from '../components/colorSchemes';
+import Download from '../components/download';
+
 
 export default function Page() {
 
-  const [cmap, setCmap] = useState(30);
-  const [scaleFactor, setScaleFactor] = useState(1.5);
-  const [scaling, setScaling] = useState(false);
-  const onScalingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setScaling(e.target.checked);
-  };
-  const [threshold, setThreshold] = useState(0)
-  const handleThresholdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setThreshold(Number(e.target.value));
-  };
-  const [events, setEvents] = useState<Array<myEvent>>([
-    { id: 'Event A', x: 0, y: 1, checked: false },
-    { id: 'Event B', x: 1, y: 2, checked: false },
-    { id: 'Event C', x: 2, y: 3, checked: false },
-    { id: 'Event D', x: 8, y: 9, checked: false },
-  ]);
+    const [jsonData, setJsonData] = useState(null); // hochgeladener Datensatz
+    const [fileName, setFileName] = useState('Keine Datei ausgewählt');
+    const [isExpanded, setIsExpanded] = useState(false);
 
-  const [eventColor, setEventColor] = useState<string>('#ff0000');
+    const handleUpload = (data: any, fileName: string) => {
+        setJsonData(data); // speichert hochgeladene Daten 
+        setFileName(fileName); // dateiname speichern
+        // hier noch Namen von Mutationen in hochgeladener Datei speichern
+    };
 
-  return (
-    <div className="flex flex-col p-6 md:w-3/5 md:px-28 md:py-12 border"> {/* Ein großes div element mit mehreren div Unterelementen*/}
-      <h1 className='text-center mb-6 text-2xl font-bold'> {/* Macht den Titel oben in zentriert*/}
-        This is an application to demonstrate MHN Patient Trees
-        <Link href="/histree">HisTree</Link>
-      </h1>
-      <div className="flex items-start">
-        <div className="shrink-0 mr-6"> {/* Bild und Graph einfügen*/}
-          <Plot
-            eventColor={eventColor}
-            cmap={cmap}
-            scaling={scaleFactor}
-            threshold={threshold}
-            events={events.filter((event) => event.checked)}/> {/* Eingabe von cmap wird geplottet*/}
+    const [colorScheme, setColorScheme] = useState<string[]>(
+        d3.quantize(interpolateRdBu, 12) // 12 Farben als Standard
+    );
+
+    return (
+        <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-r from-cyan-100 via-blue-300 to-indigo-400 p-6">
+            <h1 className='text-4xl font-bold -mt-8 mb-4'> {/*Überschrift*/}
+                MHN Patient Tree
+            </h1>
+            <div className="flex flex-col w-full max-w-4xl p-6 mb-8">
+                <ColorTheme onSchemeChange={(colors) => {
+                    console.log("Neue Farben:", colors);
+                    setColorScheme(colors);
+                }} />
+                <div className="mx-auto block w-full rounded-lg">
+                    <CollaTree treedata={jsonData || rawdata} colorScheme={colorScheme}  onExpandAll={isExpanded ? () => {
+          console.log("Aufgeklappt!");
+          setIsExpanded(false); } : undefined}/>
+                    <p> {jsonData ? fileName : 'tonis_orders_tree_2.json'}</p>
+                </div>
+                <div className="flex justify-between font-bold text-xl p-1 w-full mb-2">
+                    <div>
+                        <FileUpload onUpload={handleUpload} />
+                    </div>
+                    <div>
+                        <Download downloadName={jsonData ? fileName : 'tonis_orders_tree_2.json'} />
+                    </div>
+                    <div>
+                    <Button variant="outline" onClick={() => setIsExpanded(true)} className="transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-800 text-slate-700 hover:text-white">
+                        Expand All
+                    </Button >
+                    </div>
+                </div>
+            </div>
         </div>
-        <div className="flex flex-col"> {/* macht die Flexbox für die rechte Seite */}
-          <div className="text-center font-bold text-2xl p-1 w-full mb-2"> {/* in Flexbox auf rechter Seite wird nun Text geschrieben mit blauem Hintergrund, p legt den Abstand um den Text fest*/}
-            <button className="px-2 py-1 rounded-sm bg-blue-300 hover:bg-blue-500 text-slate-700 hover:text-black">Upload</button> {/* Mit hover verändert sich Bildfarbe*/}
-          </div>
-          <p className="bg-white text-black p-4 mt-2 text-lg mb-2">
-            Platzhalter
-          </p>
-          <div className="text-center font-bold text-2xl p-1 w-full mb-2"> {/* mb-2 macht Abstand nach unten zum Text*/}
-            <button className="px-2 py-1 rounded-sm bg-blue-300 hover:bg-blue-500 text-slate-700 hover:text-black">Upload Patients</button>
-          </div>
-          <p className="bg-white text-black p-4 mt-2 text-lg border border-black">
-            Platzhalter für Datenfeld
-          </p>
-        </div>
-      </div>
-      <div className="flex items-center mt-6">  {/* CMAP */}
-        <h2 className="text-xl font-bold mr-6">CMAP</h2>
-        <ColorScale setEventColor={setEventColor} />
-      </div>
-      <div className="mt-6 "> {/* End X-Wert */}
-        <div className="flex">
-          <h2 className="text-xl font-bold mr-4">End X-Wert </h2>
-          <input type="range" min="0" max="100" value={cmap} className="w-fit" onChange={(e) => setCmap(Number(e.target.value))} /> {/* Skala */}
-          <div className='px-3'>
-            {cmap}
-          </div>
-          <div>
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-col mt-6"> {/* Scaling */}
-        <div>
-          <input
-            type="checkbox"
-            checked={scaling}
-            onChange={onScalingChange}
-            className="w-4 h-4 border cursor-pointer mr-2"
-          />
-          <span className="text-black mr-4">Scale edges by weight</span>
-        </div>
-        <div className="flex items-center mt-2">
-          <span className="text-black font-bold mr-4">Scaling:</span>
-          <div className="flex items-center">
-            <input
-              type="range" min="1" max="10" value={scaleFactor} className="w-fit" onChange={(e) => setScaleFactor(Number(e.target.value))}
-              disabled={!scaling}
-            />
-            <span className='px-3'> {scaleFactor} </span>
-          </div>
-        </div>
-      </div>
-      <div className='mt-6'>
-        <span style={{ marginRight: '10px' }}>Treshold at</span>
-        <input
-          className='w-fit'
-          type="number"
-          min="0"
-          max="100"
-          value={threshold}
-          onChange={handleThresholdChange}
-        />
-      </div>
-      <div className="flex flex-col mt-6">
-        <h1 className="text text-xl font-bold"> Eventfilter </h1>
-        <EventCheckboxes
-          events={events}
-          setEvents={setEvents}
-        />
-      </div>
-    </div>
-  );
+    );
 }
-

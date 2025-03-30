@@ -23,21 +23,20 @@ type TreeNode = {
   color?: string;
 };
 
-export default function CollaTree({ treedata, width = 1028, colorScheme }: { treedata: TreeNode; width?: number; colorScheme: string[] }) {
+export default function CollaTree({ treedata, width = 1028, colorScheme, onExpandAll }: { treedata: TreeNode; width?: number; colorScheme: string[], onExpandAll?: () => void; }) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const colorScaleRef = useRef<d3.ScaleOrdinal<string, string, never>>(null!);
-  console.log("Farben in der Tree-Komponente:", colorScheme)
+  const rootRef = useRef<HierarchyPointNode | null>(null);
 
   useEffect(() => {
-    if (!svgRef.current) return;
-
-
+    if (!svgRef.current || !rootRef.current) return;
 
     // Tree Eckdaten
     const margin = { top: 20, right: 20, bottom: 20, left: 40 };
     const dx = 20;  // sorgt für Abstand zwischen den Knoten
     const root = d3.hierarchy(treedata) as HierarchyPointNode;
     root.sum(d => d.count || 0);
+    rootRef.current = root;
     const dy = (width - margin.right - margin.left) / (1 + root.height);
 
     const tree = d3.tree<TreeNode>().nodeSize([dx, dy]);   // Fehler war hier: muss den Typ 2 Mal definieren (!!!!!!, Quelltyp und Zieltyp)
@@ -166,6 +165,8 @@ export default function CollaTree({ treedata, width = 1028, colorScheme }: { tre
 
       nodeEnter.append("path")
         .attr("d", d => {
+
+          if (d.depth===0) return "";
           const symbols = [
             d3.symbolCircle,
             d3.symbolSquare,
@@ -250,7 +251,25 @@ root.descendants().forEach((d, i) => {
 });
 
 update(root);
+
+const expandAll: any = () => {
+  if (!root) return; // Sicherheitsprüfung
+
+  // Alle Knoten durchlaufen und Kinder wiederherstellen
+  root.descendants().forEach((d) => {
+    if (d._children) {
+      d.children = d._children; // Kinder aus Backup zurückholen
+      d._children = undefined; // Backup leeren (optional)
+    }
+  });
+
+  // D3.js-Update auslösen (Neuzeichnen des Baums)
+  update(root);
+};
   }, [treedata, colorScheme]);
+
+
+  
 
 return <svg ref={svgRef}></svg>;
 }
