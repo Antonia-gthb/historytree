@@ -23,26 +23,26 @@ type TreeNode = {
   color?: string;
 };
 
-export default function CollaTree({ treedata, width = 1028, colorScheme, onExpandAll }: { treedata: TreeNode; width?: number; colorScheme: string[], onExpandAll?: () => void; }) {
+export default function CollaTree({ treedata, width = 1028, colorScheme, shouldExpand }: { treedata: TreeNode; width?: number; colorScheme: string[], shouldExpand:boolean}) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const colorScaleRef = useRef<d3.ScaleOrdinal<string, string, never>>(null!);
-  const rootRef = useRef<HierarchyPointNode | null>(null);
+  //const fullTreeRef = useRef<d3.HierarchyNode<TreeNode>>(null); // Backup vollständiger Baum
+
 
   useEffect(() => {
-    if (!svgRef.current || !rootRef.current) return;
+    if (!svgRef.current) return;
 
     // Tree Eckdaten
     const margin = { top: 20, right: 20, bottom: 20, left: 40 };
     const dx = 20;  // sorgt für Abstand zwischen den Knoten
     const root = d3.hierarchy(treedata) as HierarchyPointNode;
     root.sum(d => d.count || 0);
-    rootRef.current = root;
+    //fullTreeRef.current = root;  
     const dy = (width - margin.right - margin.left) / (1 + root.height);
 
     const tree = d3.tree<TreeNode>().nodeSize([dx, dy]);   // Fehler war hier: muss den Typ 2 Mal definieren (!!!!!!, Quelltyp und Zieltyp)
     const diagonal = d3.linkHorizontal<d3.HierarchyPointNode<TreeNode>,
       d3.HierarchyPointNode<TreeNode>>().x(d => d.y).y(d => d.x);
-
 
     // Clear SVG before re-rendering
     d3.select(svgRef.current).selectAll("*").remove();
@@ -88,6 +88,7 @@ export default function CollaTree({ treedata, width = 1028, colorScheme, onExpan
         });
       }
     }
+
     let mutationNames: string[] = [];
     numberNodes(treedata, "", mutationNames);
     console.log(mutationNames)
@@ -162,6 +163,7 @@ export default function CollaTree({ treedata, width = 1028, colorScheme, onExpan
           d.children = d.children ? undefined : d._children;
           update(d);
         });
+     
 
       nodeEnter.append("path")
         .attr("d", d => {
@@ -189,8 +191,6 @@ export default function CollaTree({ treedata, width = 1028, colorScheme, onExpan
       console.log(`Farbe für ${d.data.name}:`, color);
       return color;
     });
-
-
 
   nodeEnter.append("text")
     .attr("dy", "0.31em")
@@ -244,29 +244,24 @@ export default function CollaTree({ treedata, width = 1028, colorScheme, onExpan
 // Tree initialisieren
 root.x0 = dy / 2;
 root.y0 = 2;
-root.descendants().forEach((d, i) => {
-  (d as any).id = i;
-  d._children = d.children;
-  if (d.depth && d.data.name.length !== 1) d.children = undefined;
-});
+if (shouldExpand) {
+  // Alle Knoten aufklappen
+  root.descendants().forEach(d => {
+    d._children = d.children;
+    d.children = d._children; // Alle Kinder zeigen
+  });
+} else {
+  // Standardverhalten: Nur Wurzel zeigen
+  root.descendants().forEach(d => {
+    d._children = d.children;
+    if (d.depth && d.data.name.length !== 1) d.children = undefined;
+  });
+}
 
 update(root);
 
-const expandAll: any = () => {
-  if (!root) return; // Sicherheitsprüfung
+}, [treedata, shouldExpand, colorScheme]);
 
-  // Alle Knoten durchlaufen und Kinder wiederherstellen
-  root.descendants().forEach((d) => {
-    if (d._children) {
-      d.children = d._children; // Kinder aus Backup zurückholen
-      d._children = undefined; // Backup leeren (optional)
-    }
-  });
-
-  // D3.js-Update auslösen (Neuzeichnen des Baums)
-  update(root);
-};
-  }, [treedata, colorScheme]);
 
 
   

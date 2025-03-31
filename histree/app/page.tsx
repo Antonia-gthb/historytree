@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState} from 'react';
 import { interpolateRdBu } from 'd3-scale-chromatic';
 import { Button } from "@/components/ui/button";
 import * as d3 from "d3";
@@ -38,9 +38,7 @@ export default function Page() {
                     setColorScheme(colors);
                 }} />
                 <div className="mx-auto block w-full rounded-lg">
-                    <CollaTree treedata={jsonData || rawdata} colorScheme={colorScheme}  onExpandAll={isExpanded ? () => {
-          console.log("Aufgeklappt!");
-          setIsExpanded(false); } : undefined}/>
+                    <CollaTree treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} />
                     <p> {jsonData ? fileName : 'tonis_orders_tree_2.json'}</p>
                 </div>
                 <div className="flex justify-between font-bold text-xl p-1 w-full mb-2">
@@ -51,8 +49,8 @@ export default function Page() {
                         <Download downloadName={jsonData ? fileName : 'tonis_orders_tree_2.json'} />
                     </div>
                     <div>
-                    <Button variant="outline" onClick={() => setIsExpanded(true)} className="transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-800 text-slate-700 hover:text-white">
-                        Expand All
+                    <Button onClick={() => setIsExpanded(!isExpanded)} variant="outline" className="transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-800 text-slate-700 hover:text-white">
+                    {isExpanded ? 'Collapse All' : 'Expand All'}
                     </Button >
                     </div>
                 </div>
