@@ -32,7 +32,7 @@ const ColorThemes = ({ onSchemeChange }: ColorThemesProps) => {
   const handleChange = (schemeName: keyof typeof colorSchemes) => {
     setSelectedScheme(schemeName);
     // Generiere 12 Farben als Standard (kann später angepasst werden)
-    const colors = colorSchemes[schemeName](12);
+    const colors = colorSchemes[schemeName](13);
    onSchemeChange(colors);
   };
 

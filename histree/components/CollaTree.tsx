@@ -71,12 +71,10 @@ export default function CollaTree({ treedata, width = 1028, colorScheme, shouldE
 
     function numberNodes(node: TreeNode, parentName = "", mutationNames: string[] = []) {
       if (!node.originalName) {
-
         node.originalName = node.name; // Speichert den ursprünglichen Namen nur einmal
         mutationNames.push(node.name);
       }
-
-
+      
       if (parentName) {
         node.name = `${parentName}_${node.name}`;  // Elternnamen hinzufügen
       }
@@ -94,14 +92,6 @@ export default function CollaTree({ treedata, width = 1028, colorScheme, shouldE
     colorScaleRef.current = d3.scaleOrdinal<string, string>()
     .domain(mutationNames)
     .range(colorScheme);
-
-    console.log("ColorScale Daten:", {
-      domain: colorScaleRef.current?.domain(),
-      range: colorScaleRef.current?.range(),
-      mutationNames: mutationNames
-    });
-
-
 
     const linkWidthScale = d3.scaleLinear()
       .domain([1, d3.max(root.descendants(), d => d.data.count || 0)]) // Min & Max Count-Wert
@@ -184,7 +174,6 @@ export default function CollaTree({ treedata, width = 1028, colorScheme, shouldE
         })
     .attr("fill", d => {
       const color = colorScaleRef.current!(d.data.originalName || d.data.name);
-      console.log(`Farbe für ${d.data.name}:`, color);
       return color;
     });
 
@@ -258,9 +247,6 @@ if (shouldExpand) {
     if (d.depth && d.data.name.length !== 1) d.children = undefined;
   });
 }
-console.log("Vor dem Update - originalNames:", 
-  root.descendants().map(d => d.data.originalName || d.data.name));
-   
 
 update(root);
 
