@@ -24,9 +24,9 @@ type TreeNode = {
 };
 
 export default function CollaTree({ treedata, width = 1028, colorScheme, shouldExpand }: { treedata: TreeNode; width?: number; colorScheme: string[], shouldExpand:boolean}) {
-  const svgRef = useRef<SVGSVGElement | null>(null);
-  const colorScaleRef = useRef<d3.ScaleOrdinal<string, string, never>>(null!);
-  //const fullTreeRef = useRef<d3.HierarchyNode<TreeNode>>(null); // Backup vollständiger Baum
+ const svgRef = useRef<SVGSVGElement | null>(null);
+ const colorScaleRef = useRef<d3.ScaleOrdinal<string, string, never> | null>(null);
+ const nodeSelectionRef = useRef<d3.Selection<SVGGElement, HierarchyPointNode, SVGGElement, unknown> | null>(null);
 
 
   useEffect(() => {
@@ -37,7 +37,6 @@ export default function CollaTree({ treedata, width = 1028, colorScheme, shouldE
     const dx = 20;  // sorgt für Abstand zwischen den Knoten
     const root = d3.hierarchy(treedata) as HierarchyPointNode;
     root.sum(d => d.count || 0);
-    //fullTreeRef.current = root;  
     const dy = (width - margin.right - margin.left) / (1 + root.height);
 
     const tree = d3.tree<TreeNode>().nodeSize([dx, dy]);   // Fehler war hier: muss den Typ 2 Mal definieren (!!!!!!, Quelltyp und Zieltyp)
@@ -91,19 +90,17 @@ export default function CollaTree({ treedata, width = 1028, colorScheme, shouldE
 
     let mutationNames: string[] = [];
     numberNodes(treedata, "", mutationNames);
-    console.log(mutationNames)
 
-    const colorScale = d3.scaleOrdinal()
-      .domain(mutationNames)
-      .range(colorScheme);
+    colorScaleRef.current = d3.scaleOrdinal<string, string>()
+    .domain(mutationNames)
+    .range(colorScheme);
 
-    if (!colorScaleRef.current) {
-      colorScaleRef.current = d3.scaleOrdinal<string>()
-        .domain(mutationNames)
-        .range(colorScheme);
-    } else {
-      colorScaleRef.current.range(colorScheme);
-    }
+    console.log("ColorScale Daten:", {
+      domain: colorScaleRef.current?.domain(),
+      range: colorScaleRef.current?.range(),
+      mutationNames: mutationNames
+    });
+
 
 
     const linkWidthScale = d3.scaleLinear()
@@ -116,7 +113,6 @@ export default function CollaTree({ treedata, width = 1028, colorScheme, shouldE
       const duration = 2500;
       const nodes = root.descendants().reverse();
       const links = root.links();
-      colorScale.range(colorScheme);
 
       tree(root);
 
@@ -205,12 +201,17 @@ export default function CollaTree({ treedata, width = 1028, colorScheme, shouldE
   nodeEnter.merge(node).transition().duration(duration)
     .attr("transform", d => `translate(${d.y},${d.x})`)
     .attr("fill-opacity", 1)
-    .attr("stroke-opacity", 1);
+    .attr("stroke-opacity", 1)
+    .select("path") 
+    .attr("fill", d => colorScaleRef.current!(d.data.originalName || d.data.name)); // 🔥
 
   node.exit().transition(transition as any).remove()
     .attr("transform", d => `translate(${source.y},${source.x})`)
     .attr("fill-opacity", 0)
     .attr("stroke-opacity", 0);
+  
+  nodeSelectionRef.current = nodeEnter.merge(node); // Speichert die Auswahl für spätere Updates
+  console.log(nodeSelectionRef)
 
   // Links updaten
   const link = gLink.selectAll<SVGPathElement, d3.HierarchyLink<HierarchyPointNode>>("path").data(links, d => d.target.data.name + "-" + d.target.depth);
@@ -257,14 +258,25 @@ if (shouldExpand) {
     if (d.depth && d.data.name.length !== 1) d.children = undefined;
   });
 }
+console.log("Vor dem Update - originalNames:", 
+  root.descendants().map(d => d.data.originalName || d.data.name));
+   
 
 update(root);
 
-}, [treedata, shouldExpand, colorScheme]);
+}, [treedata, shouldExpand]);
 
 
 
-  
+  useEffect(() => {
+    if (colorScaleRef.current && nodeSelectionRef.current) {
+      colorScaleRef.current.range(colorScheme);
+        nodeSelectionRef.current
+          .select("path") // Nur die Symbole der Nodes
+          .transition()
+          .attr("fill", d => colorScaleRef.current!(d.data.originalName || d.data.name));
+      }
+  }, [colorScheme]);
 
 return <svg ref={svgRef}></svg>;
 }

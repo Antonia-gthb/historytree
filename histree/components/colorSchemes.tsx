@@ -1,4 +1,4 @@
-import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from "react";
+import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select"
 import { interpolatePRGn, interpolateRdBu, interpolateSpectral, interpolateBrBG, interpolateTurbo, interpolateRainbow } from 'd3-scale-chromatic'
 import * as d3 from "d3";
+
 
 const colorSchemes = {
   VioletttoGreen: (n: number) => d3.quantize(interpolatePRGn, n),
@@ -32,7 +33,7 @@ const ColorThemes = ({ onSchemeChange }: ColorThemesProps) => {
     setSelectedScheme(schemeName);
     // Generiere 12 Farben als Standard (kann später angepasst werden)
     const colors = colorSchemes[schemeName](12);
-    onSchemeChange(colors);
+   onSchemeChange(colors);
   };
 
   return (
