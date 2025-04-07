@@ -7,7 +7,7 @@ interface HierarchyPointNode extends d3.HierarchyNode<TreeNode> {
   y: number;
   x0?: number;
   depth: number;
-  data: any;
+  data: TreeNode;
   y0?: number;
   _children?: HierarchyPointNode[];
   color?: string;
@@ -23,10 +23,13 @@ type TreeNode = {
   color?: string;
 };
 
-export default function CollaTree({ treedata, width = 1028, colorScheme, shouldExpand }: { treedata: TreeNode; width?: number; colorScheme: string[], shouldExpand:boolean}) {
- const svgRef = useRef<SVGSVGElement | null>(null);
- const colorScaleRef = useRef<d3.ScaleOrdinal<string, string, never> | null>(null);
- const nodeSelectionRef = useRef<d3.Selection<SVGGElement, HierarchyPointNode, SVGGElement, unknown> | null>(null);
+export default function CollaTree({ treedata, width = 1028, colorScheme, shouldExpand, lineWidthFactor, scalingCheckBox }: { treedata: TreeNode; width?: number; colorScheme: string[], shouldExpand: boolean, lineWidthFactor: number[], scalingCheckBox: boolean }) {
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const colorScaleRef = useRef<d3.ScaleOrdinal<string, string, never> | null>(null);
+  const nodeSelectionRef = useRef<d3.Selection<SVGGElement, HierarchyPointNode, SVGGElement, unknown> | null>(null);
+  const lineWidthFactorRef = useRef<number>(200)
+  const selectedLinksRef = useRef<d3.Selection<SVGPathElement, d3.HierarchyLink<HierarchyPointNode>, SVGGElement, unknown> | null>(null);
+
 
 
   useEffect(() => {
@@ -74,7 +77,7 @@ export default function CollaTree({ treedata, width = 1028, colorScheme, shouldE
         node.originalName = node.name; // Speichert den ursprünglichen Namen nur einmal
         mutationNames.push(node.name);
       }
-      
+
       if (parentName) {
         node.name = `${parentName}_${node.name}`;  // Elternnamen hinzufügen
       }
@@ -90,19 +93,16 @@ export default function CollaTree({ treedata, width = 1028, colorScheme, shouldE
     numberNodes(treedata, "", mutationNames);
 
     colorScaleRef.current = d3.scaleOrdinal<string, string>()
-    .domain(mutationNames)
-    .range(colorScheme);
+      .domain(mutationNames)
+      .range(colorScheme);
 
-    const linkWidthScale = d3.scaleLinear()
-      .domain([1, d3.max(root.descendants(), d => d.data.count || 0)]) // Min & Max Count-Wert
-      .range([1, 10]); // Min & Max Linienstärke
-
-
+    lineWidthFactorRef.current = lineWidthFactor[0];
 
     function update(source: HierarchyPointNode) {
-      const duration = 2500;
+      const duration = 1500;
       const nodes = root.descendants().reverse();
-      const links = root.links();
+      const links = root.links() as unknown as d3.HierarchyLink<HierarchyPointNode>[];
+
 
       tree(root);
 
@@ -149,12 +149,12 @@ export default function CollaTree({ treedata, width = 1028, colorScheme, shouldE
           d.children = d.children ? undefined : d._children;
           update(d);
         });
-     
+
 
       nodeEnter.append("path")
         .attr("d", d => {
 
-          if (d.depth===0) return "";
+          if (d.depth === 0) return "";
           const symbols = [
             d3.symbolCircle,
             d3.symbolSquare,
@@ -172,99 +172,117 @@ export default function CollaTree({ treedata, width = 1028, colorScheme, shouldE
           const symbolIndex = Math.abs(hash(nodeName)) % symbols.length;
           return d3.symbol().type(symbols[symbolIndex]).size(100)();
         })
-    .attr("fill", d => {
-      const color = colorScaleRef.current!(d.data.originalName || d.data.name);
-      return color;
-    });
+        .attr("fill", d => {
+          const color = colorScaleRef.current!(d.data.originalName || d.data.name);
+          return color;
+        });
 
-  nodeEnter.append("text")
-    .attr("dy", "0.31em")
-    .attr("x", d => d._children ? -6 : 6)
-    .attr("text-anchor", d => d._children ? "end" : "start")
-    .text(d => d.data.originalName || d.data.name)
-    .attr("fill-opacity", 0) // Startet unsichtbar
-    .transition()
-    .duration(300)
-    .attr("fill-opacity", 1); // Erscheint sanft
+      nodeEnter.append("text")
+        .attr("dy", "0.31em")
+        .attr("x", d => d._children ? -6 : 6)
+        .attr("text-anchor", d => d._children ? "end" : "start")
+        .text(d => d.data.originalName || d.data.name)
+        .attr("fill-opacity", 0) // Startet unsichtbar
+        .transition()
+        .duration(300)
+        .attr("fill-opacity", 1); // Erscheint sanft
 
-  nodeEnter.merge(node).transition().duration(duration)
-    .attr("transform", d => `translate(${d.y},${d.x})`)
-    .attr("fill-opacity", 1)
-    .attr("stroke-opacity", 1)
-    .select("path") 
-    .attr("fill", d => colorScaleRef.current!(d.data.originalName || d.data.name)); // 🔥
+      nodeEnter.merge(node).transition().duration(duration)
+        .attr("transform", d => `translate(${d.y},${d.x})`)
+        .attr("fill-opacity", 1)
+        .attr("stroke-opacity", 1)
+        .select("path")
+        .attr("fill", d => colorScaleRef.current!(d.data.originalName || d.data.name)); // 🔥
 
-  node.exit().transition(transition as any).remove()
-    .attr("transform", d => `translate(${source.y},${source.x})`)
-    .attr("fill-opacity", 0)
-    .attr("stroke-opacity", 0);
-  
-  nodeSelectionRef.current = nodeEnter.merge(node); // Speichert die Auswahl für spätere Updates
-  console.log(nodeSelectionRef)
+      node.exit().transition(transition as any).remove()
+        .attr("transform", d => `translate(${source.y},${source.x})`)
+        .attr("fill-opacity", 0)
+        .attr("stroke-opacity", 0);
 
-  // Links updaten
-  const link = gLink.selectAll<SVGPathElement, d3.HierarchyLink<HierarchyPointNode>>("path").data(links, d => d.target.data.name + "-" + d.target.depth);
+      nodeSelectionRef.current = nodeEnter.merge(node); // Speichert die Auswahl für spätere Updates
 
-  const linkEnter = link.enter().append("path")
-    .attr("d", d => {
-      const o = { x: d.source.x0, y: d.source.y0 }; // Startpunkt = alter Punkt
-      return diagonal({ source: o, target: o });  // Linien beginnen und enden am gleichen Punkt
-    })
-    .attr("stroke-width", d => {
-      return d.target.data.count ? Math.max(1, d.target.data.count / 200) : 1;
-    });
+      // Links updaten
 
-  link.merge(linkEnter).transition(transition as any)
-    .attr("d", diagonal as any);
+      const link = gLink.selectAll<SVGPathElement, d3.HierarchyLink<HierarchyPointNode>>("path").data(links, d => d.target.data.name + "-" + d.target.depth);
 
 
-  link.exit().transition(transition as any).remove()
-    .attr("d", d => {
-      const o = { x: source.x, y: source.y };
-      return diagonal({ source: o, target: o });
-    })
+      const linkEnter = link.enter().append("path")
+        .attr("d", d => {
+          const o = { x: d.source.x0, y: d.source.y0 }; // Startpunkt = alter Punkt
+          return diagonal({ source: o, target: o });  // Linien beginnen und enden am gleichen Punkt
+        })
+        .attr("stroke-width", d => {
+          return d.target.data.count ? Math.max(1, d.target.data.count / lineWidthFactorRef.current) : 1;
+        });
 
-  // Altes speichern
-  root.eachBefore(d => {
-    d.x0 = d.x;
-    d.y0 = d.y;
-  });
-}
 
-// Tree initialisieren
-root.x0 = dy / 2;
-root.y0 = 2;
-if (shouldExpand) {
-  // Alle Knoten aufklappen
-  root.descendants().forEach(d => {
-    d._children = d.children;
-    d.children = d._children; // Alle Kinder zeigen
-  });
-} else {
-  // Standardverhalten: Nur Wurzel zeigen
-  root.descendants().forEach(d => {
-    d._children = d.children;
-    if (d.depth && d.data.name.length !== 1) d.children = undefined;
-  });
-}
+      link.merge(linkEnter).transition(transition as any)
+        .attr("d", diagonal as any);
 
-update(root);
 
-}, [treedata, shouldExpand]);
+      link.exit().transition(transition as any).remove()
+        .attr("d", d => {
+          const o = { x: source.x, y: source.y };
+          return diagonal({ source: o, target: o });
+        })
+
+      selectedLinksRef.current = link.merge(linkEnter);
+
+      // Altes speichern
+      root.eachBefore(d => {
+        d.x0 = d.x;
+        d.y0 = d.y;
+      });
+    }
+
+    // Tree initialisieren
+    root.x0 = dy / 2;
+    root.y0 = 2;
+    if (shouldExpand) {
+      // Alle Knoten aufklappen
+      root.descendants().forEach(d => {
+        d._children = d.children;
+        d.children = d._children; // Alle Kinder zeigen
+      });
+    } else {
+      // Standardverhalten: Nur Wurzel zeigen
+      root.descendants().forEach(d => {
+        d._children = d.children;
+        if (d.depth && d.data.name.length !== 1) d.children = undefined;
+      });
+    }
+
+    update(root);
+
+  }, [treedata, shouldExpand]);
 
 
 
   useEffect(() => {
     if (colorScaleRef.current && nodeSelectionRef.current) {
       colorScaleRef.current.range(colorScheme);
-        nodeSelectionRef.current
-          .select("path") // Nur die Symbole der Nodes
-          .transition()
-          .attr("fill", d => colorScaleRef.current!(d.data.originalName || d.data.name));
-      }
+      nodeSelectionRef.current
+        .select("path") // Nur die Symbole der Nodes
+        .transition()
+        .attr("fill", d => colorScaleRef.current!(d.data.originalName || d.data.name));
+    }
   }, [colorScheme]);
 
-return <svg ref={svgRef}></svg>;
+  useEffect(() => {
+
+    lineWidthFactorRef.current = lineWidthFactor[0];
+
+    if (selectedLinksRef.current) {
+      selectedLinksRef.current
+        .attr("stroke-width", d => {
+          const factor = lineWidthFactorRef.current || 1;
+          return d.target.data.count ? Math.max(1, d.target.data.count / factor) : 1;
+        });
+    }
+  }, [lineWidthFactor]);
+
+
+  return <svg ref={svgRef}></svg>;
 }
 
 

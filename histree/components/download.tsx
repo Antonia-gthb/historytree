@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button"
 import { DownloadIcon } from "lucide-react"
-import { useEffect } from "react";
 
 interface DownloadProps {
     downloadName: string;

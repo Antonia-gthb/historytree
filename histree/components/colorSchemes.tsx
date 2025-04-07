@@ -22,7 +22,7 @@ const colorSchemes = {
 };
 
   interface ColorThemesProps {
-    onSchemeChange: (colors: string[]) => void; // Jetzt übergeben wir direkt die Farben
+    onSchemeChange: (colors: string[]) => void; // Farben werden direkt übergeben
   }
 
 
@@ -31,7 +31,7 @@ const ColorThemes = ({ onSchemeChange }: ColorThemesProps) => {
 
   const handleChange = (schemeName: keyof typeof colorSchemes) => {
     setSelectedScheme(schemeName);
-    // Generiere 12 Farben als Standard (kann später angepasst werden)
+    // 12 Farben als Standard, kann später angepasst werden
     const colors = colorSchemes[schemeName](13);
    onSchemeChange(colors);
   };
@@ -59,12 +59,3 @@ const ColorThemes = ({ onSchemeChange }: ColorThemesProps) => {
 
 
 export default ColorThemes
-
-
-//Mutation Namen in Array speichern
-//zählen wie viele VERSCHIEDENE Namen es gibt
-//domain erstellen
-//damit die Anzahl an verschiedenen Farben benötigt
-//dann mit scale ordinal beide Arrays zusammen bringen und in variable color speichern
-// color dann verwenden
-//Farbschema muss variabel sein
