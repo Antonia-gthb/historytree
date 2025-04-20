@@ -23,7 +23,24 @@ type TreeNode = {
   color?: string;
 };
 
-export default function CollaTree({ treedata, width = 1028, colorScheme, shouldExpand, lineWidthFactor }: { treedata: TreeNode; width?: number; colorScheme: string[], shouldExpand: boolean, lineWidthFactor: number[] }) {
+interface CollaTreeProps {
+  treedata: TreeNode;
+  width?: number;
+  colorScheme: string[];
+  shouldExpand: boolean;
+  lineWidthFactor: number[];
+  // Neue Prop: Callback, der die Mutation-Namen zurückgibt
+  onMutationNamesReady?: (names: string[]) => void;
+}
+
+export default function CollaTree({
+  treedata,
+  width = 1028,
+  colorScheme,
+  shouldExpand,
+  lineWidthFactor,
+  onMutationNamesReady, // Optionaler Callback
+}: CollaTreeProps) { 
   const svgRef = useRef<SVGSVGElement | null>(null);
   const colorScaleRef = useRef<d3.ScaleOrdinal<string, string, never> | null>(null);
   const nodeSelectionRef = useRef<d3.Selection<SVGGElement, HierarchyPointNode, SVGGElement, unknown> | null>(null);
@@ -91,10 +108,19 @@ export default function CollaTree({ treedata, width = 1028, colorScheme, shouldE
 
     let mutationNames: string[] = [];
     numberNodes(treedata, "", mutationNames);
+    console.log("Name", mutationNames)
+
 
     colorScaleRef.current = d3.scaleOrdinal<string, string>()
       .domain(mutationNames)
       .range(colorScheme);
+
+    const nameGeneticEventCB = Array.from(d3.union(mutationNames));
+    console.log(nameGeneticEventCB)
+
+    if (onMutationNamesReady) {
+      onMutationNamesReady(nameGeneticEventCB);
+    }
 
     lineWidthFactorRef.current = lineWidthFactor[0];
 
@@ -283,6 +309,9 @@ export default function CollaTree({ treedata, width = 1028, colorScheme, shouldE
 
 
   return <svg ref={svgRef}></svg>;
+
+  
 }
+
 
 

@@ -10,6 +10,9 @@ import FileUpload from '../components/upload';
 import ColorTheme from '../components/colorSchemes';
 import Download from '../components/download';
 import SliderScaling from '@/components/lineslider';
+import {Eventfilter} from '@/components/eventfilter';
+
+
 
 
 export default function Page() {
@@ -18,6 +21,7 @@ export default function Page() {
     const [fileName, setFileName] = useState('Keine Datei ausgewählt');
     const [isExpanded, setIsExpanded] = useState(false);
     const [maxLineWidth, setMaxLineWidth] = useState([200]);
+    const [geneticEventsName, setGeneticEventsName] = useState<string[]>();
 
     const handleUpload = (data: any, fileName: string) => {
         setJsonData(data); // speichert hochgeladene Daten 
@@ -38,7 +42,7 @@ export default function Page() {
                     setColorScheme(colors);
                 }} />
                 <div className="mx-auto block w-full rounded-lg">
-                    <CollaTree treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={maxLineWidth} />
+                    <CollaTree treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={maxLineWidth} onMutationNamesReady={(names) => setGeneticEventsName(names)}  />
                     <p> {jsonData ? fileName : 'tonis_orders_tree_2.json'}</p>
                 </div>
                 <div className="flex justify-between font-bold text-xl p-1 w-full mb-2">
@@ -59,6 +63,9 @@ export default function Page() {
                         <SliderScaling value={maxLineWidth} min={25} max={300} step={25} onValueChange={([newValue]) => setMaxLineWidth([newValue])}  />
                     <span className="text-black my-1 mx-3"> {maxLineWidth[0]/100}</span>
                     </div>
+                </div>
+                <div>
+                <Eventfilter items={geneticEventsName}/>
                 </div>
             </div>
         </div>
