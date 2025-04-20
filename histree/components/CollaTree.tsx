@@ -23,7 +23,7 @@ type TreeNode = {
   color?: string;
 };
 
-export default function CollaTree({ treedata, width = 1028, colorScheme, shouldExpand, lineWidthFactor, scalingCheckBox }: { treedata: TreeNode; width?: number; colorScheme: string[], shouldExpand: boolean, lineWidthFactor: number[], scalingCheckBox: boolean }) {
+export default function CollaTree({ treedata, width = 1028, colorScheme, shouldExpand, lineWidthFactor }: { treedata: TreeNode; width?: number; colorScheme: string[], shouldExpand: boolean, lineWidthFactor: number[] }) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const colorScaleRef = useRef<d3.ScaleOrdinal<string, string, never> | null>(null);
   const nodeSelectionRef = useRef<d3.Selection<SVGGElement, HierarchyPointNode, SVGGElement, unknown> | null>(null);
