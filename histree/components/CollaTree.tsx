@@ -1,15 +1,10 @@
 import * as d3 from "d3";
 import { useRef, useEffect } from "react";
 
-
-interface HierarchyPointNode extends d3.HierarchyNode<TreeNode> {
-  x: number;
-  y: number;
-  x0?: number;
-  depth: number;
-  data: TreeNode;
-  y0?: number;
-  _children?: HierarchyPointNode[];
+type MyNode = d3.HierarchyPointNode<TreeNode> & {
+  x0: number;
+  y0: number;
+  _children?: MyNode[];
   color?: string;
 }
 
@@ -29,7 +24,6 @@ interface CollaTreeProps {
   colorScheme: string[];
   shouldExpand: boolean;
   lineWidthFactor: number[];
-  // Neue Prop: Callback, der die Mutation-Namen zurückgibt
   onMutationNamesReady?: (names: string[]) => void;
 }
 
@@ -40,14 +34,32 @@ export default function CollaTree({
   shouldExpand,
   lineWidthFactor,
   onMutationNamesReady, // Optionaler Callback
-}: CollaTreeProps) { 
+}: CollaTreeProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const colorScaleRef = useRef<d3.ScaleOrdinal<string, string, never> | null>(null);
-  const nodeSelectionRef = useRef<d3.Selection<SVGGElement, HierarchyPointNode, SVGGElement, unknown> | null>(null);
+  const nodeSelectionRef = useRef<d3.Selection<SVGGElement, MyNode, SVGGElement, unknown> | null>(null);
   const lineWidthFactorRef = useRef<number>(200)
-  const selectedLinksRef = useRef<d3.Selection<SVGPathElement, d3.HierarchyLink<HierarchyPointNode>, SVGGElement, unknown> | null>(null);
+  const selectedLinksRef = useRef<d3.Selection<SVGPathElement, d3.HierarchyLink<MyNode>, SVGGElement, unknown> | null>(null);
+  const mutationNamesRef = useRef<string[] | null>(null); // wird nur einmal gesetzt
 
 
+  function numberNodes(node: TreeNode, parentName = "", mutationNames: string[] = []) {
+    if (!node.originalName) {
+      node.originalName = node.name; // Speichert den ursprünglichen Namen nur einmal
+      mutationNames.push(node.name);
+    }
+
+    if (parentName) {
+      node.name = `${parentName}_${node.name}`;  // Elternnamen hinzufügen
+    }
+
+    if (node.children) {
+      node.children.forEach((child, index) => {
+        numberNodes(child, `${node.name}_${index + 1}`, mutationNames);  // rekursiv durchlaufen
+      });
+    }
+
+  }
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -55,13 +67,12 @@ export default function CollaTree({
     // Tree Eckdaten
     const margin = { top: 20, right: 20, bottom: 20, left: 40 };
     const dx = 20;  // sorgt für Abstand zwischen den Knoten
-    const root = d3.hierarchy(treedata) as HierarchyPointNode;
+    const root = d3.hierarchy(treedata) as MyNode;
     root.sum(d => d.count || 0);
     const dy = (width - margin.right - margin.left) / (1 + root.height);
 
     const tree = d3.tree<TreeNode>().nodeSize([dx, dy]);   // Fehler war hier: muss den Typ 2 Mal definieren (!!!!!!, Quelltyp und Zieltyp)
-    const diagonal = d3.linkHorizontal<d3.HierarchyPointNode<TreeNode>,
-      d3.HierarchyPointNode<TreeNode>>().x(d => d.y).y(d => d.x);
+    const diagonal = d3.linkHorizontal<MyNode,MyNode>().x(d => d.y).y(d => d.x);
 
     // Clear SVG before re-rendering
     d3.select(svgRef.current).selectAll("*").remove();
@@ -89,45 +100,29 @@ export default function CollaTree({
       .attr("cursor", "pointer")
       .attr("pointer-events", "all");
 
-    function numberNodes(node: TreeNode, parentName = "", mutationNames: string[] = []) {
-      if (!node.originalName) {
-        node.originalName = node.name; // Speichert den ursprünglichen Namen nur einmal
-        mutationNames.push(node.name);
-      }
+    if (!mutationNamesRef.current) {
+      const mutationNames: string[] = [];
+      numberNodes(treedata, "", mutationNames);
+      mutationNamesRef.current = mutationNames;
 
-      if (parentName) {
-        node.name = `${parentName}_${node.name}`;  // Elternnamen hinzufügen
-      }
-
-      if (node.children) {
-        node.children.forEach((child, index) => {
-          numberNodes(child, `${node.name}_${index + 1}`, mutationNames);  // rekursiv durchlaufen
-        });
+      if (onMutationNamesReady) {
+        onMutationNamesReady([...new Set(mutationNames)]);
       }
     }
 
-    let mutationNames: string[] = [];
-    numberNodes(treedata, "", mutationNames);
-    console.log("Name", mutationNames)
+    const mutationNames = mutationNamesRef.current!;
 
 
     colorScaleRef.current = d3.scaleOrdinal<string, string>()
       .domain(mutationNames)
       .range(colorScheme);
 
-    const nameGeneticEventCB = Array.from(d3.union(mutationNames));
-    console.log(nameGeneticEventCB)
-
-    if (onMutationNamesReady) {
-      onMutationNamesReady(nameGeneticEventCB);
-    }
-
     lineWidthFactorRef.current = lineWidthFactor[0];
 
-    function update(source: HierarchyPointNode) {
+    function update(source: MyNode) {
       const duration = 1500;
       const nodes = root.descendants().reverse();
-      const links = root.links() as unknown as d3.HierarchyLink<HierarchyPointNode>[];
+      const links = root.links() as unknown as d3.HierarchyLink<MyNode>[];
 
 
       tree(root);
@@ -135,14 +130,6 @@ export default function CollaTree({
 
       let left = root;
       let right = root;
-      const center = (right.x + left.y) / 2;
-
-      const shiftAmount = width / 10;
-
-      // Setzt die Wurzel so, dass sie horizontal in der Mitte des Containers ist
-      //root.eachBefore((d) => {
-      // d.y = d.y - center + width / 4;  // Verschiebt alle Knoten im SVG
-      //});
 
       root.eachBefore(node => {
         if (node.x !== undefined && node.x < (left.x ?? Infinity)) left = node;
@@ -153,11 +140,11 @@ export default function CollaTree({
       const height = right.x - left.x + margin.top + margin.bottom;
 
       // Nodes updaten
-      const node = gNode.selectAll<SVGGElement, HierarchyPointNode>("g").data(nodes, d => d.data.name + "-" + d.depth);
+      const node = gNode.selectAll<SVGGElement, MyNode>("g").data(nodes, d => d.data.name + "-" + d.depth);
 
       const transition: d3.Transition<SVGSVGElement, unknown, null, undefined> = svg.transition()
         .duration(duration)
-        .attr("height", null)
+        .attr("height", height)
         .attr("viewBox", `${-margin.left} ${left.x - margin.top} ${width} ${height}`)
 
       const nodeEnter = node.enter().append<SVGGElement>("g")
@@ -218,7 +205,7 @@ export default function CollaTree({
         .attr("fill-opacity", 1)
         .attr("stroke-opacity", 1)
         .select("path")
-        .attr("fill", d => colorScaleRef.current!(d.data.originalName || d.data.name)); // 🔥
+        .attr("fill", d => colorScaleRef.current!(d.data.originalName || d.data.name));
 
       node.exit().transition(transition as any).remove()
         .attr("transform", d => `translate(${source.y},${source.x})`)
@@ -228,18 +215,22 @@ export default function CollaTree({
       nodeSelectionRef.current = nodeEnter.merge(node); // Speichert die Auswahl für spätere Updates
 
       // Links updaten
+      const link = gLink.selectAll<SVGPathElement, d3.HierarchyLink<MyNode>>("path").data(links, d => d.target.data.name + "-" + d.target.depth);
 
-      const link = gLink.selectAll<SVGPathElement, d3.HierarchyLink<HierarchyPointNode>>("path").data(links, d => d.target.data.name + "-" + d.target.depth);
 
 
       const linkEnter = link.enter().append("path")
-        .attr("d", d => {
-          const o = { x: d.source.x0, y: d.source.y0 }; // Startpunkt = alter Punkt
-          return diagonal({ source: o, target: o });  // Linien beginnen und enden am gleichen Punkt
-        })
-        .attr("stroke-width", d => {
-          return d.target.data.count ? Math.max(1, d.target.data.count / lineWidthFactorRef.current) : 1;
-        });
+      .attr("d", (d: d3.HierarchyLink<MyNode>) => {
+        // Fallback auf x und y, falls x0 oder y0 nicht definiert sind
+        const o = { x: d.source.x0 ?? d.source.x, y: d.source.y0 ?? d.source.y };
+        return diagonal({ source: o, target: o }); // Linien beginnen und enden am gleichen Punkt
+      })
+      .attr("stroke-width", (d: d3.HierarchyLink<MyNode>) => {
+        // Falls count nicht definiert ist, sollte default 1 verwendet werden
+        const count = d.target.data.count ?? 0;
+        return count as any ? Math.max(1, count as any/ lineWidthFactorRef.current) : 1;
+      });
+    
 
 
       link.merge(linkEnter).transition(transition as any)
@@ -262,8 +253,8 @@ export default function CollaTree({
     }
 
     // Tree initialisieren
-    root.x0 = dy / 2;
-    root.y0 = 2;
+    root.x0 = 0;
+    root.y0 = 0;
     if (shouldExpand) {
       // Alle Knoten aufklappen
       root.descendants().forEach(d => {
@@ -281,8 +272,6 @@ export default function CollaTree({
     update(root);
 
   }, [treedata, shouldExpand]);
-
-
 
   useEffect(() => {
     if (colorScaleRef.current && nodeSelectionRef.current) {
@@ -310,7 +299,7 @@ export default function CollaTree({
 
   return <svg ref={svgRef}></svg>;
 
-  
+
 }
 
 

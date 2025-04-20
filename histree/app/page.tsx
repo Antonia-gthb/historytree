@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { interpolateRdBu } from 'd3-scale-chromatic';
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import * as d3 from "d3";
 import CollaTree from '../components/CollaTree';
 import rawdata from '@/app/tonis_orders_tree_2.json';
@@ -59,6 +60,7 @@ export default function Page() {
                     </div>
                 </div>
                 <div className="flex flex-col mt-4">
+                <Label className= "text-base font-semibold">Scaling</Label>
                      <div className= "flex flex-row">
                         <SliderScaling value={maxLineWidth} min={25} max={300} step={25} onValueChange={([newValue]) => setMaxLineWidth([newValue])}  />
                     <span className="text-black my-1 mx-3"> {maxLineWidth[0]/100}</span>

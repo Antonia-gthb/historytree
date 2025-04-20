@@ -56,4 +56,3 @@ export default function FileUpload({ onUpload }: FileUploadProps) {
            </div >
     );
 }
-
