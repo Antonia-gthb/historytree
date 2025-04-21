@@ -69,7 +69,7 @@ export default function CollaTree({
       return selectedMutations.includes(name);
     };
   
-    // Wenn dieser Knoten eine Mutation ist, die nicht aktiv ist entfernen
+    // Wenn dieser Knoten eine Mutation ist, die nicht aktiv ist: entfernen
     const originalName = tree.originalName || tree.name;
     if (!isActive(originalName)) {
       return null;

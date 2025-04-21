@@ -18,9 +18,7 @@ import { useEffect } from "react"
 
 
 interface EventfilterProps {
-  // alle verfügbaren Mutation‑Namen
   items?: string[] | undefined,
-  // hier bekommt die Page die Selektion rein
   onSubmit: (selected: string[]) => void
 }
 
@@ -32,7 +30,7 @@ export function Eventfilter({ items = [], onSubmit }: EventfilterProps) {
 
   function handleSubmit(data: { items: string[] }) {
     console.log("Selected mutations:", data.items)
-    onSubmit(data.items)      // ← hier gibst du es an page.tsx weiter
+    onSubmit(data.items)     
   }
 
   useEffect(() => {
