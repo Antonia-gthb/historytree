@@ -25,6 +25,7 @@ interface CollaTreeProps {
   shouldExpand: boolean;
   lineWidthFactor: number[];
   onMutationNamesReady?: (names: string[]) => void;
+  selectedMutations?: string[] | undefined,
 }
 
 export default function CollaTree({
@@ -34,6 +35,7 @@ export default function CollaTree({
   shouldExpand,
   lineWidthFactor,
   onMutationNamesReady, // Optionaler Callback
+  selectedMutations = [],
 }: CollaTreeProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const colorScaleRef = useRef<d3.ScaleOrdinal<string, string, never> | null>(null);
@@ -61,13 +63,43 @@ export default function CollaTree({
 
   }
 
+  function filterTreeData(tree: TreeNode, selectedMutations: string[]): TreeNode | null {
+    const isActive = (name: string | undefined) => {
+      if (!name) return false;
+      return selectedMutations.includes(name);
+    };
+  
+    // Wenn dieser Knoten eine Mutation ist, die nicht aktiv ist entfernen
+    const originalName = tree.originalName || tree.name;
+    if (!isActive(originalName)) {
+      return null;
+    }
+  
+    // Wenn Kinder da sind, werden sie rekursiv geprüft
+    const filteredChildren = tree.children
+      ?.map(child => filterTreeData(child, selectedMutations))
+      .filter(child => child !== null) as TreeNode[] | undefined;
+  
+    return {
+      ...tree,
+      children: filteredChildren?.length ? filteredChildren : undefined,
+    };
+  }
+  
+  console.log("CollaTree Selected Mutations:", selectedMutations);
+
   useEffect(() => {
     if (!svgRef.current) return;
 
     // Tree Eckdaten
     const margin = { top: 20, right: 20, bottom: 20, left: 40 };
     const dx = 20;  // sorgt für Abstand zwischen den Knoten
-    const root = d3.hierarchy(treedata) as MyNode;
+
+    const filteredData = selectedMutations && selectedMutations.length > 0
+  ? filterTreeData(treedata, selectedMutations) ?? { name: "empty", children: [] }
+  : treedata;   
+    console.log("filteredData:", filteredData); 
+    const root = d3.hierarchy(filteredData) as MyNode;
     root.sum(d => d.count || 0);
     const dy = (width - margin.right - margin.left) / (1 + root.height);
 
@@ -269,9 +301,10 @@ export default function CollaTree({
       });
     }
 
+
     update(root);
 
-  }, [treedata, shouldExpand]);
+  }, [treedata, shouldExpand, selectedMutations]);
 
   useEffect(() => {
     if (colorScaleRef.current && nodeSelectionRef.current) {
@@ -298,8 +331,6 @@ export default function CollaTree({
 
 
   return <svg ref={svgRef}></svg>;
-
-
 }
 
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { interpolateRdBu } from 'd3-scale-chromatic';
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -11,7 +11,7 @@ import FileUpload from '../components/upload';
 import ColorTheme from '../components/colorSchemes';
 import Download from '../components/download';
 import SliderScaling from '@/components/lineslider';
-import {Eventfilter} from '@/components/eventfilter';
+import { Eventfilter } from '@/components/eventfilter';
 
 
 
@@ -23,6 +23,9 @@ export default function Page() {
     const [isExpanded, setIsExpanded] = useState(false);
     const [maxLineWidth, setMaxLineWidth] = useState([200]);
     const [geneticEventsName, setGeneticEventsName] = useState<string[]>();
+    const [selectedMutations, setSelectedMutations] = useState<string[] | undefined>(geneticEventsName);
+    console.log("Page", selectedMutations)
+
 
     const handleUpload = (data: any, fileName: string) => {
         setJsonData(data); // speichert hochgeladene Daten 
@@ -32,6 +35,8 @@ export default function Page() {
     const [colorScheme, setColorScheme] = useState<string[]>(
         d3.quantize(interpolateRdBu, 13)
     );
+
+
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-r from-cyan-100 via-blue-300 to-indigo-400 p-6">
@@ -43,7 +48,7 @@ export default function Page() {
                     setColorScheme(colors);
                 }} />
                 <div className="mx-auto block w-full rounded-lg">
-                    <CollaTree treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={maxLineWidth} onMutationNamesReady={(names) => setGeneticEventsName(names)}  />
+                    <CollaTree treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={maxLineWidth} onMutationNamesReady={setGeneticEventsName} selectedMutations={selectedMutations} />
                     <p> {jsonData ? fileName : 'tonis_orders_tree_2.json'}</p>
                 </div>
                 <div className="flex justify-between font-bold text-xl p-1 w-full mb-2">
@@ -60,14 +65,14 @@ export default function Page() {
                     </div>
                 </div>
                 <div className="flex flex-col mt-4">
-                <Label className= "text-base font-semibold">Scaling</Label>
-                     <div className= "flex flex-row">
-                        <SliderScaling value={maxLineWidth} min={25} max={300} step={25} onValueChange={([newValue]) => setMaxLineWidth([newValue])}  />
-                    <span className="text-black my-1 mx-3"> {maxLineWidth[0]/100}</span>
+                    <Label className="text-base font-semibold">Scaling</Label>
+                    <div className="flex flex-row">
+                        <SliderScaling value={maxLineWidth} min={25} max={300} step={25} onValueChange={([newValue]) => setMaxLineWidth([newValue])} />
+                        <span className="text-black my-1 mx-3"> {maxLineWidth[0] / 100}</span>
                     </div>
                 </div>
                 <div>
-                <Eventfilter items={geneticEventsName}/>
+                    <Eventfilter items={geneticEventsName} onSubmit={setSelectedMutations} />
                 </div>
             </div>
         </div>
@@ -75,8 +80,8 @@ export default function Page() {
 }
 
 
-  //const [scalingCheckBox, setScalingCheckbox] = useState(true); //ist die Checkbox aktiviert?
-    {/*<div className= " text-black my-1">
+//const [scalingCheckBox, setScalingCheckbox] = useState(true); //ist die Checkbox aktiviert?
+{/*<div className= " text-black my-1">
     <input
         type="checkbox"
         checked={scalingCheckBox}
