@@ -22,9 +22,8 @@ export default function Page() {
     const [fileName, setFileName] = useState('Keine Datei ausgewählt');
     const [isExpanded, setIsExpanded] = useState(false);
     const [maxLineWidth, setMaxLineWidth] = useState([200]);
-    const [geneticEventsName, setGeneticEventsName] = useState<string[]>();
-    const [selectedMutations, setSelectedMutations] = useState<string[] | undefined>(geneticEventsName);
-    console.log("Page", selectedMutations)
+    const [geneticEventsName, setGeneticEventsName] = useState<string[]>([]);
+    const [selectedMutations, setSelectedMutations] = useState<string[]>([]);
 
 
     const handleUpload = (data: any, fileName: string) => {
@@ -48,7 +47,10 @@ export default function Page() {
                     setColorScheme(colors);
                 }} />
                 <div className="mx-auto block w-full rounded-lg">
-                    <CollaTree treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={maxLineWidth} onMutationNamesReady={setGeneticEventsName} selectedMutations={selectedMutations} />
+                    <CollaTree key={fileName} treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={maxLineWidth} onMutationNamesReady={(allMutationNames) => {
+                        setGeneticEventsName(allMutationNames);
+                        setSelectedMutations(allMutationNames);
+                    }} selectedMutations={selectedMutations} />
                     <p> {jsonData ? fileName : 'tonis_orders_tree_2.json'}</p>
                 </div>
                 <div className="flex justify-between font-bold text-xl p-1 w-full mb-2">
@@ -71,8 +73,11 @@ export default function Page() {
                         <span className="text-black my-1 mx-3"> {maxLineWidth[0] / 100}</span>
                     </div>
                 </div>
-                <div>
-                    <Eventfilter items={geneticEventsName} onSubmit={setSelectedMutations} />
+                <div className="flex flex-row items-end space-x-4">
+                    <Eventfilter items={geneticEventsName} selectedItems={selectedMutations} onSubmit={setSelectedMutations} />
+                    <div className="ease-in-out hover:-translate-y-1 self-end">
+                    <Button onClick={() => setSelectedMutations(geneticEventsName)}> Reset </Button>
+                    </div>
                 </div>
             </div>
         </div>

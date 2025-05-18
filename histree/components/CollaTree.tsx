@@ -40,7 +40,6 @@ export default function CollaTree({
   const svgRef = useRef<SVGSVGElement | null>(null);
   const colorScaleRef = useRef<d3.ScaleOrdinal<string, string, never> | null>(null);
   const nodeSelectionRef = useRef<d3.Selection<SVGGElement, MyNode, SVGGElement, unknown> | null>(null);
-  const lineWidthFactorRef = useRef<number>(200)
   const selectedLinksRef = useRef<d3.Selection<SVGPathElement, d3.HierarchyLink<MyNode>, SVGGElement, unknown> | null>(null);
   const mutationNamesRef = useRef<string[] | null>(null); // wird nur einmal gesetzt
 
@@ -148,8 +147,6 @@ export default function CollaTree({
     colorScaleRef.current = d3.scaleOrdinal<string, string>()
       .domain(mutationNames)
       .range(colorScheme);
-
-    lineWidthFactorRef.current = lineWidthFactor[0];
 
     function update(source: MyNode) {
       const duration = 1500;
@@ -260,7 +257,7 @@ export default function CollaTree({
       .attr("stroke-width", (d: d3.HierarchyLink<MyNode>) => {
         // Falls count nicht definiert ist, sollte default 1 verwendet werden
         const count = d.target.data.count ?? 0;
-        return count as any ? Math.max(1, count as any/ lineWidthFactorRef.current) : 1;
+        return count as any ? Math.max(1, count as any/ lineWidthFactor[0]) : 1;
       });
     
 
@@ -318,12 +315,10 @@ export default function CollaTree({
 
   useEffect(() => {
 
-    lineWidthFactorRef.current = lineWidthFactor[0];
-
     if (selectedLinksRef.current) {
       selectedLinksRef.current
         .attr("stroke-width", d => {
-          const factor = lineWidthFactorRef.current || 1;
+          const factor = lineWidthFactor[0] || 1;
           return d.target.data.count ? Math.max(1, d.target.data.count / factor) : 1;
         });
     }

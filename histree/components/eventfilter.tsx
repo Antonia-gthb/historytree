@@ -19,25 +19,27 @@ import { useEffect } from "react"
 
 interface EventfilterProps {
   items?: string[] | undefined,
+  selectedItems: string[],
   onSubmit: (selected: string[]) => void
 }
 
-export function Eventfilter({ items = [], onSubmit }: EventfilterProps) {
-  
+export function Eventfilter({ items = [], selectedItems, onSubmit }: EventfilterProps) {
+
+
   const form = useForm<{ items: string[] }>({
-    defaultValues: { items: [] },
-  })
+    defaultValues: { items: selectedItems },
+  });
+
+  useEffect(() => {
+    form.reset({ items: selectedItems });
+  }, [selectedItems, form]);
 
   function handleSubmit(data: { items: string[] }) {
     console.log("Selected mutations:", data.items)
-    onSubmit(data.items)     
+    onSubmit(data.items)
   }
 
-  useEffect(() => {
-    if (items.length > 0) {
-      form.reset({ items })
-    }
-  }, [items, form])
+
 
 
   return (
@@ -86,7 +88,7 @@ export function Eventfilter({ items = [], onSubmit }: EventfilterProps) {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" className="ease-in-out hover:-translate-y-1">Submit</Button>
       </form>
     </Form>
   )
