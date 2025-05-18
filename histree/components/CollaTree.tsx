@@ -67,24 +67,24 @@ export default function CollaTree({
       if (!name) return false;
       return selectedMutations.includes(name);
     };
-  
+
     // Wenn dieser Knoten eine Mutation ist, die nicht aktiv ist: entfernen
     const originalName = tree.originalName || tree.name;
     if (!isActive(originalName)) {
       return null;
     }
-  
+
     // Wenn Kinder da sind, werden sie rekursiv geprüft
     const filteredChildren = tree.children
       ?.map(child => filterTreeData(child, selectedMutations))
       .filter(child => child !== null) as TreeNode[] | undefined;
-  
+
     return {
       ...tree,
       children: filteredChildren?.length ? filteredChildren : undefined,
     };
   }
-  
+
   console.log("CollaTree Selected Mutations:", selectedMutations);
 
   useEffect(() => {
@@ -95,15 +95,15 @@ export default function CollaTree({
     const dx = 20;  // sorgt für Abstand zwischen den Knoten
 
     const filteredData = selectedMutations && selectedMutations.length > 0
-  ? filterTreeData(treedata, selectedMutations) ?? { name: "empty", children: [] }
-  : treedata;   
-    console.log("filteredData:", filteredData); 
+      ? filterTreeData(treedata, selectedMutations) ?? { name: "empty", children: [] }
+      : treedata;
+    console.log("filteredData:", filteredData);
     const root = d3.hierarchy(filteredData) as MyNode;
     root.sum(d => d.count || 0);
     const dy = (width - margin.right - margin.left) / (1 + root.height);
 
     const tree = d3.tree<TreeNode>().nodeSize([dx, dy]);   // Fehler war hier: muss den Typ 2 Mal definieren (!!!!!!, Quelltyp und Zieltyp)
-    const diagonal = d3.linkHorizontal<MyNode,MyNode>().x(d => d.y).y(d => d.x);
+    const diagonal = d3.linkHorizontal<MyNode, MyNode>().x(d => d.y).y(d => d.x);
 
     // Clear SVG before re-rendering
     d3.select(svgRef.current).selectAll("*").remove();
@@ -197,11 +197,7 @@ export default function CollaTree({
         .attr("d", d => {
 
           if (d.depth === 0) return "";
-          const symbols = [
-            d3.symbolCircle,
-            d3.symbolSquare,
-            d3.symbolTriangle,
-          ];
+          const symbols = [d3.symbolCircle, d3.symbolSquare, d3.symbolTriangle];
 
           const hash = (str: string) => {
             let hash = 0;
@@ -215,13 +211,23 @@ export default function CollaTree({
           return d3.symbol().type(symbols[symbolIndex]).size(100)();
         })
         .attr("fill", d => {
-          const color = colorScaleRef.current!(d.data.originalName || d.data.name);
-          return color;
-        });
+          const isLeaf = !d.children && !d._children;
+          //const color = colorScaleRef.current!(d.data.originalName || d.data.name);
+          return isLeaf
+            ? "none"
+            : colorScaleRef.current!(d.data.originalName || d.data.name);
+        })
+        //const color = colorScaleRef.current!(d.data.originalName || d.data.name);
+        //return color;
+        .attr("stroke", d => {
+          // Umriss immer farbig
+          return colorScaleRef.current!(d.data.originalName || d.data.name);
+        })
+        .attr("stroke-width", 3);
 
       nodeEnter.append("text")
         .attr("dy", "0.31em")
-        .attr("x", d => d._children ? -6 : 6)
+        .attr("x", d => d._children ? -10 : 10)
         .attr("text-anchor", d => d._children ? "end" : "start")
         .text(d => d.data.originalName || d.data.name)
         .attr("fill-opacity", 0) // Startet unsichtbar
@@ -234,7 +240,15 @@ export default function CollaTree({
         .attr("fill-opacity", 1)
         .attr("stroke-opacity", 1)
         .select("path")
-        .attr("fill", d => colorScaleRef.current!(d.data.originalName || d.data.name));
+        .attr("fill", d => {
+          const isLeaf = !d.children && !d._children;
+          return isLeaf
+            ? "none"
+            : colorScaleRef.current!(d.data.originalName || d.data.name);
+        })
+        .attr("stroke", d =>
+          colorScaleRef.current!(d.data.originalName || d.data.name)
+        );
 
       node.exit().transition(transition as any).remove()
         .attr("transform", d => `translate(${source.y},${source.x})`)
@@ -249,17 +263,17 @@ export default function CollaTree({
 
 
       const linkEnter = link.enter().append("path")
-      .attr("d", (d: d3.HierarchyLink<MyNode>) => {
-        // Fallback auf x und y, falls x0 oder y0 nicht definiert sind
-        const o = { x: d.source.x0 ?? d.source.x, y: d.source.y0 ?? d.source.y };
-        return diagonal({ source: o, target: o }); // Linien beginnen und enden am gleichen Punkt
-      })
-      .attr("stroke-width", (d: d3.HierarchyLink<MyNode>) => {
-        // Falls count nicht definiert ist, sollte default 1 verwendet werden
-        const count = d.target.data.count ?? 0;
-        return count as any ? Math.max(1, count as any/ lineWidthFactor[0]) : 1;
-      });
-    
+        .attr("d", (d: d3.HierarchyLink<MyNode>) => {
+          // Fallback auf x und y, falls x0 oder y0 nicht definiert sind
+          const o = { x: d.source.x0 ?? d.source.x, y: d.source.y0 ?? d.source.y };
+          return diagonal({ source: o, target: o }); // Linien beginnen und enden am gleichen Punkt
+        })
+        .attr("stroke-width", (d: d3.HierarchyLink<MyNode>) => {
+          // Falls count nicht definiert ist, sollte default 1 verwendet werden
+          const count = d.target.data.count ?? 0;
+          return count as any ? Math.max(1, count as any / lineWidthFactor[0]) : 1;
+        });
+
 
 
       link.merge(linkEnter).transition(transition as any)
@@ -309,7 +323,15 @@ export default function CollaTree({
       nodeSelectionRef.current
         .select("path") // Nur die Symbole der Nodes
         .transition()
-        .attr("fill", d => colorScaleRef.current!(d.data.originalName || d.data.name));
+        .attr("fill", d => {
+          const isLeaf = !d.children && !d._children;
+          return isLeaf
+            ? "none"
+            : colorScaleRef.current!(d.data.originalName || d.data.name);
+        })
+        .attr("stroke", d =>
+          colorScaleRef.current!(d.data.originalName || d.data.name)
+        );
     }
   }, [colorScheme]);
 
