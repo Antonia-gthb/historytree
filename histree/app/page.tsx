@@ -21,9 +21,11 @@ export default function Page() {
     const [jsonData, setJsonData] = useState(null); // hochgeladener Datensatz
     const [fileName, setFileName] = useState('Keine Datei ausgewählt');
     const [isExpanded, setIsExpanded] = useState(false);
-    const [maxLineWidth, setMaxLineWidth] = useState([200]);
+    const [scalingFactor, setScalingFactor] = useState<number>(1);    
     const [geneticEventsName, setGeneticEventsName] = useState<string[]>([]);
     const [selectedMutations, setSelectedMutations] = useState<string[]>([]);
+
+    console.log(scalingFactor)
 
 
     const handleUpload = (data: any, fileName: string) => {
@@ -47,7 +49,7 @@ export default function Page() {
                     setColorScheme(colors);
                 }} />
                 <div className="mx-auto block w-full rounded-lg">
-                    <CollaTree key={fileName} treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={maxLineWidth} onMutationNamesReady={(allMutationNames) => {
+                    <CollaTree key={fileName} treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={[scalingFactor]} onMutationNamesReady={(allMutationNames) => {
                         setGeneticEventsName(allMutationNames);
                         setSelectedMutations(allMutationNames);
                     }} selectedMutations={selectedMutations} />
@@ -69,8 +71,8 @@ export default function Page() {
                 <div className="flex flex-col mt-4">
                     <Label className="text-base font-semibold">Scaling</Label>
                     <div className="flex flex-row">
-                        <SliderScaling value={maxLineWidth} min={25} max={300} step={25} onValueChange={([newValue]) => setMaxLineWidth([newValue])} />
-                        <span className="text-black my-1 mx-3"> {maxLineWidth[0] / 100}</span>
+                        <SliderScaling value={[scalingFactor]} min={0} max={10} step={0.5} onValueChange={([newValue]) => setScalingFactor(newValue)} />
+                        <span className="text-black my-1 mx-3"> {scalingFactor}</span>
                     </div>
                 </div>
                 <div className="flex flex-row items-end space-x-4">

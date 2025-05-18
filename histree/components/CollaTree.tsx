@@ -43,7 +43,6 @@ export default function CollaTree({
   const selectedLinksRef = useRef<d3.Selection<SVGPathElement, d3.HierarchyLink<MyNode>, SVGGElement, unknown> | null>(null);
   const mutationNamesRef = useRef<string[] | null>(null); // wird nur einmal gesetzt
 
-
   function numberNodes(node: TreeNode, parentName = "", mutationNames: string[] = []) {
     if (!node.originalName) {
       node.originalName = node.name; // Speichert den ursprünglichen Namen nur einmal
@@ -97,13 +96,13 @@ export default function CollaTree({
     const filteredData = selectedMutations && selectedMutations.length > 0
       ? filterTreeData(treedata, selectedMutations) ?? { name: "empty", children: [] }
       : treedata;
-    console.log("filteredData:", filteredData);
     const root = d3.hierarchy(filteredData) as MyNode;
     root.sum(d => d.count || 0);
     const dy = (width - margin.right - margin.left) / (1 + root.height);
 
     const tree = d3.tree<TreeNode>().nodeSize([dx, dy]);   // Fehler war hier: muss den Typ 2 Mal definieren (!!!!!!, Quelltyp und Zieltyp)
     const diagonal = d3.linkHorizontal<MyNode, MyNode>().x(d => d.y).y(d => d.x);
+
 
     // Clear SVG before re-rendering
     d3.select(svgRef.current).selectAll("*").remove();
@@ -125,7 +124,6 @@ export default function CollaTree({
       .attr("fill", "none")
       .attr("stroke", "#555")
       .attr("stroke-opacity", 0.4)
-      .attr("stroke-width", 1.5)
 
     const gNode = svg.append("g")
       .attr("cursor", "pointer")
@@ -152,6 +150,17 @@ export default function CollaTree({
       const duration = 1500;
       const nodes = root.descendants().reverse();
       const links = root.links() as unknown as d3.HierarchyLink<MyNode>[];
+      const counts = root.descendants().map(d => d.data.count ?? 0);
+      const maxCount = counts.length > 0 ? Math.max(...counts) : 1;
+      const maxPx = lineWidthFactor[0];
+      const defaultWidth = 1.5;
+
+      const strokeScale = maxPx === 0
+      ? () => defaultWidth
+      : d3.scaleLinear<number>()
+        .domain([0, maxCount])
+        .range([defaultWidth, maxPx])
+        .clamp(true);
 
 
       tree(root);
@@ -261,18 +270,13 @@ export default function CollaTree({
       const link = gLink.selectAll<SVGPathElement, d3.HierarchyLink<MyNode>>("path").data(links, d => d.target.data.name + "-" + d.target.depth);
 
 
-
       const linkEnter = link.enter().append("path")
         .attr("d", (d: d3.HierarchyLink<MyNode>) => {
           // Fallback auf x und y, falls x0 oder y0 nicht definiert sind
           const o = { x: d.source.x0 ?? d.source.x, y: d.source.y0 ?? d.source.y };
           return diagonal({ source: o, target: o }); // Linien beginnen und enden am gleichen Punkt
         })
-        .attr("stroke-width", (d: d3.HierarchyLink<MyNode>) => {
-          // Falls count nicht definiert ist, sollte default 1 verwendet werden
-          const count = d.target.data.count ?? 0;
-          return count as any ? Math.max(1, count as any / lineWidthFactor[0]) : 1;
-        });
+        .attr("stroke-width", (d: d3.HierarchyLink<MyNode>) => strokeScale(d.target.data.count ?? 0));
 
 
 
@@ -287,6 +291,7 @@ export default function CollaTree({
         })
 
       selectedLinksRef.current = link.merge(linkEnter);
+
 
       // Altes speichern
       root.eachBefore(d => {
@@ -333,17 +338,33 @@ export default function CollaTree({
           colorScaleRef.current!(d.data.originalName || d.data.name)
         );
     }
+
   }, [colorScheme]);
 
   useEffect(() => {
-
-    if (selectedLinksRef.current) {
-      selectedLinksRef.current
-        .attr("stroke-width", d => {
-          const factor = lineWidthFactor[0] || 1;
-          return d.target.data.count ? Math.max(1, d.target.data.count / factor) : 1;
-        });
-    }
+    if (!selectedLinksRef.current) return;
+  
+    // 1) Hol dir alle aktuell gebundenen Links:
+    const links = selectedLinksRef.current.data() as d3.HierarchyLink<MyNode>[];
+  
+    // 2) Extrahiere counts und maxCount neu:
+    const counts: number[] = links.map(l => l.target.data.count ?? 0);
+    const maxCount = counts.length ? Math.max(...counts) : 1;
+  
+    // 3) Bau die Skala mit deinem Default (1.5px) für factor=0:
+    const defaultW = 1.5;
+    const factor   = lineWidthFactor[0];
+    const strokeScale = factor === 0
+      ? () => defaultW
+      : d3.scaleLinear<number>()
+          .domain([0, maxCount])
+          .range([defaultW, factor])
+          .clamp(true);
+  
+    // 4) Wende nur stroke-width an:
+    selectedLinksRef.current
+      .transition()  // optional: sanfte Animation
+      .attr("stroke-width", d => strokeScale(d.target.data.count ?? 0));
   }, [lineWidthFactor]);
 
 
