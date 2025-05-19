@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { interpolateRdBu } from 'd3-scale-chromatic';
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import * as d3 from "d3";
 import CollaTree from '../components/CollaTree';
 import rawdata from '@/app/tonis_orders_tree_2.json';
@@ -21,22 +22,26 @@ export default function Page() {
     const [jsonData, setJsonData] = useState(null); // hochgeladener Datensatz
     const [fileName, setFileName] = useState('Keine Datei ausgewählt');
     const [isExpanded, setIsExpanded] = useState(false);
-    const [scalingFactor, setScalingFactor] = useState<number>(1);    
+    const [scalingFactor, setScalingFactor] = useState<number>(1);
+    const [scalingEnabled, setScalingEnabled] = useState<boolean>(true);
     const [geneticEventsName, setGeneticEventsName] = useState<string[]>([]);
     const [selectedMutations, setSelectedMutations] = useState<string[]>([]);
-
-    console.log(scalingFactor)
-
-
-    const handleUpload = (data: any, fileName: string) => {
-        setJsonData(data); // speichert hochgeladene Daten 
-        setFileName(fileName); // dateiname speichern
-    };
 
     const [colorScheme, setColorScheme] = useState<string[]>(
         d3.quantize(interpolateRdBu, 13)
     );
 
+    console.log("Scaling Factor", scalingFactor)
+
+
+    const handleUpload = (data: any, fileName: string) => {
+        setJsonData(data); // speichert hochgeladene Daten 
+        setFileName(fileName); // dateiname speichern
+        setIsExpanded(false);
+        setScalingFactor(1);
+        setSelectedMutations([]);
+        setColorScheme(d3.quantize(interpolateRdBu, 13));
+    };
 
 
     return (
@@ -45,7 +50,7 @@ export default function Page() {
                 MHN Patient Tree
             </h1>
             <div className="flex flex-col w-full max-w-4xl p-6 mb-8">
-                <ColorTheme onSchemeChange={(colors) => {
+                <ColorTheme key={fileName} onSchemeChange={(colors) => {
                     setColorScheme(colors);
                 }} />
                 <div className="mx-auto block w-full rounded-lg">
@@ -69,16 +74,35 @@ export default function Page() {
                     </div>
                 </div>
                 <div className="flex flex-col mt-4">
-                    <Label className="text-base font-semibold">Scaling</Label>
-                    <div className="flex flex-row">
-                        <SliderScaling value={[scalingFactor]} min={0} max={10} step={0.5} onValueChange={([newValue]) => setScalingFactor(newValue)} />
+                    <Label className="text-base font-semibold  mb-3">Scaling</Label>
+                    <div className="flex items-center space-x-2 mb-2">
+                        <Checkbox
+                            checked={scalingEnabled}
+                            onCheckedChange={(checked) => {
+                                const isOn = checked === true;
+                                setScalingEnabled(isOn);
+                                if (!checked) {
+                                    setScalingFactor(0);
+                                } else {
+                                    setScalingFactor(1);
+                                }
+                            }}
+                        />
+                        <Label className="font-medium">Scale edges by weight</Label>
+                    </div>
+                    <div className="flex flex-row  mb-4">
+                        <SliderScaling value={[scalingFactor]} min={1} max={7} step={0.5} onValueChange={([v]) => {
+                            if (scalingEnabled) setScalingFactor(v);
+                        }}
+                            disabled={!scalingEnabled}
+                        />
                         <span className="text-black my-1 mx-3"> {scalingFactor}</span>
                     </div>
                 </div>
                 <div className="flex flex-row items-end space-x-4">
                     <Eventfilter items={geneticEventsName} selectedItems={selectedMutations} onSubmit={setSelectedMutations} />
                     <div className="ease-in-out hover:-translate-y-1 self-end">
-                    <Button onClick={() => setSelectedMutations(geneticEventsName)}> Reset </Button>
+                        <Button onClick={() => setSelectedMutations(geneticEventsName)}> Reset </Button>
                     </div>
                 </div>
             </div>
