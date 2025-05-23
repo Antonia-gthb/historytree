@@ -82,12 +82,8 @@ export default function Page() {
                             checked={scalingEnabled}
                             onCheckedChange={(checked) => {
                                 const isOn = checked === true;
-                                setScalingEnabled(isOn);
-                                if (!checked) {
-                                    setScalingFactor(0);
-                                } else {
-                                    setScalingFactor(1);
-                                }
+                                setScalingEnabled (isOn);
+                                setScalingFactor(isOn? 1 : 0);
                             }}
                         />
                         <Label className="font-medium">Scale edges by weight</Label>

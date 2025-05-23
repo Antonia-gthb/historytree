@@ -31,7 +31,7 @@ const ColorThemes = ({ onSchemeChange }: ColorThemesProps) => {
 
   const handleChange = (schemeName: keyof typeof colorSchemes) => {
     setSelectedScheme(schemeName);
-    // 12 Farben als Standard, kann später angepasst werden
+    // 13 Farben als Standard
     const colors = colorSchemes[schemeName](13);
    onSchemeChange(colors);
   };
@@ -46,7 +46,7 @@ const ColorThemes = ({ onSchemeChange }: ColorThemesProps) => {
           <SelectGroup>
             <SelectLabel>Themes</SelectLabel>
             {Object.keys(colorSchemes).map((schemeName) => (
-              <SelectItem key={schemeName} value={schemeName}>
+              <SelectItem className="hover:bg-indigo-800/80 text-slate-700 hover:text-white" key={schemeName} value={schemeName}>
                 {schemeName}
               </SelectItem>
             ))}

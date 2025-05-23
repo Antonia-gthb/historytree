@@ -7,7 +7,7 @@ export default function Threshold() {
 
   return (
     <div className="p-4">
-      <NumberInput defaultValue={0} min={0} onChange={handleChange} />
+      <NumberInput defaultValue={0} onChange={handleChange} />
     </div>
   );
 }
