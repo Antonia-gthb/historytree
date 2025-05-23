@@ -56,6 +56,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
     return (
         <div className="inline-flex items-center space-x-2">
             <Button
+                className= "hover:border-none hover:bg-indigo-800 text-slate-700 hover:text-white"
                 variant="outline"
                 size="sm"
                 onClick={decrement}
@@ -71,6 +72,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
                 placeholder=""
             />
             <Button
+                className="hover:border-none hover:bg-indigo-800 text-slate-700 hover:text-white"
                 variant="outline"
                 size="sm"
                 onClick={increment}

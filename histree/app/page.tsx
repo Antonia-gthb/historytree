@@ -74,8 +74,9 @@ export default function Page() {
                         </Button >
                     </div>
                 </div>
+                <div className=" flex flex-row gap-16">
                 <div className="flex flex-col mt-4">
-                    <Label className="text-base font-semibold  mb-3">Scaling</Label>
+                    <Label className="text-base font-semibold mb-3">Scaling</Label>
                     <div className="flex items-center space-x-2 mb-2">
                         <Checkbox
                             checked={scalingEnabled}
@@ -91,7 +92,7 @@ export default function Page() {
                         />
                         <Label className="font-medium">Scale edges by weight</Label>
                     </div>
-                    <div className="flex flex-row  mb-4">
+                    <div className="flex flex-row mb-4">
                         <SliderScaling value={[scalingFactor]} min={1} max={7} step={0.5} onValueChange={([v]) => {
                             if (scalingEnabled) setScalingFactor(v);
                         }}
@@ -99,8 +100,12 @@ export default function Page() {
                         />
                         <span className="text-black my-1 mx-3"> {scalingFactor}</span>
                     </div>
+                    </div>
+                    <div className="flex flex-col mt-4">
+                    <Label className="text-base font-semibold ml-4 mb-3">Threshold</Label>
                     <div>
                         <Threshold />
+                    </div>
                     </div>
                 </div>
                 <div className="flex flex-row items-end space-x-4">
