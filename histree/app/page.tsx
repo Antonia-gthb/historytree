@@ -11,8 +11,9 @@ import rawdata from '@/app/tonis_orders_tree_2.json';
 import FileUpload from '../components/upload';
 import ColorTheme from '../components/colorSchemes';
 import Download from '../components/download';
-import SliderScaling from '@/components/lineslider';
+import SliderScaling from '@/components/ui/lineslider';
 import { Eventfilter } from '@/components/eventfilter';
+import Threshold from '@/components/threshold';
 
 
 
@@ -97,6 +98,9 @@ export default function Page() {
                             disabled={!scalingEnabled}
                         />
                         <span className="text-black my-1 mx-3"> {scalingFactor}</span>
+                    </div>
+                    <div>
+                        <Threshold />
                     </div>
                 </div>
                 <div className="flex flex-row items-end space-x-4">
