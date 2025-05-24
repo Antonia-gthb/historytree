@@ -27,6 +27,7 @@ export default function Page() {
     const [scalingEnabled, setScalingEnabled] = useState<boolean>(true);
     const [geneticEventsName, setGeneticEventsName] = useState<string[]>([]);
     const [selectedMutations, setSelectedMutations] = useState<string[]>([]);
+    const [threshold, setThreshold] = useState<number>(1);
 
     const [colorScheme, setColorScheme] = useState<string[]>(
         d3.quantize(interpolateRdBu, 13)
@@ -58,7 +59,7 @@ export default function Page() {
                     <CollaTree key={fileName} treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={[scalingFactor]} onMutationNamesReady={(allMutationNames) => {
                         setGeneticEventsName(allMutationNames);
                         setSelectedMutations(allMutationNames);
-                    }} selectedMutations={selectedMutations} />
+                    }} selectedMutations={selectedMutations} threshold={threshold} />
                     <p> {jsonData ? fileName : 'tonis_orders_tree_2.json'}</p>
                 </div>
                 <div className="flex justify-between font-bold text-xl p-1 w-full mb-2">
@@ -100,7 +101,7 @@ export default function Page() {
                     <div className="flex flex-col mt-4">
                     <Label className="text-base font-semibold ml-4 mb-3">Threshold</Label>
                     <div>
-                        <Threshold />
+                        <Threshold value={threshold} onChange={setThreshold} />
                     </div>
                     </div>
                 </div>
@@ -114,19 +115,3 @@ export default function Page() {
         </div>
     );
 }
-
-
-//const [scalingCheckBox, setScalingCheckbox] = useState(true); //ist die Checkbox aktiviert?
-{/*<div className= " text-black my-1">
-    <input
-        type="checkbox"
-        checked={scalingCheckBox}
-        onChange={onScalingChange}
-        className="w-4 h-4 border cursor-pointer mr-2"
-    />
-    <p> Scale edges by weight </p>
-    </div>
-    
-    const onScalingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setScalingCheckbox(e.target.checked);
-    };*/}

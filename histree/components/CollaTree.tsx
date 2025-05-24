@@ -23,6 +23,7 @@ interface CollaTreeProps {
   width?: number;
   colorScheme: string[];
   shouldExpand: boolean;
+  threshold?: number;
   lineWidthFactor: number[];
   onMutationNamesReady?: (names: string[]) => void;
   selectedMutations?: string[] | undefined,
@@ -32,6 +33,7 @@ export default function CollaTree({
   treedata,
   width = 1028,
   colorScheme,
+  threshold = Infinity,
   shouldExpand,
   lineWidthFactor,
   onMutationNamesReady, // Optionaler Callback
@@ -89,7 +91,22 @@ export default function CollaTree({
     };
   }
 
-  console.log("CollaTree Selected Mutations:", selectedMutations);
+  function filterByThreshold(node: TreeNode, thr: number): TreeNode | null {
+    // 1. Wenn dieser Knoten von weniger als thr Patienten geteilt wird → raus
+    if ((node.count ?? 0) < thr) return null;
+
+    // 2. Rekursiv die Kinder filtern
+    const children = node.children
+      ?.map(child => filterByThreshold(child, thr))
+      .filter((c): c is TreeNode => c !== null);
+
+    // 3. Gefilterten Knoten zurückgeben (Kinder nur, wenn welche übrig)
+    return {
+      ...node,
+      children: children && children.length > 0 ? children : undefined,
+    };
+  }
+
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -101,7 +118,10 @@ export default function CollaTree({
     const filteredData = selectedMutations && selectedMutations.length > 0
       ? filterTreeData(treedata, selectedMutations) ?? { name: "empty", children: [] }
       : treedata;
-    const root = d3.hierarchy(filteredData) as MyNode;
+    const filteredWithThreshold = threshold !== Infinity
+     ? filterByThreshold(filteredData, threshold) ?? { name: "empty", children: [] }
+     : filteredData;
+    const root = d3.hierarchy(filteredWithThreshold) as MyNode;
     root.sum(d => d.count || 0);
     const dy = (width - margin.right - margin.left) / (1 + root.height);
 
@@ -135,9 +155,6 @@ export default function CollaTree({
       .attr("cursor", "pointer")
       .attr("pointer-events", "all");
 
-
-
-
     if (!mutationNamesRef.current) {
       const mutationNames: string[] = [];
       numberNodes(treedata, "", mutationNames);
@@ -154,6 +171,7 @@ export default function CollaTree({
     colorScaleRef.current = d3.scaleOrdinal<string, string>()
       .domain(mutationNames)
       .range(colorScheme);
+
 
     function update(source: MyNode) {
       const duration = 1500;
@@ -235,6 +253,13 @@ export default function CollaTree({
         })
         .attr("stroke-width", 3);
 
+      nodeEnter.append("title")
+     .text(d => {
+       const count = d.data.count ?? 0;
+       const childCount = d.data.children?.length ?? 0;
+       return `Count: ${count} | Children: ${childCount}`;
+     });
+
       nodeEnter.append("text")
         .attr("dy", "0.31em")
         .attr("x", d => d._children ? -10 : 10)
@@ -244,6 +269,7 @@ export default function CollaTree({
         .transition()
         .duration(300)
         .attr("fill-opacity", 1); // Erscheint sanft
+        
 
       nodeEnter.merge(node).transition().duration(duration)
         .attr("transform", d => `translate(${d.y},${d.x})`)
@@ -269,8 +295,8 @@ export default function CollaTree({
 
       // Links updaten
       const link = gLink.selectAll<SVGPathElement, d3.HierarchyLink<MyNode>>("path")
-          .data(links, d => d.target.data.name + "-" + d.target.depth);
-          
+        .data(links, d => d.target.data.name + "-" + d.target.depth);
+
       const linkEnter = link.enter().append("path")
         .attr("fill", "none")                  // kein Fill, nur Stroke
         .attr("stroke", "#555")                // Farbe
@@ -334,7 +360,7 @@ export default function CollaTree({
 
     update(root);
 
-  }, [treedata, shouldExpand, selectedMutations]);
+  }, [treedata, shouldExpand, selectedMutations, threshold]);
 
   useEffect(() => {
     if (colorScaleRef.current && nodeSelectionRef.current) {
