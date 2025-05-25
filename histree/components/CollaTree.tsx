@@ -46,8 +46,7 @@ export default function CollaTree({
   const mutationNamesRef = useRef<string[] | null>(null); // wird nur einmal gesetzt
   const factorRef = useRef<number>(lineWidthFactor[0]);
   const maxCountRef = useRef<number>(1);
-
-
+  const highlightedLinkRef = useRef<d3.HierarchyLink<MyNode> | null>(null);
 
 
   function numberNodes(node: TreeNode, parentName = "", mutationNames: string[] = []) {
@@ -107,7 +106,6 @@ export default function CollaTree({
     };
   }
 
-
   useEffect(() => {
     if (!svgRef.current) return;
 
@@ -151,6 +149,21 @@ export default function CollaTree({
       .attr("stroke", "555")
       .attr("stroke-width", "1.5")
 
+        function highlightPath(link: d3.HierarchyLink<MyNode> | null, active: boolean) {
+     gLink.selectAll<SVGPathElement, d3.HierarchyLink<MyNode>>("path")
+       .attr("stroke", d => {
+          if (!active || !link) return "#555";
+          // Enthält link.target seine Vorfahren?
+          const ancestors = new Set(link.target.ancestors());
+          return ancestors.has(d.target) ? "#372aac" : "#555";
+        })
+        .attr("stroke-opacity", d => {
+          if (!active || !link) return 0.4;
+          const ancestors = new Set(link.target.ancestors());
+          return ancestors.has(d.target) ? 1 : 0.4;
+        });
+    }
+ // oklch(39.8% 0.195 277.366)
     const gNode = svg.append("g")
       .attr("cursor", "pointer")
       .attr("pointer-events", "all");
@@ -298,12 +311,36 @@ export default function CollaTree({
         .data(links, d => d.target.data.name + "-" + d.target.depth);
 
       const linkEnter = link.enter().append("path")
+        .attr("cursor", "pointer")
         .attr("fill", "none")                  // kein Fill, nur Stroke
         .attr("stroke", "#555")                // Farbe
         .attr("stroke-opacity", 0.4)           // Opazität
         .attr("d", d => {
           const o = { x: d.source.x0 ?? d.source.x, y: d.source.y0 ?? d.source.y };
           return diagonal({ source: o, target: o });
+        });
+      
+      linkEnter.append("title")
+        .text("Highlight this path");
+
+            linkEnter
+        .on("mouseover", (_, d) => {
+          // Hover hebt temporär hervor
+          highlightPath(d, true);
+        })
+        .on("mouseout", () => {
+          // Auf Mouseout: zurück zum fixierten Zustand
+          highlightPath(highlightedLinkRef.current, !!highlightedLinkRef.current);
+        })
+        .on("click", (_, d) => {
+          // Klick toggelt Fixierung
+          if (highlightedLinkRef.current === d) {
+            highlightedLinkRef.current = null;
+            highlightPath(null, false);
+          } else {
+            highlightedLinkRef.current = d;
+            highlightPath(d, true);
+          }
         });
 
       const linkAll = linkEnter.merge(link);
