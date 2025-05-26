@@ -27,6 +27,7 @@ interface CollaTreeProps {
   lineWidthFactor: number[];
   onMutationNamesReady?: (names: string[]) => void;
   selectedMutations?: string[] | undefined,
+  highlightMutation?: string,
 }
 
 export default function CollaTree({
@@ -38,6 +39,7 @@ export default function CollaTree({
   lineWidthFactor,
   onMutationNamesReady, // Optionaler Callback
   selectedMutations = [],
+  highlightMutation = "",
 }: CollaTreeProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const colorScaleRef = useRef<d3.ScaleOrdinal<string, string, never> | null>(null);
@@ -47,6 +49,7 @@ export default function CollaTree({
   const factorRef = useRef<number>(lineWidthFactor[0]);
   const maxCountRef = useRef<number>(1);
   const highlightedLinkRef = useRef<d3.HierarchyLink<MyNode> | null>(null);
+  const rootRef = useRef<MyNode | null>(null);
 
 
   function numberNodes(node: TreeNode, parentName = "", mutationNames: string[] = []) {
@@ -117,10 +120,11 @@ export default function CollaTree({
       ? filterTreeData(treedata, selectedMutations) ?? { name: "empty", children: [] }
       : treedata;
     const filteredWithThreshold = threshold !== Infinity
-     ? filterByThreshold(filteredData, threshold) ?? { name: "empty", children: [] }
-     : filteredData;
+      ? filterByThreshold(filteredData, threshold) ?? { name: "empty", children: [] }
+      : filteredData;
     const root = d3.hierarchy(filteredWithThreshold) as MyNode;
     root.sum(d => d.count || 0);
+    rootRef.current = root;
     const dy = (width - margin.right - margin.left) / (1 + root.height);
 
     const tree = d3.tree<TreeNode>().nodeSize([dx, dy]);   // Fehler war hier: muss den Typ 2 Mal definieren (!!!!!!, Quelltyp und Zieltyp)
@@ -149,9 +153,9 @@ export default function CollaTree({
       .attr("stroke", "555")
       .attr("stroke-width", "1.5")
 
-        function highlightPath(link: d3.HierarchyLink<MyNode> | null, active: boolean) {
-     gLink.selectAll<SVGPathElement, d3.HierarchyLink<MyNode>>("path")
-       .attr("stroke", d => {
+    function highlightPath(link: d3.HierarchyLink<MyNode> | null, active: boolean) {
+      gLink.selectAll<SVGPathElement, d3.HierarchyLink<MyNode>>("path")
+        .attr("stroke", d => {
           if (!active || !link) return "#555";
           // Enthält link.target seine Vorfahren?
           const ancestors = new Set(link.target.ancestors());
@@ -163,7 +167,7 @@ export default function CollaTree({
           return ancestors.has(d.target) ? 1 : 0.4;
         });
     }
- // oklch(39.8% 0.195 277.366)
+    // oklch(39.8% 0.195 277.366)
     const gNode = svg.append("g")
       .attr("cursor", "pointer")
       .attr("pointer-events", "all");
@@ -190,9 +194,6 @@ export default function CollaTree({
       const duration = 1500;
       const nodes = root.descendants().reverse();
       const links = root.links() as unknown as d3.HierarchyLink<MyNode>[];
-
-      console.log("    current factorRef:", factorRef.current);
-
 
 
       tree(root);
@@ -258,8 +259,6 @@ export default function CollaTree({
             ? "none"
             : colorScaleRef.current!(d.data.originalName || d.data.name);
         })
-        //const color = colorScaleRef.current!(d.data.originalName || d.data.name);
-        //return color;
         .attr("stroke", d => {
           // Umriss immer farbig
           return colorScaleRef.current!(d.data.originalName || d.data.name);
@@ -267,11 +266,11 @@ export default function CollaTree({
         .attr("stroke-width", 3);
 
       nodeEnter.append("title")
-     .text(d => {
-       const count = d.data.count ?? 0;
-       const childCount = d.data.children?.length ?? 0;
-       return `Count: ${count} | Children: ${childCount}`;
-     });
+        .text(d => {
+          const count = d.data.count ?? 0;
+          const childCount = d.data.children?.length ?? 0;
+          return `Count: ${count} | Children: ${childCount}`;
+        });
 
       nodeEnter.append("text")
         .attr("dy", "0.31em")
@@ -282,7 +281,7 @@ export default function CollaTree({
         .transition()
         .duration(300)
         .attr("fill-opacity", 1); // Erscheint sanft
-        
+
 
       nodeEnter.merge(node).transition().duration(duration)
         .attr("transform", d => `translate(${d.y},${d.x})`)
@@ -312,28 +311,21 @@ export default function CollaTree({
 
       const linkEnter = link.enter().append("path")
         .attr("cursor", "pointer")
-        .attr("fill", "none")                  // kein Fill, nur Stroke
-        .attr("stroke", "#555")                // Farbe
-        .attr("stroke-opacity", 0.4)           // Opazität
+        .attr("fill", "none")
+        .attr("stroke", "#555")
+        .attr("stroke-opacity", 0.4)
         .attr("d", d => {
           const o = { x: d.source.x0 ?? d.source.x, y: d.source.y0 ?? d.source.y };
           return diagonal({ source: o, target: o });
         });
-      
+
       linkEnter.append("title")
         .text("Highlight this path");
 
-            linkEnter
-        .on("mouseover", (_, d) => {
-          // Hover hebt temporär hervor
-          highlightPath(d, true);
-        })
-        .on("mouseout", () => {
-          // Auf Mouseout: zurück zum fixierten Zustand
-          highlightPath(highlightedLinkRef.current, !!highlightedLinkRef.current);
-        })
+      linkEnter
+        .on("mouseover", (_, d) => { highlightPath(d, true); })
+        .on("mouseout", () => { highlightPath(highlightedLinkRef.current, !!highlightedLinkRef.current); })
         .on("click", (_, d) => {
-          // Klick toggelt Fixierung
           if (highlightedLinkRef.current === d) {
             highlightedLinkRef.current = null;
             highlightPath(null, false);
@@ -394,7 +386,6 @@ export default function CollaTree({
       });
     }
 
-
     update(root);
 
   }, [treedata, shouldExpand, selectedMutations, threshold]);
@@ -414,9 +405,28 @@ export default function CollaTree({
         .attr("stroke", d =>
           colorScaleRef.current!(d.data.originalName || d.data.name)
         );
-    }
+    }}, [colorScheme]);
 
-  }, [colorScheme]);
+    useEffect(() => {
+
+   const selLinks = selectedLinksRef.current;
+  if (selLinks && rootRef.current && highlightMutation) {
+    const matches = rootRef.current
+      .descendants()
+      .filter(d => (d.data.originalName || d.data.name) === highlightMutation);
+
+    const anc = new Set<MyNode>();
+    matches.forEach(m => m.ancestors().forEach(a => anc.add(a as MyNode)));
+
+    selLinks
+      .transition()
+      .attr("stroke", linkData =>
+        anc.has(linkData.target as unknown as MyNode) ? "372aac" : "#555"
+      )
+      .attr("stroke-opacity", linkData =>
+        anc.has(linkData.target as unknown as MyNode) ? 1 : 0.4
+      );
+  }}, [highlightMutation]);
 
   useEffect(() => {
     if (!selectedLinksRef.current) return;

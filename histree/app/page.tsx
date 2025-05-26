@@ -14,6 +14,7 @@ import Download from '../components/download';
 import SliderScaling from '@/components/ui/lineslider';
 import { Eventfilter } from '@/components/eventfilter';
 import Threshold from '@/components/threshold';
+import { HighlightEvent } from '@/components/highlightEvent';
 
 
 
@@ -28,13 +29,12 @@ export default function Page() {
     const [geneticEventsName, setGeneticEventsName] = useState<string[]>([]);
     const [selectedMutations, setSelectedMutations] = useState<string[]>([]);
     const [threshold, setThreshold] = useState<number>(1);
+    const [highlightMutation, setHighlightMutation] = useState<string>("")
+
 
     const [colorScheme, setColorScheme] = useState<string[]>(
         d3.quantize(interpolateRdBu, 13)
     );
-
-    console.log("Scaling Factor", scalingFactor)
-
 
     const handleUpload = (data: any, fileName: string) => {
         setJsonData(data); // speichert hochgeladene Daten 
@@ -43,6 +43,7 @@ export default function Page() {
         setScalingFactor(1);
         setSelectedMutations([]);
         setColorScheme(d3.quantize(interpolateRdBu, 13));
+        setHighlightMutation("");
     };
 
 
@@ -59,7 +60,7 @@ export default function Page() {
                     <CollaTree key={fileName} treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={[scalingFactor]} onMutationNamesReady={(allMutationNames) => {
                         setGeneticEventsName(allMutationNames);
                         setSelectedMutations(allMutationNames);
-                    }} selectedMutations={selectedMutations} threshold={threshold} />
+                    }} selectedMutations={selectedMutations} threshold={threshold} highlightMutation={highlightMutation}/>
                     <p> {jsonData ? fileName : 'tonis_orders_tree_2.json'}</p>
                 </div>
                 <div className="flex justify-between font-bold text-xl p-1 w-full mb-2">
@@ -111,6 +112,7 @@ export default function Page() {
                         <Button onClick={() => setSelectedMutations(geneticEventsName)}> Reset </Button>
                     </div>
                 </div>
+                 <HighlightEvent items={geneticEventsName} selected={highlightMutation} onChange={setHighlightMutation} />
             </div>
         </div>
     );
