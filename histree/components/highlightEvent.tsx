@@ -14,11 +14,8 @@ import {
 
 
 interface HighlightSelectProps {
-  /** Liste aller verfügbaren Mutations-Namen */
   items: string[];
-  /** Aktuell ausgewählter Name zum Highlighten */
   selected: string;
-  /** Callback, wenn der User neu auswählt ("" = kein Highlight) */
   onChange: (name: string) => void;
 }
 
@@ -27,28 +24,32 @@ export function HighlightEvent({
   selected,
   onChange,
 }: HighlightSelectProps) {
+  const filteredItems = items.filter(name => name !== "root");
   return (
     <div className="mt-4">
-      <label
-        htmlFor="highlight-select"
-        className="block text-sm font-medium text-gray-700"
-      >
-        Highlight Mutation
-      </label>
-      <select
-        id="highlight-select"
-        className="mt-1 block w-full rounded border px-3 py-2"
+     <Select
         value={selected}
-        onChange={e => onChange(e.target.value)}
-      >
-        <option value="">— none —</option>
-        {items.map(name => (
-          <option key={name} value={name}>
-            {name}
-          </option>
-        ))}
-      </select>
+        onValueChange={(v) => onChange(v)}
+        aria-label="Highlight Mutation">
+        <SelectTrigger className="w-[180px] border-black">
+          <SelectValue placeholder="Highlight paths with" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Highlight Mutation</SelectLabel>
+            {/* none-Option */}
+            <SelectItem className="hover:bg-indigo-800/80 text-slate-700 hover:text-white" value="null">
+              — none —
+            </SelectItem>
+            {/* alle Mutationsnamen */}
+            {filteredItems.map((name) => (
+              <SelectItem className="hover:bg-indigo-800/80 text-slate-700 hover:text-white" key={name} value={name}>
+                {name}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
     </div>
   );
 }
-

@@ -31,7 +31,10 @@ export default function Page() {
     const [threshold, setThreshold] = useState<number>(1);
     const [highlightMutation, setHighlightMutation] = useState<string>("")
 
-
+    function handleHighlightChange(v: string) {
+  console.log("🔄 Page.setHighlightMutation wird gerufen mit:", v);
+  setHighlightMutation(v);
+}
     const [colorScheme, setColorScheme] = useState<string[]>(
         d3.quantize(interpolateRdBu, 13)
     );
@@ -60,7 +63,7 @@ export default function Page() {
                     <CollaTree key={fileName} treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={[scalingFactor]} onMutationNamesReady={(allMutationNames) => {
                         setGeneticEventsName(allMutationNames);
                         setSelectedMutations(allMutationNames);
-                    }} selectedMutations={selectedMutations} threshold={threshold} highlightMutation={highlightMutation}/>
+                    }} selectedMutations={selectedMutations} threshold={threshold} highlightMutation={highlightMutation}  onHighlightMutationChange={handleHighlightChange}/>
                     <p> {jsonData ? fileName : 'tonis_orders_tree_2.json'}</p>
                 </div>
                 <div className="flex justify-between font-bold text-xl p-1 w-full mb-2">

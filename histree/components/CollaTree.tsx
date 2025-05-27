@@ -26,8 +26,9 @@ interface CollaTreeProps {
   threshold?: number;
   lineWidthFactor: number[];
   onMutationNamesReady?: (names: string[]) => void;
-  selectedMutations?: string[] | undefined,
-  highlightMutation?: string,
+  selectedMutations?: string[] | undefined;
+  highlightMutation?: string;
+  onHighlightMutationChange?: (value: string) => void;
 }
 
 export default function CollaTree({
@@ -40,6 +41,7 @@ export default function CollaTree({
   onMutationNamesReady, // Optionaler Callback
   selectedMutations = [],
   highlightMutation = "",
+  onHighlightMutationChange,
 }: CollaTreeProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const colorScaleRef = useRef<d3.ScaleOrdinal<string, string, never> | null>(null);
@@ -50,6 +52,7 @@ export default function CollaTree({
   const maxCountRef = useRef<number>(1);
   const highlightedLinkRef = useRef<d3.HierarchyLink<MyNode> | null>(null);
   const rootRef = useRef<MyNode | null>(null);
+  const highlightRef = useRef<string>(highlightMutation);
 
 
   function numberNodes(node: TreeNode, parentName = "", mutationNames: string[] = []) {
@@ -254,13 +257,11 @@ export default function CollaTree({
         })
         .attr("fill", d => {
           const isLeaf = !d.children && !d._children;
-          //const color = colorScaleRef.current!(d.data.originalName || d.data.name);
           return isLeaf
             ? "none"
             : colorScaleRef.current!(d.data.originalName || d.data.name);
         })
         .attr("stroke", d => {
-          // Umriss immer farbig
           return colorScaleRef.current!(d.data.originalName || d.data.name);
         })
         .attr("stroke-width", 3);
@@ -322,20 +323,26 @@ export default function CollaTree({
       linkEnter.append("title")
         .text("Highlight this path");
 
-      linkEnter
-        .on("mouseover", (_, d) => { highlightPath(d, true); })
-        .on("mouseout", () => { highlightPath(highlightedLinkRef.current, !!highlightedLinkRef.current); })
-        .on("click", (_, d) => {
-          if (highlightedLinkRef.current === d) {
-            highlightedLinkRef.current = null;
-            highlightPath(null, false);
-          } else {
-            highlightedLinkRef.current = d;
-            highlightPath(d, true);
-          }
-        });
-
       const linkAll = linkEnter.merge(link);
+
+      linkAll.on("click", (_, d) => {
+        console.log("🔹 Klick auf Link zu", d.target.data.originalName);
+        // Dropdown immer zurücksetzen
+          console.log("→ Calling onHighlightMutationChange(\"\")");
+  onHighlightMutationChange?.("");
+        if (onHighlightMutationChange) {
+          console.log(" → setHighlightMutation(\"\") wird aufgerufen");
+          onHighlightMutationChange("");
+        }
+        // b) Toggle Klick-Highlight
+        if (highlightedLinkRef.current === d) {
+          highlightedLinkRef.current = null;
+          highlightPath(null, false);
+        } else {
+          highlightedLinkRef.current = d;
+          highlightPath(d, true);
+        }
+      });
 
       const counts = root.descendants().filter(d => d.data.originalName !== root.data.originalName).map(d => d.data.count ?? 0);
       const maxCount = counts.length > 0 ? Math.max(...counts) : 1;
@@ -405,28 +412,36 @@ export default function CollaTree({
         .attr("stroke", d =>
           colorScaleRef.current!(d.data.originalName || d.data.name)
         );
-    }}, [colorScheme]);
+    }
+  }, [colorScheme]);
 
-    useEffect(() => {
+  useEffect(() => {
 
-   const selLinks = selectedLinksRef.current;
-  if (selLinks && rootRef.current && highlightMutation) {
-    const matches = rootRef.current
-      .descendants()
-      .filter(d => (d.data.originalName || d.data.name) === highlightMutation);
+    console.log("highlightMutation:", highlightMutation);
+    highlightRef.current = highlightMutation;
+    const selLinks = selectedLinksRef.current;
+    if (selLinks && rootRef.current && highlightMutation) {
+      console.log(" selectedLinksRef ok?", !!selLinks, " rootRef ok?", !!rootRef.current);
+      const matches = rootRef.current
+        .descendants()
+        .filter(d => (d.data.originalName || d.data.name) === highlightMutation);
 
-    const anc = new Set<MyNode>();
-    matches.forEach(m => m.ancestors().forEach(a => anc.add(a as MyNode)));
+      console.log(" → Matches:", matches.map(d => d.data.originalName));
 
-    selLinks
-      .transition()
-      .attr("stroke", linkData =>
-        anc.has(linkData.target as unknown as MyNode) ? "372aac" : "#555"
-      )
-      .attr("stroke-opacity", linkData =>
-        anc.has(linkData.target as unknown as MyNode) ? 1 : 0.4
-      );
-  }}, [highlightMutation]);
+      const anc = new Set<MyNode>();
+      matches.forEach(m => m.ancestors().forEach(a => anc.add(a as MyNode)));
+      console.log(" → Ancestor-Set Größe:", anc.size);
+
+      selLinks
+        .transition()
+        .attr("stroke", linkData =>
+          anc.has(linkData.target as unknown as MyNode) ? "yellow" : "#555"
+        )
+        .attr("stroke-opacity", linkData =>
+          anc.has(linkData.target as unknown as MyNode) ? 1 : 0.4
+        );
+    }
+  }, [highlightMutation]);
 
   useEffect(() => {
     if (!selectedLinksRef.current) return;
