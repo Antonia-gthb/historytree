@@ -15,6 +15,7 @@ import SliderScaling from '@/components/ui/lineslider';
 import { Eventfilter } from '@/components/eventfilter';
 import Threshold from '@/components/threshold';
 import { HighlightEvent } from '@/components/highlightEvent';
+import ThetaMatrix from '@/components/ThetaMatrix';
 
 
 
@@ -32,9 +33,8 @@ export default function Page() {
     const [highlightMutation, setHighlightMutation] = useState<string>("")
 
     function handleHighlightChange(v: string) {
-  console.log("🔄 Page.setHighlightMutation wird gerufen mit:", v);
-  setHighlightMutation(v);
-}
+        setHighlightMutation(v);
+    }
     const [colorScheme, setColorScheme] = useState<string[]>(
         d3.quantize(interpolateRdBu, 13)
     );
@@ -51,11 +51,15 @@ export default function Page() {
 
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-r from-cyan-100 via-blue-300 to-indigo-400 p-6">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-r from-cyan-100 via-blue-300 to-indigo-400 p-6 relative">
             <h1 className='text-4xl font-bold -mt-8 mb-4'>
                 MHN Patient Tree
             </h1>
             <div className="flex flex-col w-full max-w-4xl p-6 mb-8">
+                {/* Θ-Matrix oben rechts */}
+                <div className="absolute top-4 right-4">
+                    <ThetaMatrix mutationNames={geneticEventsName} />
+                </div>
                 <ColorTheme key={fileName} onSchemeChange={(colors) => {
                     setColorScheme(colors);
                 }} />
@@ -63,7 +67,7 @@ export default function Page() {
                     <CollaTree key={fileName} treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={[scalingFactor]} onMutationNamesReady={(allMutationNames) => {
                         setGeneticEventsName(allMutationNames);
                         setSelectedMutations(allMutationNames);
-                    }} selectedMutations={selectedMutations} threshold={threshold} highlightMutation={highlightMutation}  onHighlightMutationChange={handleHighlightChange}/>
+                    }} selectedMutations={selectedMutations} threshold={threshold} highlightMutation={highlightMutation} onHighlightMutationChange={handleHighlightChange} />
                     <p> {jsonData ? fileName : 'tonis_orders_tree_2.json'}</p>
                 </div>
                 <div className="flex justify-between font-bold text-xl p-1 w-full mb-2">
@@ -80,34 +84,37 @@ export default function Page() {
                     </div>
                 </div>
                 <div className=" flex flex-row gap-16">
-                <div className="flex flex-col mt-4">
-                    <Label className="text-base font-semibold mb-3">Scaling</Label>
-                    <div className="flex items-center space-x-2 mb-2">
-                        <Checkbox
-                            checked={scalingEnabled}
-                            onCheckedChange={(checked) => {
-                                const isOn = checked === true;
-                                setScalingEnabled (isOn);
-                                setScalingFactor(isOn? 1 : 0);
+                    <div className="flex flex-col mt-4">
+                        <Label className="text-base font-semibold mb-3">Scaling</Label>
+                        <div className="flex items-center space-x-2 mb-2">
+                            <Checkbox
+                                checked={scalingEnabled}
+                                onCheckedChange={(checked) => {
+                                    const isOn = checked === true;
+                                    setScalingEnabled(isOn);
+                                    setScalingFactor(isOn ? 1 : 0);
+                                }}
+                            />
+                            <Label className="font-medium">Scale edges by weight</Label>
+                        </div>
+                        <div className="flex flex-row mb-4">
+                            <SliderScaling value={[scalingFactor]} min={1} max={7} step={0.5} onValueChange={([v]) => {
+                                if (scalingEnabled) setScalingFactor(v);
                             }}
-                        />
-                        <Label className="font-medium">Scale edges by weight</Label>
-                    </div>
-                    <div className="flex flex-row mb-4">
-                        <SliderScaling value={[scalingFactor]} min={1} max={7} step={0.5} onValueChange={([v]) => {
-                            if (scalingEnabled) setScalingFactor(v);
-                        }}
-                            disabled={!scalingEnabled}
-                        />
-                        <span className="text-black my-1 mx-3"> {scalingFactor}</span>
-                    </div>
+                                disabled={!scalingEnabled}
+                            />
+                            <span className="text-black my-1 mx-3"> {scalingFactor}</span>
+                        </div>
                     </div>
                     <div className="flex flex-col mt-4">
-                    <Label className="text-base font-semibold ml-4 mb-3">Threshold</Label>
-                    <div>
-                        <Threshold value={threshold} onChange={setThreshold} />
+                        <Label className="text-base font-semibold ml-4 mb-3">Threshold</Label>
+                        <div>
+                            <Threshold value={threshold} onChange={setThreshold} />
+                        </div>
                     </div>
-                    </div>
+                <div>
+                    <HighlightEvent items={geneticEventsName} selected={highlightMutation} onChange={setHighlightMutation} />
+                </div>
                 </div>
                 <div className="flex flex-row items-end space-x-4">
                     <Eventfilter items={geneticEventsName} selectedItems={selectedMutations} onSubmit={setSelectedMutations} />
@@ -115,7 +122,6 @@ export default function Page() {
                         <Button onClick={() => setSelectedMutations(geneticEventsName)}> Reset </Button>
                     </div>
                 </div>
-                 <HighlightEvent items={geneticEventsName} selected={highlightMutation} onChange={setHighlightMutation} />
             </div>
         </div>
     );
