@@ -6,16 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import * as d3 from "d3";
-import CollaTree from '../components/CollaTree';
+import CollaTree from '../components/features/CollaTree';
 import rawdata from '@/app/tonis_orders_tree_2.json';
-import FileUpload from '../components/upload';
-import ColorTheme from '../components/colorSchemes';
-import Download from '../components/download';
+import FileUpload from '../components/features/upload';
+import ColorTheme from '../components/features/colorSchemes';
+import Download from '../components/features/download';
 import SliderScaling from '@/components/ui/lineslider';
-import { Eventfilter } from '@/components/eventfilter';
-import Threshold from '@/components/threshold';
-import { HighlightEvent } from '@/components/highlightEvent';
-import ThetaMatrix from '@/components/ThetaMatrix';
+import { Eventfilter } from '@/components/features/eventfilter';
+import Threshold from '@/components/features/threshold';
+import { HighlightEvent } from '@/components/features/highlightEvent';
+import ThetaMatrix from '@/components/features/ThetaMatrix';
 
 
 
@@ -56,7 +56,6 @@ export default function Page() {
                 MHN Patient Tree
             </h1>
             <div className="flex flex-col w-full max-w-4xl p-6 mb-8">
-                {/* Θ-Matrix oben rechts */}
                 <div className="absolute top-4 right-4">
                     <ThetaMatrix mutationNames={geneticEventsName} />
                 </div>
