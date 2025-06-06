@@ -5,11 +5,8 @@ import { Plus, Minus } from "lucide-react";
 import { useDebouncedCallback } from "use-debounce";
 
 interface NumberInputProps {
-    /** Initial value (>= 0) */
     defaultValue?: number;
-    /** Minimum allowed value (default 0) */
     min?: number;
-    /** Maximum allowed value (optional) */
     onChange?: (value: number) => void;
 }
 
@@ -50,7 +47,6 @@ export const NumberInput: React.FC<NumberInputProps> = ({
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const input = e.target.value;
-        // Allow empty string to let user clear field
         if (input === "") {
             setValue("");
             return;
@@ -81,7 +77,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
                 onKeyDown={(e) => {
                     if (e.key === "Enter") {
                         debouncedOnChange(numericValue());
-                        e.currentTarget.blur();    // ← Fokus entfernen
+                        e.currentTarget.blur();  
                     }
                 }}
             />

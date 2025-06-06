@@ -142,12 +142,9 @@ export default function CollaTree({
       .attr("width", "100%")
       .attr("height", null)
       .attr("viewBox", [-margin.left, -margin.top, width, dx])
-      .style("max-width", "100%")
       .style("height", "auto")
       .style("font", "14px sans-serif")  // hier kann ich die Schriftgröße einstellen
       .style("user-select", "none")
-      .style("display", "block")  // SVG als Block-Element
-      .style("margin", "0 auto")
       .attr("id", "histree-chart")
 
     const gLink = svg.append("g")

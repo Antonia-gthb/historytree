@@ -11,11 +11,17 @@ import rawdata from '@/app/tonis_orders_tree_2.json';
 import FileUpload from '../components/features/upload';
 import ColorTheme from '../components/features/colorSchemes';
 import Download from '../components/features/download';
-import SliderScaling from '@/components/ui/lineslider';
+import SliderScaling from '@/components/features/lineslider';
 import { Eventfilter } from '@/components/features/eventfilter';
 import Threshold from '@/components/features/threshold';
 import { HighlightEvent } from '@/components/features/highlightEvent';
-import ThetaMatrix from '@/components/features/ThetaMatrix';
+import { AppSidebar } from "@/components/ui/sidebar/app-sidebar"
+import { Separator } from "@/components/ui/sidebar/separator"
+import {
+    SidebarInset,
+    SidebarProvider,
+    SidebarTrigger,
+} from "@/components/ui/sidebar/sidebar"
 
 
 
@@ -52,23 +58,42 @@ export default function Page() {
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-r from-cyan-100 via-blue-300 to-indigo-400 p-6 relative">
-            <h1 className='text-4xl font-bold -mt-8 mb-4'>
-                MHN Patient Tree
-            </h1>
+            <SidebarProvider>
+                <AppSidebar />
+                <SidebarInset>
+                    <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+                        <SidebarTrigger className="-ml-1" />
+                        <Separator
+                            orientation="vertical"
+                            className="mr-2 data-[orientation=vertical]:h-4"
+                        />
+                        <p> {jsonData ? fileName : 'tonis_orders_tree_2.json'}</p>
+                    </header>
+                    <div className="flex flex-1 p-10">
+                        <CollaTree key={fileName} treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={[scalingFactor]} onMutationNamesReady={(allMutationNames) => {
+                            setGeneticEventsName(allMutationNames);
+                            setSelectedMutations(allMutationNames);
+                        }} selectedMutations={selectedMutations} threshold={threshold} highlightMutation={highlightMutation} onHighlightMutationChange={handleHighlightChange} />
+                    </div>
+                    <div className="flex justify-between font-bold text-xl p-5 w-full">
+                        <div>
+                            <FileUpload onUpload={handleUpload} />
+                        </div>
+                        <div>
+                            <Download downloadName={jsonData ? fileName : 'tonis_orders_tree_2.json'} />
+                        </div>
+                        <div>
+                            <Button onClick={() => setIsExpanded(!isExpanded)} variant="outline" className="transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-800 text-slate-700 hover:text-white">
+                                {isExpanded ? ' Collapse All' : ' Expand All'}
+                            </Button >
+                        </div>
+                    </div>
+                </SidebarInset>
+            </SidebarProvider>
             <div className="flex flex-col w-full max-w-4xl p-6 mb-8">
-                <div className="absolute top-4 right-4">
-                    <ThetaMatrix mutationNames={geneticEventsName} />
-                </div>
                 <ColorTheme key={fileName} onSchemeChange={(colors) => {
                     setColorScheme(colors);
                 }} />
-                <div className="mx-auto block w-full rounded-lg">
-                    <CollaTree key={fileName} treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={[scalingFactor]} onMutationNamesReady={(allMutationNames) => {
-                        setGeneticEventsName(allMutationNames);
-                        setSelectedMutations(allMutationNames);
-                    }} selectedMutations={selectedMutations} threshold={threshold} highlightMutation={highlightMutation} onHighlightMutationChange={handleHighlightChange} />
-                    <p> {jsonData ? fileName : 'tonis_orders_tree_2.json'}</p>
-                </div>
                 <div className="flex justify-between font-bold text-xl p-1 w-full mb-2">
                     <div>
                         <FileUpload onUpload={handleUpload} />
@@ -111,17 +136,18 @@ export default function Page() {
                             <Threshold value={threshold} onChange={setThreshold} />
                         </div>
                     </div>
-                <div>
-                    <HighlightEvent items={geneticEventsName} selected={highlightMutation} onChange={setHighlightMutation} />
-                </div>
+                    <div>
+                        <HighlightEvent items={geneticEventsName} selected={highlightMutation} onChange={setHighlightMutation} />
+                    </div>
                 </div>
                 <div className="flex flex-row items-end space-x-4">
                     <Eventfilter items={geneticEventsName} selectedItems={selectedMutations} onSubmit={setSelectedMutations} />
                     <div className="ease-in-out hover:-translate-y-1 self-end">
-                        <Button onClick={() => setSelectedMutations(geneticEventsName)}> Reset </Button>
+                        <Button onClick={() => setSelectedMutations(geneticEventsName)}>Reset</Button>
                     </div>
                 </div>
             </div>
         </div>
     );
 }
+

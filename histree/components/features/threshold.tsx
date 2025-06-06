@@ -1,4 +1,4 @@
-import { NumberInput } from "@/components/ui/numberinput";
+import { NumberInput } from "@/components/features/numberinput";
 
 interface ThresholdProps {
   /** Aktueller Schwellwert */
