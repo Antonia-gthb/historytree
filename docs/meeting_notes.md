@@ -51,3 +51,24 @@
 - Orga
   - in zwei Wochen mit Michi über Code schauen
   - Ziel für nächste Woche: Technical Implementation
+
+## 06.06.2025
+
+- Arbeit
+  - Über nextjs geschrieben
+  - Über Challenges geschrieben
+  - fehlen: User Guide und Discussion
+  - Linda schickt Empfehlung für Latex Package für Code
+- Programmieren
+  - Repo aufgeräumt 
+  - To Do: Einzelne Dateien zusammenfassen
+  - Beschrieben: Typescript logik für d3 ausgeklammert
+- Orga
+  - Treffen mit Michi
+    - am besten zu dritt
+    - nochmal über die Arbeit schauen
+  - Präsentation
+    - Informieren ob Präsentation vor oder nach der Abgabe
+    - Im Rahmen des Groupmeetings?
+    - Wsl. im Juli
+    - Anfang nächster Woche Bescheid geben
