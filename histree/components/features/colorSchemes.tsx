@@ -37,7 +37,7 @@ const ColorThemes = ({ onSchemeChange }: ColorThemesProps) => {
   };
 
   return (
-    <div className="p-6">
+    <div className="mt-4">
         <Select value={selectedScheme} onValueChange={handleChange}>
         <SelectTrigger className="w-[180px] border-black">
           <SelectValue placeholder="Select color theme" />

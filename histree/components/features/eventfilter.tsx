@@ -50,14 +50,13 @@ export function Eventfilter({ items = [], selectedItems, onSubmit }: Eventfilter
           name="items"
           render={({ field }) => (
             <FormItem>
-              <div className="mb-4">
-                <FormLabel className="text-base">Eventfilter</FormLabel>
+              <div className="mb-3 mt-3">
                 <FormDescription>
                   Select the genetic events you want to see in the MHN History Tree
                 </FormDescription>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 {items?.slice(1).map((item) => {
                   const isChecked = field.value?.includes(item) ?? false
 

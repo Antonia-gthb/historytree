@@ -15,13 +15,27 @@ import SliderScaling from '@/components/features/lineslider';
 import { Eventfilter } from '@/components/features/eventfilter';
 import Threshold from '@/components/features/threshold';
 import { HighlightEvent } from '@/components/features/highlightEvent';
-import { AppSidebar } from "@/components/ui/sidebar/app-sidebar"
+import { AppSidebarUI } from "@/components/ui/sidebar/appaausgelagert"
 import { Separator } from "@/components/ui/sidebar/separator"
 import {
     SidebarInset,
     SidebarProvider,
     SidebarTrigger,
 } from "@/components/ui/sidebar/sidebar"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarGroupContent,
+  SidebarHeader,
+} from "@/components/ui/sidebar/sidebar";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/sidebar/collapsible";
+import { ChevronRight } from 'lucide-react';
 
 
 
@@ -59,7 +73,24 @@ export default function Page() {
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-r from-cyan-100 via-blue-300 to-indigo-400 p-6 relative">
             <SidebarProvider>
-                <AppSidebar />
+                 <AppSidebarUI
+        jsonData={jsonData}
+        fileName={fileName}
+        colorScheme={colorScheme}
+        scalingEnabled={scalingEnabled}
+        scalingFactor={scalingFactor}
+        threshold={threshold}
+        geneticEventsName={geneticEventsName}
+        selectedMutations={selectedMutations}
+        highlightMutation={highlightMutation}
+        handleUpload={handleUpload}
+        setColorScheme={setColorScheme}
+        setScalingEnabled={setScalingEnabled}
+        setScalingFactor={setScalingFactor}
+        setThreshold={setThreshold}
+        setSelectedMutations={setSelectedMutations}
+        setHighlightMutation={setHighlightMutation}
+      />
                 <SidebarInset>
                     <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
                         <SidebarTrigger className="-ml-1" />
@@ -90,6 +121,7 @@ export default function Page() {
                     </div>
                 </SidebarInset>
             </SidebarProvider>
+            
             <div className="flex flex-col w-full max-w-4xl p-6 mb-8">
                 <ColorTheme key={fileName} onSchemeChange={(colors) => {
                     setColorScheme(colors);
