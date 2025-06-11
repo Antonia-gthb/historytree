@@ -10,10 +10,10 @@ interface ThresholdProps {
 export default function Threshold({ value, onChange }: ThresholdProps) {
 
   return (
-    <div className="p-4">
+    <div>
            <NumberInput
-        defaultValue={value}   /* statt `value` */
-        onChange={onChange}    /* NumberInput liefert schon `number` zurück */
+        defaultValue={value}  
+        onChange={onChange}   
       />
     </div>
   );

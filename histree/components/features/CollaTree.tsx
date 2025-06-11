@@ -56,22 +56,22 @@ export default function CollaTree({
 
 
   function numberNodes(node: TreeNode, parentName = "", mutationNames: string[] = []) {
-    if (!node.originalName) {
-      node.originalName = node.name; // Speichert den ursprünglichen Namen nur einmal
-      mutationNames.push(node.name);
-    }
 
-    if (parentName) {
-      node.name = `${parentName}_${node.name}`;  // Elternnamen hinzufügen
+    const orig = node.originalName ?? node.name; // Speichert den ursprünglichen Namen nur einmal
+    node.originalName = orig;
+    mutationNames.push(orig);
+
+     if (parentName) {
+      node.name = `${parentName}_${orig}`;  // Elternnamen hinzufügen
     }
 
     if (node.children) {
-      node.children.forEach((child, index) => {
-        numberNodes(child, `${node.name}_${index + 1}`, mutationNames);  // rekursiv durchlaufen
-      });
+      node.children.forEach((child, index) =>
+      numberNodes(child, `${node.name}_${index + 1}`, mutationNames)
+      );
     }
-
   }
+
 
   function filterTreeData(tree: TreeNode, selectedMutations: string[]): TreeNode | null {
     const isActive = (name: string | undefined) => {
@@ -84,6 +84,7 @@ export default function CollaTree({
     if (!isActive(originalName)) {
       return null;
     }
+    console.log("selected", selectedMutations)
 
     // Wenn Kinder da sind, werden sie rekursiv geprüft
     const filteredChildren = tree.children
@@ -97,15 +98,15 @@ export default function CollaTree({
   }
 
   function filterByThreshold(node: TreeNode, thr: number): TreeNode | null {
-    // 1. Wenn dieser Knoten von weniger als thr Patienten geteilt wird → raus
+    //Wenn dieser Knoten von weniger als thr Patienten geteilt wird: raus
     if ((node.count ?? 0) < thr) return null;
 
-    // 2. Rekursiv die Kinder filtern
+    //Rekursiv die Kinder filtern
     const children = node.children
       ?.map(child => filterByThreshold(child, thr))
       .filter((c): c is TreeNode => c !== null);
 
-    // 3. Gefilterten Knoten zurückgeben (Kinder nur, wenn welche übrig)
+    // Gefilterten Knoten zurückgeben (Kinder nur, wenn welche übrig)
     return {
       ...node,
       children: children && children.length > 0 ? children : undefined,
@@ -140,7 +141,6 @@ export default function CollaTree({
     // SVG erstellen
     const svg = d3.select<SVGSVGElement, unknown>(svgRef.current)
       .attr("width", "100%")
-      .attr("height", null)
       .attr("viewBox", [-margin.left, -margin.top, width, dx])
       .style("height", "auto")
       .style("font", "14px sans-serif")  // hier kann ich die Schriftgröße einstellen
@@ -183,6 +183,7 @@ export default function CollaTree({
     }
 
     const mutationNames = mutationNamesRef.current!;
+    console.log("ref", mutationNamesRef.current)
 
 
     colorScaleRef.current = d3.scaleOrdinal<string, string>()
@@ -323,12 +324,12 @@ export default function CollaTree({
       const linkAll = linkEnter.merge(link);
 
       linkAll.on("click", (_, d) => {
-        console.log("🔹 Klick auf Link zu", d.target.data.originalName);
+        console.log("Klick auf Link zu", d.target.data.originalName);
         // Dropdown immer zurücksetzen
-          console.log("→ Calling onHighlightMutationChange(\"\")");
-  onHighlightMutationChange?.("");
+        console.log("Calling onHighlightMutationChange(\"\")");
+        onHighlightMutationChange?.("");
         if (onHighlightMutationChange) {
-          console.log(" → setHighlightMutation(\"\") wird aufgerufen");
+          console.log("setHighlightMutation(\"\") wird aufgerufen");
           onHighlightMutationChange("");
         }
         // b) Toggle Klick-Highlight
@@ -413,8 +414,6 @@ export default function CollaTree({
   }, [colorScheme]);
 
   useEffect(() => {
-
-    console.log("highlightMutation:", highlightMutation);
     highlightRef.current = highlightMutation;
     const selLinks = selectedLinksRef.current;
     if (selLinks && rootRef.current && highlightMutation) {
@@ -423,16 +422,16 @@ export default function CollaTree({
         .descendants()
         .filter(d => (d.data.originalName || d.data.name) === highlightMutation);
 
-      console.log(" → Matches:", matches.map(d => d.data.originalName));
+      console.log("Matches:", matches.map(d => d.data.originalName));
 
       const anc = new Set<MyNode>();
       matches.forEach(m => m.ancestors().forEach(a => anc.add(a as MyNode)));
-      console.log(" → Ancestor-Set Größe:", anc.size);
+      console.log("Ancestor-Set Größe:", anc.size);
 
       selLinks
         .transition()
         .attr("stroke", linkData =>
-          anc.has(linkData.target as unknown as MyNode) ? "#372aac" : "#555"
+          anc.has(linkData.target as unknown as MyNode) ? "372aac" : "#555"
         )
         .attr("stroke-opacity", linkData =>
           anc.has(linkData.target as unknown as MyNode) ? 1 : 0.4
@@ -461,6 +460,8 @@ export default function CollaTree({
 
   return <svg ref={svgRef}></svg>;
 }
+
+
 
 
 

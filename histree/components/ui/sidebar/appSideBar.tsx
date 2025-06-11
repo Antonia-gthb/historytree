@@ -1,4 +1,3 @@
-// components/ui/sidebar/appsidebar.tsx
 "use client";
 
 import * as React from "react";
@@ -27,7 +26,7 @@ import SliderScaling from "@/components/features/lineslider";
 import Threshold from "@/components/features/threshold";
 import { Eventfilter } from "@/components/features/eventfilter";
 import { HighlightEvent } from "@/components/features/highlightEvent";
-import {Button}  from "@/components/ui/button"
+import { Button } from "../button";
 
 export interface AppSidebarProps {
   jsonData: any;
@@ -67,22 +66,27 @@ export function AppSidebar({
 }: AppSidebarProps) {
   return (
     <Sidebar>
-      <SidebarHeader className="font-semibold">
+      <SidebarHeader className="font-semibold p-5 mb-3 bg-indigo-800/90 text-white/95">
         MHN Patient History Tree
       </SidebarHeader>
 
       <SidebarContent>
 
+        {/* UPLOAD */}
+        <div className="ml-10 mt-3">
+          <FileUpload onUpload={handleUpload} />
+        </div>
+
         {/* COLOR SCHEME */}
         <Collapsible title="Color Scheme" className="group/collapsible">
           <SidebarGroup>
-            <SidebarGroupLabel asChild className="group/label text-sm">
+            <SidebarGroupLabel asChild className="group/label group-data-[state=open]/collapsible:mb-1 ">
               <CollapsibleTrigger className="flex w-full justify-between">
                 Color Scheme
                 <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
               </CollapsibleTrigger>
             </SidebarGroupLabel>
-            <CollapsibleContent>
+            <CollapsibleContent className="p-3 mb-2">
               <SidebarGroupContent>
                 <ColorTheme onSchemeChange={setColorScheme} />
               </SidebarGroupContent>
@@ -93,23 +97,24 @@ export function AppSidebar({
         {/* SCALING */}
         <Collapsible title="Scaling" className="group/collapsible">
           <SidebarGroup>
-            <SidebarGroupLabel asChild className="group/label group-data-[state=open]/collapsible:mb-5 ">
+            <SidebarGroupLabel asChild className="group/label group-data-[state=open]/collapsible:mb-1 ">
               <CollapsibleTrigger className="flex w-full justify-between">
                 Scaling
                 <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
               </CollapsibleTrigger>
             </SidebarGroupLabel>
-            <CollapsibleContent>
+            <CollapsibleContent className="p-5">
               <SidebarGroupContent className="flex flex-col space-y-4 ml-2">
                 <label className="flex flex-row gap-3 items-center font-semibold">
-                <Checkbox
-                  checked={scalingEnabled}
-                  onCheckedChange={(on) => {
-                    setScalingEnabled(on);
-                    if (!on) setScalingFactor(0);
-                  }}
-                />
-                <span>Scale edges by weight</span>
+                  <Checkbox
+                    checked={scalingEnabled}
+                    onCheckedChange={(on) => {
+                      const isChecked = on === true;
+                      setScalingEnabled(isChecked);
+                      if (!isChecked) setScalingFactor(0);
+                    }}
+                  />
+                  <span>Scale edges by weight</span>
                 </label>
                 <SliderScaling
                   value={[scalingFactor]}
@@ -129,14 +134,15 @@ export function AppSidebar({
         {/* THRESHOLD */}
         <Collapsible title="Threshold" className="group/collapsible">
           <SidebarGroup>
-            <SidebarGroupLabel asChild className="group/label text-sm">
+            <SidebarGroupLabel asChild className="group/label group-data-[state=open]/collapsible:mb-1 ">
               <CollapsibleTrigger className="flex w-full justify-between">
                 Threshold
                 <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
               </CollapsibleTrigger>
             </SidebarGroupLabel>
-            <CollapsibleContent>
-              <SidebarGroupContent>
+            <CollapsibleContent className="p-3">
+              <p className="block text-gray-700 text-sm mb-3 "> Select how many patients share the same path </p>
+              <SidebarGroupContent className="ml-5 mb-1">
                 <Threshold value={threshold} onChange={setThreshold} />
               </SidebarGroupContent>
             </CollapsibleContent>
@@ -146,20 +152,20 @@ export function AppSidebar({
         {/* EVENTFILTER */}
         <Collapsible title="Eventfilter" className="group/collapsible">
           <SidebarGroup>
-            <SidebarGroupLabel asChild className="group/label text-sm">
+            <SidebarGroupLabel asChild className="group/label group-data-[state=open]/collapsible:mb-1 ">
               <CollapsibleTrigger className="flex w-full justify-between">
-                Event Filter
+                Eventfilter
                 <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
               </CollapsibleTrigger>
             </SidebarGroupLabel>
-            <CollapsibleContent>
+            <CollapsibleContent className="p-3">
               <SidebarGroupContent>
                 <Eventfilter
                   items={geneticEventsName}
                   selectedItems={selectedMutations}
                   onSubmit={setSelectedMutations}
+                  onReset={() => setSelectedMutations(geneticEventsName)}
                 />
-                 <Button className="ease-in-out hover:-translate-y-1 self-end" onClick={() => setSelectedMutations(geneticEventsName)}>Reset</Button>
               </SidebarGroupContent>
             </CollapsibleContent>
           </SidebarGroup>
@@ -168,13 +174,13 @@ export function AppSidebar({
         {/* HIGHLIGHT MUTATION */}
         <Collapsible title="Highlight Mutation" className="group/collapsible">
           <SidebarGroup>
-            <SidebarGroupLabel asChild className="group/label text-sm">
+            <SidebarGroupLabel asChild className="group/label group-data-[state=open]/collapsible:mb-1">
               <CollapsibleTrigger className="flex w-full justify-between">
                 Highlight Mutation
                 <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
               </CollapsibleTrigger>
             </SidebarGroupLabel>
-            <CollapsibleContent>
+            <CollapsibleContent className="p-3 mb-2">
               <SidebarGroupContent>
                 <HighlightEvent
                   items={geneticEventsName}
@@ -185,6 +191,11 @@ export function AppSidebar({
             </CollapsibleContent>
           </SidebarGroup>
         </Collapsible>
+
+        {/* DOWNLOAD */}
+        <div className="ml-10 mt-3">
+          <Download downloadName={jsonData ? fileName : 'tonis_orders_tree_2.json'} />
+        </div>
       </SidebarContent>
 
       <SidebarRail />

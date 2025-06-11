@@ -1,20 +1,11 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { interpolateTurbo } from 'd3-scale-chromatic';
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import * as d3 from "d3";
 import CollaTree from '../components/features/CollaTree';
 import rawdata from '@/app/tonis_orders_tree_2.json';
-import FileUpload from '../components/features/upload';
-import ColorTheme from '../components/features/colorSchemes';
-import Download from '../components/features/download';
-import SliderScaling from '@/components/features/lineslider';
-import { Eventfilter } from '@/components/features/eventfilter';
-import Threshold from '@/components/features/threshold';
-import { HighlightEvent } from '@/components/features/highlightEvent';
 import { AppSidebar } from "@/components/ui/sidebar/appSideBar"
 import { Separator } from "@/components/ui/sidebar/separator"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar/sidebar"
@@ -30,7 +21,8 @@ export default function Page() {
     const [geneticEventsName, setGeneticEventsName] = useState<string[]>([]);
     const [selectedMutations, setSelectedMutations] = useState<string[]>([]);
     const [threshold, setThreshold] = useState<number>(1);
-    const [highlightMutation, setHighlightMutation] = useState<string>("")
+    const [highlightMutation, setHighlightMutation] = useState<string>("");
+    const [resetCount, setResetCount] = useState(0);
 
     function handleHighlightChange(v: string) {
         setHighlightMutation(v);
@@ -38,6 +30,17 @@ export default function Page() {
     const [colorScheme, setColorScheme] = useState<string[]>(
         d3.quantize(interpolateTurbo, 13)
     );
+
+function resetFilters() {
+  setIsExpanded(false);
+  setScalingEnabled(true);
+  setScalingFactor(1);
+  setThreshold(1);
+  setSelectedMutations(geneticEventsName);     
+  setColorScheme(d3.quantize(interpolateTurbo, 13));
+  setHighlightMutation("");
+  setResetCount((c) => c + 1);
+}
 
     const handleUpload = (data: any, fileName: string) => {
         setJsonData(data); // speichert hochgeladene Daten 
@@ -48,6 +51,10 @@ export default function Page() {
         setColorScheme(d3.quantize(interpolateTurbo, 13));
         setHighlightMutation("");
     };
+
+     useEffect(() => {
+    console.log("⚡️ geneticEventsName changed:", geneticEventsName);
+  }, [geneticEventsName]);
 
 
     return (
@@ -79,25 +86,20 @@ export default function Page() {
                             className="mr-2 data-[orientation=vertical]:h-4"
                         />
                         <p> {jsonData ? fileName : 'tonis_orders_tree_2.json'}</p>
+                        <Button onClick={() => setIsExpanded(!isExpanded)} variant="outline" className="ml-auto transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-800 text-slate-700 hover:text-white">
+                            {isExpanded ? ' Collapse All' : ' Expand All'}
+                        </Button >
                     </header>
                     <div className="flex flex-1 p-10">
-                        <CollaTree key={fileName} treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={[scalingFactor]} onMutationNamesReady={(allMutationNames) => {
+                        <CollaTree key={`${fileName}-${resetCount}`} treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={[scalingFactor]} onMutationNamesReady={(allMutationNames) => {
+                            console.log("CollaTree returned these names:", allMutationNames);
                             setGeneticEventsName(allMutationNames);
                             setSelectedMutations(allMutationNames);
-                        }} selectedMutations={selectedMutations} threshold={threshold} highlightMutation={highlightMutation} onHighlightMutationChange={handleHighlightChange} />
+                        }} selectedMutations={selectedMutations} threshold={threshold} highlightMutation={highlightMutation} onHighlightMutationChange={handleHighlightChange}
+                         />
                     </div>
                     <div className="flex justify-between font-bold text-xl p-5 w-full">
-                        <div>
-                            <FileUpload onUpload={handleUpload} />
-                        </div>
-                        <div>
-                            <Download downloadName={jsonData ? fileName : 'tonis_orders_tree_2.json'} />
-                        </div>
-                        <div>
-                            <Button onClick={() => setIsExpanded(!isExpanded)} variant="outline" className="transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-800 text-slate-700 hover:text-white">
-                                {isExpanded ? ' Collapse All' : ' Expand All'}
-                            </Button >
-                        </div>
+                            <Button onClick={resetFilters} className="transition hover:-translate-y-1">Reset Filters</Button>
                     </div>
                 </SidebarInset>
             </SidebarProvider>

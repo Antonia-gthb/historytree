@@ -20,10 +20,11 @@ import { useEffect } from "react"
 interface EventfilterProps {
   items?: string[] | undefined,
   selectedItems: string[],
-  onSubmit: (selected: string[]) => void
+  onSubmit: (selected: string[]) => void,
+  onReset?: () => void 
 }
 
-export function Eventfilter({ items = [], selectedItems, onSubmit }: EventfilterProps) {
+export function Eventfilter({ items = [], selectedItems, onSubmit, onReset }: EventfilterProps) {
 
 
   const form = useForm<{ items: string[] }>({
@@ -35,12 +36,8 @@ export function Eventfilter({ items = [], selectedItems, onSubmit }: Eventfilter
   }, [selectedItems, form]);
 
   function handleSubmit(data: { items: string[] }) {
-    console.log("Selected mutations:", data.items)
     onSubmit(data.items)
   }
-
-
-
 
   return (
     <Form {...form}>
@@ -50,7 +47,7 @@ export function Eventfilter({ items = [], selectedItems, onSubmit }: Eventfilter
           name="items"
           render={({ field }) => (
             <FormItem>
-              <div className="mb-3 mt-3">
+              <div className="mb-2">
                 <FormDescription>
                   Select the genetic events you want to see in the MHN History Tree
                 </FormDescription>
@@ -63,6 +60,7 @@ export function Eventfilter({ items = [], selectedItems, onSubmit }: Eventfilter
                   return (
                     <FormItem
                       key={item}
+                      id={item}
                       className="flex flex-row items-start space-x-3 space-y-0"
                     >
                       <FormControl>
@@ -87,7 +85,11 @@ export function Eventfilter({ items = [], selectedItems, onSubmit }: Eventfilter
             </FormItem>
           )}
         />
+            <div className="flex space-x-8">
         <Button type="submit" className="ease-in-out hover:-translate-y-1">Submit</Button>
+          <Button type="button" className="transition hover:-translate-y-1" onClick={() => {form.reset({ items: selectedItems }) 
+          onReset?.()}} >Reset </Button>
+        </div>
       </form>
     </Form>
   )

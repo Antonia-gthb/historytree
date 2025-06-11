@@ -39,7 +39,7 @@ export function HighlightEvent({
             <SelectLabel>Highlight Mutation</SelectLabel>
             {/* none-Option */}
             <SelectItem className="hover:bg-indigo-800/80 text-slate-700 hover:text-white" value="null">
-              — none —
+              -
             </SelectItem>
             {/* alle Mutationsnamen */}
             {filteredItems.map((name) => (
