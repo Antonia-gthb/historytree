@@ -432,7 +432,7 @@ export default function CollaTree({
       selLinks
         .transition()
         .attr("stroke", linkData =>
-          anc.has(linkData.target as unknown as MyNode) ? "yellow" : "#555"
+          anc.has(linkData.target as unknown as MyNode) ? "#372aac" : "#555"
         )
         .attr("stroke-opacity", linkData =>
           anc.has(linkData.target as unknown as MyNode) ? 1 : 0.4

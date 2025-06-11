@@ -27,7 +27,7 @@ const colorSchemes = {
 
 
 const ColorThemes = ({ onSchemeChange }: ColorThemesProps) => {
-  const [selectedScheme, setSelectedScheme] = useState<keyof typeof colorSchemes>("RedtoBlue");
+  const [selectedScheme, setSelectedScheme] = useState("");
 
   const handleChange = (schemeName: keyof typeof colorSchemes) => {
     setSelectedScheme(schemeName);
@@ -38,9 +38,12 @@ const ColorThemes = ({ onSchemeChange }: ColorThemesProps) => {
 
   return (
     <div className="mt-4">
-        <Select value={selectedScheme} onValueChange={handleChange}>
+        <Select defaultValue="Turbo" onValueChange={handleChange}>
         <SelectTrigger className="w-[180px] border-black">
-          <SelectValue placeholder="Select color theme" />
+          <SelectValue> {selectedScheme
+              ? selectedScheme
+              : "Select color theme"}
+              </SelectValue>
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>

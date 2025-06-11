@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { interpolateRdBu } from 'd3-scale-chromatic';
+import { useState } from 'react';
+import { interpolateTurbo } from 'd3-scale-chromatic';
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,29 +15,9 @@ import SliderScaling from '@/components/features/lineslider';
 import { Eventfilter } from '@/components/features/eventfilter';
 import Threshold from '@/components/features/threshold';
 import { HighlightEvent } from '@/components/features/highlightEvent';
-import { AppSidebarUI } from "@/components/ui/sidebar/appaausgelagert"
+import { AppSidebar } from "@/components/ui/sidebar/appSideBar"
 import { Separator } from "@/components/ui/sidebar/separator"
-import {
-    SidebarInset,
-    SidebarProvider,
-    SidebarTrigger,
-} from "@/components/ui/sidebar/sidebar"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarGroupContent,
-  SidebarHeader,
-} from "@/components/ui/sidebar/sidebar";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/sidebar/collapsible";
-import { ChevronRight } from 'lucide-react';
-
-
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar/sidebar"
 
 
 export default function Page() {
@@ -56,7 +36,7 @@ export default function Page() {
         setHighlightMutation(v);
     }
     const [colorScheme, setColorScheme] = useState<string[]>(
-        d3.quantize(interpolateRdBu, 13)
+        d3.quantize(interpolateTurbo, 13)
     );
 
     const handleUpload = (data: any, fileName: string) => {
@@ -65,7 +45,7 @@ export default function Page() {
         setIsExpanded(false);
         setScalingFactor(1);
         setSelectedMutations([]);
-        setColorScheme(d3.quantize(interpolateRdBu, 13));
+        setColorScheme(d3.quantize(interpolateTurbo, 13));
         setHighlightMutation("");
     };
 
@@ -73,24 +53,24 @@ export default function Page() {
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-r from-cyan-100 via-blue-300 to-indigo-400 p-6 relative">
             <SidebarProvider>
-                 <AppSidebarUI
-        jsonData={jsonData}
-        fileName={fileName}
-        colorScheme={colorScheme}
-        scalingEnabled={scalingEnabled}
-        scalingFactor={scalingFactor}
-        threshold={threshold}
-        geneticEventsName={geneticEventsName}
-        selectedMutations={selectedMutations}
-        highlightMutation={highlightMutation}
-        handleUpload={handleUpload}
-        setColorScheme={setColorScheme}
-        setScalingEnabled={setScalingEnabled}
-        setScalingFactor={setScalingFactor}
-        setThreshold={setThreshold}
-        setSelectedMutations={setSelectedMutations}
-        setHighlightMutation={setHighlightMutation}
-      />
+                <AppSidebar
+                    jsonData={jsonData}
+                    fileName={fileName}
+                    colorScheme={colorScheme}
+                    scalingEnabled={scalingEnabled}
+                    scalingFactor={scalingFactor}
+                    threshold={threshold}
+                    geneticEventsName={geneticEventsName}
+                    selectedMutations={selectedMutations}
+                    highlightMutation={highlightMutation}
+                    handleUpload={handleUpload}
+                    setColorScheme={setColorScheme}
+                    setScalingEnabled={setScalingEnabled}
+                    setScalingFactor={setScalingFactor}
+                    setThreshold={setThreshold}
+                    setSelectedMutations={setSelectedMutations}
+                    setHighlightMutation={setHighlightMutation}
+                />
                 <SidebarInset>
                     <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
                         <SidebarTrigger className="-ml-1" />
@@ -121,64 +101,6 @@ export default function Page() {
                     </div>
                 </SidebarInset>
             </SidebarProvider>
-            
-            <div className="flex flex-col w-full max-w-4xl p-6 mb-8">
-                <ColorTheme key={fileName} onSchemeChange={(colors) => {
-                    setColorScheme(colors);
-                }} />
-                <div className="flex justify-between font-bold text-xl p-1 w-full mb-2">
-                    <div>
-                        <FileUpload onUpload={handleUpload} />
-                    </div>
-                    <div>
-                        <Download downloadName={jsonData ? fileName : 'tonis_orders_tree_2.json'} />
-                    </div>
-                    <div>
-                        <Button onClick={() => setIsExpanded(!isExpanded)} variant="outline" className="transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-800 text-slate-700 hover:text-white">
-                            {isExpanded ? ' Collapse All' : ' Expand All'}
-                        </Button >
-                    </div>
-                </div>
-                <div className=" flex flex-row gap-16">
-                    <div className="flex flex-col mt-4">
-                        <Label className="text-base font-semibold mb-3">Scaling</Label>
-                        <div className="flex items-center space-x-2 mb-2">
-                            <Checkbox
-                                checked={scalingEnabled}
-                                onCheckedChange={(checked) => {
-                                    const isOn = checked === true;
-                                    setScalingEnabled(isOn);
-                                    setScalingFactor(isOn ? 1 : 0);
-                                }}
-                            />
-                            <Label className="font-medium">Scale edges by weight</Label>
-                        </div>
-                        <div className="flex flex-row mb-4">
-                            <SliderScaling value={[scalingFactor]} min={1} max={7} step={0.5} onValueChange={([v]) => {
-                                if (scalingEnabled) setScalingFactor(v);
-                            }}
-                                disabled={!scalingEnabled}
-                            />
-                            <span className="text-black my-1 mx-3"> {scalingFactor}</span>
-                        </div>
-                    </div>
-                    <div className="flex flex-col mt-4">
-                        <Label className="text-base font-semibold ml-4 mb-3">Threshold</Label>
-                        <div>
-                            <Threshold value={threshold} onChange={setThreshold} />
-                        </div>
-                    </div>
-                    <div>
-                        <HighlightEvent items={geneticEventsName} selected={highlightMutation} onChange={setHighlightMutation} />
-                    </div>
-                </div>
-                <div className="flex flex-row items-end space-x-4">
-                    <Eventfilter items={geneticEventsName} selectedItems={selectedMutations} onSubmit={setSelectedMutations} />
-                    <div className="ease-in-out hover:-translate-y-1 self-end">
-                        <Button onClick={() => setSelectedMutations(geneticEventsName)}>Reset</Button>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 }
