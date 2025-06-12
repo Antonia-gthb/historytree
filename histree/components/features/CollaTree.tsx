@@ -84,7 +84,6 @@ export default function CollaTree({
     if (!isActive(originalName)) {
       return null;
     }
-    console.log("selected", selectedMutations)
 
     // Wenn Kinder da sind, werden sie rekursiv geprüft
     const filteredChildren = tree.children
@@ -183,7 +182,6 @@ export default function CollaTree({
     }
 
     const mutationNames = mutationNamesRef.current!;
-    console.log("ref", mutationNamesRef.current)
 
 
     colorScaleRef.current = d3.scaleOrdinal<string, string>()

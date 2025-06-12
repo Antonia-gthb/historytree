@@ -9,6 +9,7 @@ import rawdata from '@/app/tonis_orders_tree_2.json';
 import { AppSidebar } from "@/components/ui/sidebar/appSideBar"
 import { Separator } from "@/components/ui/sidebar/separator"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar/sidebar"
+import ThetaMatrix from '@/components/features/ThetaMatrix';
 
 
 export default function Page() {
@@ -52,10 +53,6 @@ function resetFilters() {
         setHighlightMutation("");
     };
 
-     useEffect(() => {
-    console.log("⚡️ geneticEventsName changed:", geneticEventsName);
-  }, [geneticEventsName]);
-
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-r from-cyan-100 via-blue-300 to-indigo-400 p-6 relative">
@@ -92,7 +89,6 @@ function resetFilters() {
                     </header>
                     <div className="flex flex-1 p-10">
                         <CollaTree key={`${fileName}-${resetCount}`} treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={[scalingFactor]} onMutationNamesReady={(allMutationNames) => {
-                            console.log("CollaTree returned these names:", allMutationNames);
                             setGeneticEventsName(allMutationNames);
                             setSelectedMutations(allMutationNames);
                         }} selectedMutations={selectedMutations} threshold={threshold} highlightMutation={highlightMutation} onHighlightMutationChange={handleHighlightChange}
@@ -103,6 +99,9 @@ function resetFilters() {
                     </div>
                 </SidebarInset>
             </SidebarProvider>
+            <div>
+            <ThetaMatrix csvUrl="/BREAST_oMHN.csv" mutationNames={geneticEventsName}/>
+            </div>
         </div>
     );
 }
