@@ -72,3 +72,25 @@
     - Im Rahmen des Groupmeetings?
     - Wsl. im Juli
     - Anfang nächster Woche Bescheid geben
+
+## 12.06.2025
+
+- Orga
+  - Präsentation
+    - Till wird gefragt ob Dienstag passt
+    - idR zwei Wochen vor Abgabe, geht aber auch kurzfristiger oder sogar danach
+    - offizielle Betreuung und ein Beisitz anwesend
+      - üblicherweise beide Gutachter/innen anwesend
+  - Treffen mit Michi
+    - wird am 16. ausgemacht
+- App
+  - Accordeon View
+  - im Augenblick etwas langsam
+  - Matrix muss noch ergänzt werden
+  - ca 1-2 Tage, dann fertig
+  - Infobuttons
+    - Formulierung Threshold Beschreibung
+    - Vielleicht stattdessen Link zu einer Seite mit mehr Informationen und MA
+- Arbeit
+  - Formulierungen
+  - Struktur: Kurzbeschreibung der App vor den technischen Details
