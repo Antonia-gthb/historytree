@@ -24,6 +24,35 @@ export default function Page() {
     const [threshold, setThreshold] = useState<number>(1);
     const [highlightMutation, setHighlightMutation] = useState<string>("");
     const [resetCount, setResetCount] = useState(0);
+    const [thetaData, setThetaData] = useState<any[]>([]);
+
+useEffect(() => {
+    fetch('/BREAST_oMHN.csv')
+        .then((res) => res.text())
+        .then((text) => {
+            const raw = d3.csvParseRows(text);
+            const headers = raw[0].slice(1); // erste Zeile, ohne erstes leeres Feld
+
+            const longFormat: { group: string; variable: string; value: number }[] = [];
+
+            for (let i = 1; i < raw.length; i++) {
+                const rowName = raw[i][0];
+                const rowValues = raw[i].slice(1);
+
+                // Parse jede Zeile in longFormat
+                for (let j = 0; j < headers.length; j++) {
+                    longFormat.push({
+                        group: rowName,               // kann auch "Observation" sein
+                        variable: headers[j],
+                        value: +rowValues[j],         // Zahl umwandeln
+                    });
+                }
+            }
+
+            setThetaData(longFormat);
+        });
+}, []);
+
 
     function handleHighlightChange(v: string) {
         setHighlightMutation(v);
@@ -32,16 +61,16 @@ export default function Page() {
         d3.quantize(interpolateTurbo, 13)
     );
 
-function resetFilters() {
-  setIsExpanded(false);
-  setScalingEnabled(true);
-  setScalingFactor(1);
-  setThreshold(1);
-  setSelectedMutations(geneticEventsName);     
-  setColorScheme(d3.quantize(interpolateTurbo, 13));
-  setHighlightMutation("");
-  setResetCount((c) => c + 1);
-}
+    function resetFilters() {
+        setIsExpanded(false);
+        setScalingEnabled(true);
+        setScalingFactor(1);
+        setThreshold(1);
+        setSelectedMutations(geneticEventsName);
+        setColorScheme(d3.quantize(interpolateTurbo, 13));
+        setHighlightMutation("");
+        setResetCount((c) => c + 1);
+    }
 
     const handleUpload = (data: any, fileName: string) => {
         setJsonData(data); // speichert hochgeladene Daten 
@@ -92,15 +121,15 @@ function resetFilters() {
                             setGeneticEventsName(allMutationNames);
                             setSelectedMutations(allMutationNames);
                         }} selectedMutations={selectedMutations} threshold={threshold} highlightMutation={highlightMutation} onHighlightMutationChange={handleHighlightChange}
-                         />
+                        />
                     </div>
                     <div className="flex justify-between font-bold text-xl p-5 w-full">
-                            <Button onClick={resetFilters} className="transition hover:-translate-y-1">Reset Filters</Button>
+                        <Button onClick={resetFilters} className="transition hover:-translate-y-1">Reset Filters</Button>
                     </div>
                 </SidebarInset>
             </SidebarProvider>
             <div>
-            <ThetaMatrix csvUrl="/BREAST_oMHN.csv" mutationNames={geneticEventsName}/>
+                <ThetaMatrix data={thetaData} mutationNames={geneticEventsName} />
             </div>
         </div>
     );
