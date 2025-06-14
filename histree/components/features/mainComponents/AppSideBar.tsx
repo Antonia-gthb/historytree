@@ -25,7 +25,7 @@ import SliderScaling from "@/components/features/lineslider";
 import Threshold from "@/components/features/threshold";
 import { Eventfilter } from "@/components/features/eventfilter";
 import { HighlightEvent } from "@/components/features/highlightEvent";
-import { Button } from "../button";
+import { Button } from "@/components/ui/button";
 
 export interface AppSidebarProps {
   jsonData: any;
