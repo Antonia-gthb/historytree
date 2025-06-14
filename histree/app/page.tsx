@@ -12,6 +12,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import ThetaMatrix from '@/components/features/mainComponents/ThetaMatrix';
 import ThetaUpload from "@/components/features/thetaUpload";
 import { AnimatePresence, motion } from "motion/react"
+import FileUpload from '@/components/features/upload';
 
 
 export default function Page() {
@@ -113,6 +114,7 @@ export default function Page() {
                     setSelectedMutations={setSelectedMutations}
                     setHighlightMutation={setHighlightMutation}
                     setShowMatrix={setShowMatrix}
+                    resetFilters={resetFilters}
                 />
                 <AnimatePresence>
                     {showMatrix && (
@@ -144,17 +146,18 @@ export default function Page() {
                         <Button onClick={() => setIsExpanded(!isExpanded)} variant="outline" className="ml-auto transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-800 text-slate-700 hover:text-white">
                             {isExpanded ? ' Collapse All' : ' Expand All'}
                         </Button >
-                           
+
                     </header>
                     <div className="flex flex-1 p-10">
-                        <CollaTree key={`${fileName}`} treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={[scalingFactor]} onMutationNamesReady={(allMutationNames) => {
-                            setGeneticEventsName(allMutationNames);
-                            setSelectedMutations(allMutationNames);
-                        }} selectedMutations={selectedMutations} threshold={threshold} highlightMutation={highlightMutation} onHighlightMutationChange={handleHighlightChange}
-                        />
+                        {rawdata && (
+                            <CollaTree key={`${fileName}`} treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={[scalingFactor]} onMutationNamesReady={(allMutationNames) => {
+                                setGeneticEventsName(allMutationNames);
+                                setSelectedMutations(allMutationNames);
+                            }} selectedMutations={selectedMutations} threshold={threshold} highlightMutation={highlightMutation} onHighlightMutationChange={handleHighlightChange}
+                            />)}
                     </div>
                     <div className="flex justify-between font-bold text-xl p-5 w-full">
-                        <Button onClick={resetFilters} className="transition hover:-translate-y-1">Reset Filters</Button>
+                        <FileUpload onUpload={handleUpload} />
                     </div>
                 </SidebarInset>
             </SidebarProvider>

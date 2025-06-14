@@ -43,7 +43,7 @@ export default function ThetaUpload({ onThetaUpload }: FileUploadProps) {
   };
 
   return (
-    <div>
+    <div className ="mb-5">
       <input
         type="file"
         accept=".csv"
@@ -56,7 +56,7 @@ export default function ThetaUpload({ onThetaUpload }: FileUploadProps) {
         onClick={handleUploadClick}
         className="transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-800 text-slate-700 hover:text-white"
       >
-        <FileUp className="mr-2 h-4 w-4" />
+        <FileUp className=" mr-2 h-4 w-4" />
         Upload CSV
       </Button>
     </div>

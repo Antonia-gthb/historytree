@@ -23,7 +23,7 @@ import ColorTheme from "@/components/features/colorSchemes";
 import { Checkbox } from "@/components/ui/checkbox";
 import SliderScaling from "@/components/features/lineslider";
 import Threshold from "@/components/features/threshold";
-import { Eventfilter } from "@/components/features/eventfilter";
+import { Eventfilter } from "@/components/features/eventFilter";
 import { HighlightEvent } from "@/components/features/highlightEvent";
 import { Button } from "@/components/ui/button";
 
@@ -46,6 +46,7 @@ export interface AppSidebarProps {
   setSelectedMutations: (items: string[]) => void;
   setHighlightMutation: (item: string) => void;
   setShowMatrix: (on: boolean) => void;
+  resetFilters: () => void;
 }
 
 export function AppSidebar({
@@ -57,15 +58,15 @@ export function AppSidebar({
   geneticEventsName,
   selectedMutations,
   highlightMutation,
-  showMatrix, 
-  handleUpload,
+  showMatrix,
   setColorScheme,
   setScalingEnabled,
   setScalingFactor,
   setThreshold,
   setSelectedMutations,
   setHighlightMutation,
-  setShowMatrix, 
+  setShowMatrix,
+  resetFilters,
 }: AppSidebarProps) {
   return (
     <Sidebar>
@@ -76,8 +77,8 @@ export function AppSidebar({
       <SidebarContent>
 
         {/* UPLOAD */}
-        <div className="ml-10 mt-3">
-          <FileUpload onUpload={handleUpload} />
+        <div className="ml-15 mt-3">
+          <Button onClick={resetFilters} className="transition hover:-translate-y-1">Reset Filters</Button>
         </div>
 
         {/* COLOR SCHEME */}
@@ -196,15 +197,15 @@ export function AppSidebar({
         </Collapsible>
 
         {/* DOWNLOAD */}
-        <div className="ml-10 mt-3">
+        <div className="ml-13 mt-3">
           <Download downloadName={jsonData ? fileName : 'tonis_orders_tree_2.json'} />
         </div>
 
-         {/* THETAMATRIX BUTTON */}
-         <div className="ml-10 mt-3">
-        <Button onClick={() => setShowMatrix(!showMatrix)}>
-          {showMatrix ? "Hide Theta Matrix" : "Show Theta Matrix"}
-        </Button>
+        {/* THETAMATRIX BUTTON */}
+        <div className="ml-10 mt-3">
+          <Button className="transition hover:-translate-y-1" onClick={() => setShowMatrix(!showMatrix)}>
+            {showMatrix ? "Hide Theta Matrix" : "Show Theta Matrix"}
+          </Button>
         </div>
       </SidebarContent>
 
