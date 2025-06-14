@@ -5,17 +5,20 @@ import { interpolateTurbo } from 'd3-scale-chromatic';
 import { Button } from "@/components/ui/button";
 import * as d3 from "d3";
 import CollaTree from '../components/features/CollaTree';
-import rawdata from '@/app/tonis_orders_tree_2.json';
+import rawdata from '@/app/BREAST_orders_toni 1 (1).json';
 import { AppSidebar } from "@/components/ui/sidebar/appSideBar"
 import { Separator } from "@/components/ui/sidebar/separator"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar/sidebar"
 import ThetaMatrix from '@/components/features/ThetaMatrix';
+import ThetaUpload from "@/components/features/thetaUpload";
+import { AnimatePresence, motion } from "motion/react"
 
 
 export default function Page() {
 
     const [jsonData, setJsonData] = useState(null); // hochgeladener Datensatz
-    const [fileName, setFileName] = useState('Keine Datei ausgewählt');
+    const [fileName, setFileName] = useState("");
+    const [thetaFileName, setThetaFileName] = useState("BREAST_oMHN.csv");
     const [isExpanded, setIsExpanded] = useState(false);
     const [scalingFactor, setScalingFactor] = useState<number>(1);
     const [scalingEnabled, setScalingEnabled] = useState<boolean>(true);
@@ -25,33 +28,39 @@ export default function Page() {
     const [highlightMutation, setHighlightMutation] = useState<string>("");
     const [resetCount, setResetCount] = useState(0);
     const [thetaData, setThetaData] = useState<any[]>([]);
+    const [showMatrix, setShowMatrix] = useState(false);
 
-useEffect(() => {
-    fetch('/BREAST_oMHN.csv')
-        .then((res) => res.text())
-        .then((text) => {
-            const raw = d3.csvParseRows(text);
-            const headers = raw[0].slice(1); // erste Zeile, ohne erstes leeres Feld
+    useEffect(() => {
+        fetch('/BREAST_oMHN.csv')
+            .then((res) => res.text())
+            .then((text) => {
+                const raw = d3.csvParseRows(text);
+                const headers = raw[0].slice(1); // erste Zeile, ohne erstes leeres Feld
 
-            const longFormat: { group: string; variable: string; value: number }[] = [];
+                const longFormat: { group: string; variable: string; value: number }[] = [];
 
-            for (let i = 1; i < raw.length; i++) {
-                const rowName = raw[i][0];
-                const rowValues = raw[i].slice(1);
+                for (let i = 1; i < raw.length; i++) {
+                    const rowName = raw[i][0];
+                    const rowValues = raw[i].slice(1);
 
-                // Parse jede Zeile in longFormat
-                for (let j = 0; j < headers.length; j++) {
-                    longFormat.push({
-                        group: rowName,               // kann auch "Observation" sein
-                        variable: headers[j],
-                        value: +rowValues[j],         // Zahl umwandeln
-                    });
+                    // Parse jede Zeile in longFormat
+                    for (let j = 0; j < headers.length; j++) {
+                        longFormat.push({
+                            group: rowName,               // kann auch "Observation" sein
+                            variable: headers[j],
+                            value: +rowValues[j],         // Zahl umwandeln
+                        });
+                    }
                 }
-            }
 
-            setThetaData(longFormat);
-        });
-}, []);
+                setThetaData(longFormat);
+            });
+    }, []);
+
+    const handleThetaUpload = (data: any[], name: string) => {
+        setThetaData(data);
+        setThetaFileName(name);
+    };
 
 
     function handleHighlightChange(v: string) {
@@ -83,6 +92,7 @@ useEffect(() => {
     };
 
 
+
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-r from-cyan-100 via-blue-300 to-indigo-400 p-6 relative">
             <SidebarProvider>
@@ -96,6 +106,7 @@ useEffect(() => {
                     geneticEventsName={geneticEventsName}
                     selectedMutations={selectedMutations}
                     highlightMutation={highlightMutation}
+                    showMatrix={showMatrix}
                     handleUpload={handleUpload}
                     setColorScheme={setColorScheme}
                     setScalingEnabled={setScalingEnabled}
@@ -103,7 +114,22 @@ useEffect(() => {
                     setThreshold={setThreshold}
                     setSelectedMutations={setSelectedMutations}
                     setHighlightMutation={setHighlightMutation}
+                    setShowMatrix={setShowMatrix}
                 />
+                <AnimatePresence>
+                    {showMatrix && (
+                        <motion.div
+                            key="theta-matrix"
+                            initial={{ x: -100, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            exit={{ x: -100, opacity: 0 }}
+                            transition={{ duration: 0.4, ease: "easeInOut" }}
+                        >
+                            <ThetaMatrix data={thetaData} mutationNames={geneticEventsName} />
+                            <ThetaUpload onThetaUpload={handleThetaUpload} />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
                 <SidebarInset>
                     <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
                         <SidebarTrigger className="-ml-1" />
@@ -111,7 +137,12 @@ useEffect(() => {
                             orientation="vertical"
                             className="mr-2 data-[orientation=vertical]:h-4"
                         />
-                        <p> {jsonData ? fileName : 'tonis_orders_tree_2.json'}</p>
+                        <p> {jsonData ? fileName : 'BREAST_orders_toni 1 (1).json'}</p>
+                        <Separator
+                            orientation="vertical"
+                            className="mr-2 data-[orientation=vertical]:h-4"
+                        />
+                        <p> {thetaFileName || "BREAST_oMHN.csv"} </p>
                         <Button onClick={() => setIsExpanded(!isExpanded)} variant="outline" className="ml-auto transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-800 text-slate-700 hover:text-white">
                             {isExpanded ? ' Collapse All' : ' Expand All'}
                         </Button >
@@ -128,9 +159,6 @@ useEffect(() => {
                     </div>
                 </SidebarInset>
             </SidebarProvider>
-            <div>
-                <ThetaMatrix data={thetaData} mutationNames={geneticEventsName} />
-            </div>
         </div>
     );
 }

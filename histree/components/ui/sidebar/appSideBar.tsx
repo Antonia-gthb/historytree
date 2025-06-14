@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { ChevronRight } from "lucide-react";
-
 import {
   Collapsible,
   CollapsibleContent,
@@ -38,6 +37,7 @@ export interface AppSidebarProps {
   geneticEventsName: string[];
   selectedMutations: string[];
   highlightMutation: string;
+  showMatrix: boolean;
   handleUpload: (data: any, name: string) => void;
   setColorScheme: (schemes: string[]) => void;
   setScalingEnabled: (on: boolean) => void;
@@ -45,6 +45,7 @@ export interface AppSidebarProps {
   setThreshold: (v: number) => void;
   setSelectedMutations: (items: string[]) => void;
   setHighlightMutation: (item: string) => void;
+  setShowMatrix: (on: boolean) => void;
 }
 
 export function AppSidebar({
@@ -56,6 +57,7 @@ export function AppSidebar({
   geneticEventsName,
   selectedMutations,
   highlightMutation,
+  showMatrix, 
   handleUpload,
   setColorScheme,
   setScalingEnabled,
@@ -63,6 +65,7 @@ export function AppSidebar({
   setThreshold,
   setSelectedMutations,
   setHighlightMutation,
+  setShowMatrix, 
 }: AppSidebarProps) {
   return (
     <Sidebar>
@@ -195,6 +198,13 @@ export function AppSidebar({
         {/* DOWNLOAD */}
         <div className="ml-10 mt-3">
           <Download downloadName={jsonData ? fileName : 'tonis_orders_tree_2.json'} />
+        </div>
+
+         {/* THETAMATRIX BUTTON */}
+         <div className="ml-10 mt-3">
+        <Button onClick={() => setShowMatrix(!showMatrix)}>
+          {showMatrix ? "Hide Theta Matrix" : "Show Theta Matrix"}
+        </Button>
         </div>
       </SidebarContent>
 

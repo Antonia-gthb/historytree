@@ -266,14 +266,14 @@ export default function CollaTree({
         .text(d => {
           const count = d.data.count ?? 0;
           const childCount = d.data.children?.length ?? 0;
-          return `Count: ${count} | Children: ${childCount}`;
+          return `${d.data.originalName} | Count: ${count}` ;
         });
 
       nodeEnter.append("text")
         .attr("dy", "0.31em")
         .attr("x", d => d._children ? -10 : 10)
         .attr("text-anchor", d => d._children ? "end" : "start")
-        .text(d => d.data.originalName || d.data.name)
+        .text(d => (d.data.originalName || d.data.name).split(/[ /]/)[0])
         .attr("fill-opacity", 0) // Startet unsichtbar
         .transition()
         .duration(300)
