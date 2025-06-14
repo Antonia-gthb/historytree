@@ -28,6 +28,7 @@ export default function FileUpload({ onUpload }: FileUploadProps) {
 
         try {
           const jsonData = JSON.parse(fileContent); // JSON-String in ein Objekt umwandeln
+          const cleanFileName = file.name.split(" ")[0];
           onUpload(jsonData, file.name); // Daten und Dateinamen zurückgeben
         } catch (error) {
           console.error('Fehler beim Parsen der JSON-Datei:', error);
