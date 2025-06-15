@@ -17,11 +17,10 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar/sidebar";
 
-import FileUpload from "@/components/features/upload";
 import Download from "@/components/features/download";
 import ColorTheme from "@/components/features/colorSchemes";
 import { Checkbox } from "@/components/ui/checkbox";
-import SliderScaling from "@/components/features/lineslider";
+import { Slider } from "@/components/ui/slider"
 import Threshold from "@/components/features/threshold";
 import { Eventfilter } from "@/components/features/eventFilter";
 import { HighlightEvent } from "@/components/features/highlightEvent";
@@ -38,6 +37,7 @@ export interface AppSidebarProps {
   selectedMutations: string[];
   highlightMutation: string;
   showMatrix: boolean;
+  selectedSchemeName: string,
   handleUpload: (data: any, name: string) => void;
   setColorScheme: (schemes: string[]) => void;
   setScalingEnabled: (on: boolean) => void;
@@ -47,9 +47,10 @@ export interface AppSidebarProps {
   setHighlightMutation: (item: string) => void;
   setShowMatrix: (on: boolean) => void;
   resetFilters: () => void;
+  setSelectedSchemeName: (name: string) => void;
 }
 
-export function AppSidebar({
+export function AppSideBar({
   jsonData,
   fileName,
   scalingEnabled,
@@ -59,6 +60,7 @@ export function AppSidebar({
   selectedMutations,
   highlightMutation,
   showMatrix,
+  selectedSchemeName,
   setColorScheme,
   setScalingEnabled,
   setScalingFactor,
@@ -67,6 +69,7 @@ export function AppSidebar({
   setHighlightMutation,
   setShowMatrix,
   resetFilters,
+  setSelectedSchemeName
 }: AppSidebarProps) {
   return (
     <Sidebar>
@@ -92,7 +95,11 @@ export function AppSidebar({
             </SidebarGroupLabel>
             <CollapsibleContent className="p-3 mb-2">
               <SidebarGroupContent>
-                <ColorTheme onSchemeChange={setColorScheme} />
+                <ColorTheme
+                  onSchemeChange={setColorScheme}
+                  onSelectChange={setSelectedSchemeName}
+                  selected={selectedSchemeName}
+                />
               </SidebarGroupContent>
             </CollapsibleContent>
           </SidebarGroup>
@@ -115,12 +122,17 @@ export function AppSidebar({
                     onCheckedChange={(on) => {
                       const isChecked = on === true;
                       setScalingEnabled(isChecked);
-                      if (!isChecked) setScalingFactor(0);
+                      if (isChecked) {
+                        if (scalingFactor === 0) setScalingFactor(1); // oder dein Wunschwert
+                      } else {
+                        setScalingFactor(0);
+                      }
                     }}
                   />
                   <span>Scale edges by weight</span>
                 </label>
-                <SliderScaling
+                <Slider
+                  className="w-[60%]"
                   value={[scalingFactor]}
                   min={1}
                   max={7}
@@ -145,7 +157,7 @@ export function AppSidebar({
               </CollapsibleTrigger>
             </SidebarGroupLabel>
             <CollapsibleContent className="p-3">
-              <p className="block text-gray-700 text-sm mb-3 "> Select how many patients share the same path </p>
+              <p className="block text-gray-700 text-sm mb-3 "> Only paths found in at least {threshold} patients/tumors will be shown </p>
               <SidebarGroupContent className="ml-5 mb-1">
                 <Threshold value={threshold} onChange={setThreshold} />
               </SidebarGroupContent>

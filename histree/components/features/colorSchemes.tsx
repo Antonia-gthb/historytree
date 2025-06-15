@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect } from "react"
 import {
   Select,
   SelectContent,
@@ -6,59 +6,70 @@ import {
   SelectTrigger,
   SelectValue,
   SelectLabel,
-  SelectGroup
+  SelectGroup,
 } from "@/components/ui/select"
-import { interpolatePRGn, interpolateRdBu, interpolateSpectral, interpolateBrBG, interpolateTurbo, interpolateRainbow } from 'd3-scale-chromatic'
-import * as d3 from "d3";
+import * as d3 from "d3"
+import {
+  interpolatePRGn,
+  interpolateRdBu,
+  interpolateSpectral,
+  interpolateBrBG,
+  interpolateTurbo,
+  interpolateRainbow,
+} from "d3-scale-chromatic"
 
+const colorSchemes = [
+  { name: "Violett to Green", fn: interpolatePRGn },
+  { name: "Red to Blue", fn: interpolateRdBu },
+  { name: "Spectral", fn: interpolateSpectral },
+  { name: "Brown to Blue", fn: interpolateBrBG },
+  { name: "Turbo", fn: interpolateTurbo },
+  { name: "Rainbow", fn: interpolateRainbow },
+]
 
-const colorSchemes = {
-  VioletttoGreen: (n: number) => d3.quantize(interpolatePRGn, n),
-  RedtoBlue: (n: number) => d3.quantize(interpolateRdBu, n),
-  Spectral: (n: number) => d3.quantize(interpolateSpectral, n),
-  BrowntoBlue: (n: number) => d3.quantize(interpolateBrBG, n),
-  Turbo: (n: number) => d3.quantize(interpolateTurbo, n),
-  Rainbow: (n: number) => d3.quantize(interpolateRainbow, n)
-};
+interface ColorSchemesProps {
+  selected: string;
+  onSchemeChange: (colors: string[]) => void
+  onSelectChange: (name: string) => void
+}
 
-  interface ColorThemesProps {
-    onSchemeChange: (colors: string[]) => void; // Farben werden direkt übergeben
+export default function ColorSchemes({ selected, onSchemeChange, onSelectChange }: ColorSchemesProps) {
+
+  useEffect(() => {
+    const defaultScheme = colorSchemes.find(s => s.name.includes("Turbo"))
+    if (defaultScheme) {
+      onSchemeChange(d3.quantize(defaultScheme.fn, 13))
+    }
+  }, [])
+
+const handleChange = (name: string) => {
+  onSelectChange(name); // z. B. "Turbo"
+  const scheme = colorSchemes.find(s => s.name === name);
+  if (scheme) {
+    const colors = d3.quantize(scheme.fn, 13);
+    onSchemeChange(colors);
   }
-
-
-const ColorThemes = ({ onSchemeChange }: ColorThemesProps) => {
-  const [selectedScheme, setSelectedScheme] = useState("");
-
-  const handleChange = (schemeName: keyof typeof colorSchemes) => {
-    setSelectedScheme(schemeName);
-    // 13 Farben als Standard
-    const colors = colorSchemes[schemeName](13);
-   onSchemeChange(colors);
-  };
+};
 
   return (
-    <div className="mt-4">
-        <Select defaultValue="Turbo" onValueChange={handleChange}>
-        <SelectTrigger className="w-[180px] border-black">
-          <SelectValue> {selectedScheme
-              ? selectedScheme
-              : "Select color theme"}
-              </SelectValue>
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Themes</SelectLabel>
-            {Object.keys(colorSchemes).map((schemeName) => (
-              <SelectItem className="hover:bg-indigo-800/80 text-slate-700 hover:text-white" key={schemeName} value={schemeName}>
-                {schemeName}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </div>
+    <Select value={selected} onValueChange={handleChange}>
+      <SelectTrigger className="w-[180px] border-black">
+        <SelectValue>{selected ? selected : "Select color scheme"}</SelectValue>
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectLabel>Schemes</SelectLabel>
+          {colorSchemes.map(({ name }) => (
+            <SelectItem
+              key={name}
+              value={name}
+              className="hover:bg-indigo-800/80 text-slate-700 hover:text-white"
+            >
+              {name}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   )
-};
-
-
-export default ColorThemes
+}

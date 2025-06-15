@@ -33,12 +33,12 @@ interface CollaTreeProps {
 
 export default function CollaTree({
   treedata,
-  width = 1028,
+  width = 1400,
   colorScheme,
-  threshold = Infinity,
+  threshold,
   shouldExpand,
   lineWidthFactor,
-  onMutationNamesReady, // Optionaler Callback
+  onMutationNamesReady,
   selectedMutations = [],
   highlightMutation = "",
   onHighlightMutationChange,
@@ -57,21 +57,20 @@ export default function CollaTree({
 
   function numberNodes(node: TreeNode, parentName = "", mutationNames: string[] = []) {
 
-    const orig = node.originalName ?? node.name; // Speichert den ursprünglichen Namen nur einmal
+    const orig = node.originalName ?? node.name;
     node.originalName = orig;
     mutationNames.push(orig);
 
-     if (parentName) {
-      node.name = `${parentName}_${orig}`;  // Elternnamen hinzufügen
+    if (parentName) {
+      node.name = `${parentName}_${orig}`;
     }
 
     if (node.children) {
       node.children.forEach((child, index) =>
-      numberNodes(child, `${node.name}_${index + 1}`, mutationNames)
+        numberNodes(child, `${node.name}_${index + 1}`, mutationNames)
       );
     }
   }
-
 
   function filterTreeData(tree: TreeNode, selectedMutations: string[]): TreeNode | null {
     const isActive = (name: string | undefined) => {
@@ -79,13 +78,11 @@ export default function CollaTree({
       return selectedMutations.includes(name);
     };
 
-    // Wenn dieser Knoten eine Mutation ist, die nicht aktiv ist: entfernen
     const originalName = tree.originalName || tree.name;
     if (!isActive(originalName)) {
       return null;
     }
 
-    // Wenn Kinder da sind, werden sie rekursiv geprüft
     const filteredChildren = tree.children
       ?.map(child => filterTreeData(child, selectedMutations))
       .filter(child => child !== null) as TreeNode[] | undefined;
@@ -97,15 +94,12 @@ export default function CollaTree({
   }
 
   function filterByThreshold(node: TreeNode, thr: number): TreeNode | null {
-    //Wenn dieser Knoten von weniger als thr Patienten geteilt wird: raus
     if ((node.count ?? 0) < thr) return null;
 
-    //Rekursiv die Kinder filtern
     const children = node.children
       ?.map(child => filterByThreshold(child, thr))
       .filter((c): c is TreeNode => c !== null);
 
-    // Gefilterten Knoten zurückgeben (Kinder nur, wenn welche übrig)
     return {
       ...node,
       children: children && children.length > 0 ? children : undefined,
@@ -115,15 +109,14 @@ export default function CollaTree({
   useEffect(() => {
     if (!svgRef.current) return;
 
-    // Tree Eckdaten
     const margin = { top: 20, right: 20, bottom: 20, left: 40 };
-    const dx = 20;  // sorgt für Abstand zwischen den Knoten
+    const dx = 25;  // sorgt für Abstand zwischen den Knoten
 
     const filteredData = selectedMutations && selectedMutations.length > 0
-      ? filterTreeData(treedata, selectedMutations) ?? { name: "empty", children: [] }
+      ? filterTreeData(treedata, selectedMutations) ?? { name: "No mutations selected", children: [] }
       : treedata;
-    const filteredWithThreshold = threshold !== Infinity
-      ? filterByThreshold(filteredData, threshold) ?? { name: "empty", children: [] }
+    const filteredWithThreshold = threshold
+      ? filterByThreshold(filteredData, threshold) ?? { name: "No genetic events with this threshold available", children: [] }
       : filteredData;
     const root = d3.hierarchy(filteredWithThreshold) as MyNode;
     root.sum(d => d.count || 0);
@@ -134,10 +127,8 @@ export default function CollaTree({
     const diagonal = d3.linkHorizontal<MyNode, MyNode>().x(d => d.y).y(d => d.x);
 
 
-    // Clear SVG before re-rendering
     d3.select(svgRef.current).selectAll("*").remove();
 
-    // SVG erstellen
     const svg = d3.select<SVGSVGElement, unknown>(svgRef.current)
       .attr("width", "100%")
       .attr("viewBox", [-margin.left, -margin.top, width, dx])
@@ -156,7 +147,6 @@ export default function CollaTree({
       gLink.selectAll<SVGPathElement, d3.HierarchyLink<MyNode>>("path")
         .attr("stroke", d => {
           if (!active || !link) return "#555";
-          // Enthält link.target seine Vorfahren?
           const ancestors = new Set(link.target.ancestors());
           return ancestors.has(d.target) ? "#372aac" : "#555";
         })
@@ -166,7 +156,6 @@ export default function CollaTree({
           return ancestors.has(d.target) ? 1 : 0.4;
         });
     }
-    // oklch(39.8% 0.195 277.366)
     const gNode = svg.append("g")
       .attr("cursor", "pointer")
       .attr("pointer-events", "all");
@@ -183,20 +172,16 @@ export default function CollaTree({
 
     const mutationNames = mutationNamesRef.current!;
 
-
     colorScaleRef.current = d3.scaleOrdinal<string, string>()
       .domain(mutationNames)
       .range(colorScheme);
-
 
     function update(source: MyNode) {
       const duration = 1500;
       const nodes = root.descendants().reverse();
       const links = root.links() as unknown as d3.HierarchyLink<MyNode>[];
 
-
       tree(root);
-
 
       let left = root;
       let right = root;
@@ -205,7 +190,6 @@ export default function CollaTree({
         if (node.x !== undefined && node.x < (left.x ?? Infinity)) left = node;
         if (node.x !== undefined && node.x > (right.x ?? -Infinity)) right = node;
       });
-
 
       const height = right.x - left.x + margin.top + margin.bottom;
 
@@ -232,7 +216,6 @@ export default function CollaTree({
           d.children = d.children ? undefined : d._children;
           update(d);
         });
-
 
       nodeEnter.append("path")
         .attr("d", d => {
@@ -266,7 +249,7 @@ export default function CollaTree({
         .text(d => {
           const count = d.data.count ?? 0;
           const childCount = d.data.children?.length ?? 0;
-          return `${d.data.originalName} | Count: ${count}` ;
+          return `${d.data.originalName} | Count: ${count}`;
         });
 
       nodeEnter.append("text")
@@ -274,11 +257,10 @@ export default function CollaTree({
         .attr("x", d => d._children ? -10 : 10)
         .attr("text-anchor", d => d._children ? "end" : "start")
         .text(d => (d.data.originalName || d.data.name).split(/[ /]/)[0])
-        .attr("fill-opacity", 0) // Startet unsichtbar
+        .attr("fill-opacity", 0)
         .transition()
         .duration(300)
-        .attr("fill-opacity", 1); // Erscheint sanft
-
+        .attr("fill-opacity", 1);
 
       nodeEnter.merge(node).transition().duration(duration)
         .attr("transform", d => `translate(${d.y},${d.x})`)
@@ -300,7 +282,7 @@ export default function CollaTree({
         .attr("fill-opacity", 0)
         .attr("stroke-opacity", 0);
 
-      nodeSelectionRef.current = nodeEnter.merge(node); // Speichert die Auswahl für spätere Updates
+      nodeSelectionRef.current = nodeEnter.merge(node);
 
       // Links updaten
       const link = gLink.selectAll<SVGPathElement, d3.HierarchyLink<MyNode>>("path")
@@ -322,15 +304,10 @@ export default function CollaTree({
       const linkAll = linkEnter.merge(link);
 
       linkAll.on("click", (_, d) => {
-        console.log("Klick auf Link zu", d.target.data.originalName);
-        // Dropdown immer zurücksetzen
-        console.log("Calling onHighlightMutationChange(\"\")");
         onHighlightMutationChange?.("");
         if (onHighlightMutationChange) {
-          console.log("setHighlightMutation(\"\") wird aufgerufen");
           onHighlightMutationChange("");
         }
-        // b) Toggle Klick-Highlight
         if (highlightedLinkRef.current === d) {
           highlightedLinkRef.current = null;
           highlightPath(null, false);
@@ -364,8 +341,6 @@ export default function CollaTree({
 
       selectedLinksRef.current = linkAll;
 
-
-      // Altes speichern
       root.eachBefore(d => {
         d.x0 = d.x;
         d.y0 = d.y;
@@ -376,13 +351,11 @@ export default function CollaTree({
     root.x0 = 0;
     root.y0 = 0;
     if (shouldExpand) {
-      // Alle Knoten aufklappen
       root.descendants().forEach(d => {
         d._children = d.children;
-        d.children = d._children; // Alle Kinder zeigen
+        d.children = d._children;
       });
     } else {
-      // Standardverhalten: Nur Wurzel zeigen
       root.descendants().forEach(d => {
         d._children = d.children;
         if (d.depth && d.data.name.length !== 1) d.children = undefined;
@@ -397,7 +370,7 @@ export default function CollaTree({
     if (colorScaleRef.current && nodeSelectionRef.current) {
       colorScaleRef.current.range(colorScheme);
       nodeSelectionRef.current
-        .select("path") // Nur die Symbole der Nodes
+        .select("path")
         .transition()
         .attr("fill", d => {
           const isLeaf = !d.children && !d._children;
@@ -414,35 +387,48 @@ export default function CollaTree({
   useEffect(() => {
     highlightRef.current = highlightMutation;
     const selLinks = selectedLinksRef.current;
-    if (selLinks && rootRef.current && highlightMutation) {
-      console.log(" selectedLinksRef ok?", !!selLinks, " rootRef ok?", !!rootRef.current);
-      const matches = rootRef.current
-        .descendants()
-        .filter(d => (d.data.originalName || d.data.name) === highlightMutation);
+    const root = rootRef.current;
 
-      console.log("Matches:", matches.map(d => d.data.originalName));
+    if (!selLinks || !root || !highlightMutation) return;
 
-      const anc = new Set<MyNode>();
-      matches.forEach(m => m.ancestors().forEach(a => anc.add(a as MyNode)));
-      console.log("Ancestor-Set Größe:", anc.size);
+    const matches = root
+      .descendants()
+      .filter(d => (d.data.originalName || d.data.name) === highlightMutation);
 
-      selLinks
-        .transition()
-        .attr("stroke", linkData =>
-          anc.has(linkData.target as unknown as MyNode) ? "372aac" : "#555"
-        )
-        .attr("stroke-opacity", linkData =>
-          anc.has(linkData.target as unknown as MyNode) ? 1 : 0.4
-        );
-    }
+    const highlightSet = new Set<MyNode>();
+
+    matches.forEach((m) => {
+      m.ancestors().forEach(a => highlightSet.add(a as MyNode));
+      highlightSet.add(m as MyNode);
+      m.descendants().forEach(d => highlightSet.add(d as MyNode));
+    });
+
+    selLinks
+      .transition()
+      .duration(300)
+      .attr("stroke", (linkData) => {
+        const source = linkData.source as any;
+        const target = linkData.target as any;
+        return highlightSet.has(source) && highlightSet.has(target)
+          ? "#372aac"
+          : "#555";
+      })
+      .attr("stroke-opacity", (linkData) => {
+        const source = linkData.source as any;
+        const target = linkData.target as any;
+        return highlightSet.has(source) && highlightSet.has(target)
+          ? 1
+          : 0.3;
+      });
   }, [highlightMutation]);
+
 
   useEffect(() => {
     if (!selectedLinksRef.current) return;
 
     factorRef.current = lineWidthFactor[0];
 
-    const defaultMax = 10 + factorRef.current;    // z.B. 10px für count = maxCount
+    const defaultMax = 10 + factorRef.current;
     const defaultWidth = 1.5;
     const baseScale = factorRef.current === 0
       ? () => defaultWidth

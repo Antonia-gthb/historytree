@@ -52,8 +52,6 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .attr("transform", `translate(${margin.left},${margin.top})`);
 
         const values = data.map((d) => d.value).filter((v) => !isNaN(v));
-        const minVal = d3.min(values) ?? 0;
-        const maxVal = d3.max(values) ?? 1;
         const absMax = Math.max(...values.map((v) => Math.abs(v)));
 
 
@@ -81,17 +79,15 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
         const onMouseOver = () => tooltip.style("opacity", 1);
         const onMouseMove = (event: MouseEvent, d: any) => {
             tooltip
-                .html(`<strong>${d.group} → ${d.variable}</strong><br/>Wert: ${d.value}`)
+                .html(`<strong>${d.group} | ${d.variable}</strong><br/>Value: ${d.value}`)
                 .style("left", event.pageX + 4 + "px")
                 .style("top", event.pageY - 28 + "px");
         };
         const onMouseLeave = () => tooltip.style("opacity", 0);
 
-        // Y-Achsen-Beschriftung oben (wie X-Achse)
         const observationOffset = -y.bandwidth() - 20;
         const labelOffsetY = observationOffset - 5;
 
-        // X-Achse Labels oben
         g.selectAll(".x-label")
             .data(variables)
             .enter()
@@ -107,7 +103,6 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .attr("text-anchor", "start")
             .text((d) => String(d).split(" ")[0]);
 
-        // Y-Achse Labels links, rotiert nach rechts
         g.selectAll(".y-label")
             .data(groups)
             .enter()
@@ -121,7 +116,6 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .style("font-family", "sans-serif")
             .text((d) => String(d).split(" ")[0]);
 
-        // Rechtecke (Matrix)
         g.selectAll("rect.matrix")
             .data(rowData)
             .enter()
@@ -138,7 +132,6 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .on("mousemove", onMouseMove)
             .on("mouseleave", onMouseLeave);
 
-        // Wert in Zelle (Text)
         g.selectAll(".value-text")
             .data(rowData)
             .enter()
@@ -151,7 +144,6 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .style("font-size", "8px")
             .text((d) => d.value === 0 ? "" : d.value.toFixed(2))
 
-        // Hintergrund für Observation
         g.append("rect")
             .attr("x", 0)
             .attr("y", observationOffset)
@@ -159,7 +151,6 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .attr("height", y.bandwidth())
             .attr("fill", "#f0f0f0");
 
-        // Observation-Zellen
         g.selectAll(".observation-cell")
             .data(observationRow)
             .enter()
@@ -175,7 +166,6 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .on("mousemove", onMouseMove)
             .on("mouseleave", onMouseLeave);
 
-        // Werte in Observation
         g.selectAll(".observation-text")
             .data(observationRow)
             .enter()
@@ -187,7 +177,6 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .style("font-size", "8px")
             .text((d) => d.value === 0 ? "" : d.value.toFixed(2))
 
-        // Label "Base Rate"
         g.append("text")
             .attr("x", -10)
             .attr("y", observationOffset + y.bandwidth() / 2)

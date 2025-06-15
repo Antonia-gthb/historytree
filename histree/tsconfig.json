@@ -35,7 +35,7 @@
     "app/oldComponents/myColors.js",
     "src/next-env.d.ts",
     ".next/types/**/*.ts"
-  ],
+, "components/features/mainComponents/CollaTree.js"  ],
   "exclude": [
     "node_modules"
   ]

@@ -37,11 +37,9 @@ export function HighlightEvent({
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Highlight Mutation</SelectLabel>
-            {/* none-Option */}
-            <SelectItem className="hover:bg-indigo-800/80 text-slate-700 hover:text-white" value="null">
+            <SelectItem className="hover:bg-indigo-800/80 text-slate-700 hover:text-white" value="-">
               -
             </SelectItem>
-            {/* alle Mutationsnamen */}
             {filteredItems.map((name) => (
               <SelectItem className="hover:bg-indigo-800/80 text-slate-700 hover:text-white" key={name} value={name}>
                 {name}

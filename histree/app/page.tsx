@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import * as d3 from "d3";
 import CollaTree from '../components/features/mainComponents/CollaTree';
 import rawdata from '@/app/BREAST_orders_toni 1 (1).json';
-import { AppSidebar } from "@/components/features/mainComponents/AppSideBar"
+import { AppSideBar } from "@/components/features/mainComponents/AppSideBar"
 import { Separator } from "@/components/ui/sidebar/separator"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar/sidebar"
 import ThetaMatrix from '@/components/features/mainComponents/ThetaMatrix';
@@ -29,6 +29,11 @@ export default function Page() {
     const [highlightMutation, setHighlightMutation] = useState<string>("");
     const [thetaData, setThetaData] = useState<any[]>([]);
     const [showMatrix, setShowMatrix] = useState(false);
+    const [colorScheme, setColorScheme] = useState<string[]>(
+        d3.quantize(interpolateTurbo, 13)
+    );
+    const [selectedSchemeName, setSelectedSchemeName] = useState("Turbo");
+
 
     useEffect(() => {
         fetch('/BREAST_oMHN.csv')
@@ -66,9 +71,6 @@ export default function Page() {
     function handleHighlightChange(v: string) {
         setHighlightMutation(v);
     }
-    const [colorScheme, setColorScheme] = useState<string[]>(
-        d3.quantize(interpolateTurbo, 13)
-    );
 
     function resetFilters() {
         setIsExpanded(false);
@@ -78,6 +80,7 @@ export default function Page() {
         setSelectedMutations(geneticEventsName);
         setColorScheme(d3.quantize(interpolateTurbo, 13));
         setHighlightMutation("");
+        setSelectedSchemeName("Turbo");
     }
 
     const handleUpload = (data: any, fileName: string) => {
@@ -95,7 +98,7 @@ export default function Page() {
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-r from-cyan-100 via-blue-300 to-indigo-400 p-6 relative">
             <SidebarProvider>
-                <AppSidebar
+                <AppSideBar
                     jsonData={jsonData}
                     fileName={fileName}
                     colorScheme={colorScheme}
@@ -115,6 +118,8 @@ export default function Page() {
                     setHighlightMutation={setHighlightMutation}
                     setShowMatrix={setShowMatrix}
                     resetFilters={resetFilters}
+                    selectedSchemeName={selectedSchemeName}
+                    setSelectedSchemeName={setSelectedSchemeName}
                 />
                 <AnimatePresence>
                     {showMatrix && (
@@ -137,13 +142,13 @@ export default function Page() {
                             orientation="vertical"
                             className="mr-2 data-[orientation=vertical]:h-4"
                         />
-                        <p> {jsonData ? fileName : 'BREAST_orders_toni 1 (1).json'}</p>
+                        <p> {jsonData ? fileName : 'BREAST_orders_toni.json'}</p>
                         <Separator
                             orientation="vertical"
                             className="mr-2 data-[orientation=vertical]:h-4"
                         />
                         <p> {thetaFileName || "BREAST_oMHN.csv"} </p>
-                        <Button onClick={() => setIsExpanded(!isExpanded)} variant="outline" className="ml-auto transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-800 text-slate-700 hover:text-white">
+                        <Button onClick={() => { setHighlightMutation(""); setIsExpanded(!isExpanded)}} variant="outline" className="ml-auto transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-800 text-slate-700 hover:text-white">
                             {isExpanded ? ' Collapse All' : ' Expand All'}
                         </Button >
 
