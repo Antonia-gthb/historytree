@@ -25,6 +25,7 @@ import Threshold from "@/components/features/threshold";
 import { Eventfilter } from "@/components/features/eventFilter";
 import { HighlightEvent } from "@/components/features/highlightEvent";
 import { Button } from "@/components/ui/button";
+import Link from 'next/link';
 
 export interface AppSidebarProps {
   jsonData: any;
@@ -219,6 +220,30 @@ export function AppSideBar({
             {showMatrix ? "Hide Theta Matrix" : "Show Theta Matrix"}
           </Button>
         </div>
+
+        {/* INFO */}
+        <Collapsible title="Info" className="group/collapsible">
+          <SidebarGroup>
+            <SidebarGroupLabel asChild className="group/label group-data-[state=open]/collapsible:mb-1">
+              <CollapsibleTrigger className="flex w-full justify-between">
+                More Information
+                <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+              </CollapsibleTrigger>
+            </SidebarGroupLabel>
+            <CollapsibleContent className="p-3 mb-2">
+              <SidebarGroupContent className="flex flex-col">
+                <Button className="ml-1 mt-2 transition hover:-translate-y-1">
+                  <Link href="/info" target="_blank" rel="noopener noreferrer">Tutorial</Link>
+                </Button>
+                <Button className="ml-1 mt-2 transition hover:-translate-y-1">
+                  <Link href="https://www.overleaf.com/project/67c5947a93babe7ce8dafd44" target="_blank" rel="noopener noreferrer">Master Thesis</Link>
+                </Button>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
+
+
       </SidebarContent>
 
       <SidebarRail />

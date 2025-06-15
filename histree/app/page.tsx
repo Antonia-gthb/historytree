@@ -40,26 +40,19 @@ export default function Page() {
             .then((res) => res.text())
             .then((text) => {
                 const raw = d3.csvParseRows(text);
-                const headers = raw[0].slice(1); // erste Zeile, ohne erstes leeres Feld
-
+                const headers = raw[0].slice(1); 
                 const longFormat: { group: string; variable: string; value: number }[] = [];
-
                 for (let i = 1; i < raw.length; i++) {
                     const rowName = raw[i][0];
                     const rowValues = raw[i].slice(1);
-
-                    // Parse jede Zeile in longFormat
                     for (let j = 0; j < headers.length; j++) {
                         longFormat.push({
-                            group: rowName,               // kann auch "Observation" sein
+                            group: rowName,               
                             variable: headers[j],
-                            value: +rowValues[j],         // Zahl umwandeln
+                            value: +rowValues[j],        
                         });
-                    }
-                }
-
-                setThetaData(longFormat);
-            });
+                    }}
+                setThetaData(longFormat);});
     }, []);
 
     const handleThetaUpload = (data: any[], name: string) => {
