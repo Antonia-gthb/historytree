@@ -57,7 +57,7 @@ export default function ThetaUpload({ onThetaUpload }: FileUploadProps) {
         className="transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-800 text-slate-700 hover:text-white"
       >
         <FileUp className=" mr-2 h-4 w-4" />
-        Upload CSV
+        Upload Effects CSV
       </Button>
     </div>
   );

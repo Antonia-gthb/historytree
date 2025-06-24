@@ -47,8 +47,8 @@ export default function Page() {
                     const rowValues = raw[i].slice(1);
                     for (let j = 0; j < headers.length; j++) {
                         longFormat.push({
-                            group: rowName,               
-                            variable: headers[j],
+                            row: rowName,               
+                            column: headers[j],
                             value: +rowValues[j],        
                         });
                     }}

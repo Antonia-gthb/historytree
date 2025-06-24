@@ -177,7 +177,7 @@ export default function CollaTree({
       .range(colorScheme);
 
     function update(source: MyNode) {
-      const duration = 1500;
+      const duration = 1200;
       const nodes = root.descendants().reverse();
       const links = root.links() as unknown as d3.HierarchyLink<MyNode>[];
 
@@ -245,21 +245,22 @@ export default function CollaTree({
         })
         .attr("stroke-width", 3);
 
+      //Tooltip
       nodeEnter.append("title")
         .text(d => {
           const count = d.data.count ?? 0;
           const childCount = d.data.children?.length ?? 0;
-          return `${d.data.originalName} | Count: ${count}`;
+          return `${d.data.originalName} | Count this far: ${count} |`;
         });
 
       nodeEnter.append("text")
         .attr("dy", "0.31em")
         .attr("x", d => d._children ? -10 : 10)
         .attr("text-anchor", d => d._children ? "end" : "start")
-        .text(d => (d.data.originalName || d.data.name).split(/[ /]/)[0])
+        .text(d => (d.data.originalName || d.data.name))      //.split(/[ /]/)[0])
         .attr("fill-opacity", 0)
         .transition()
-        .duration(300)
+        .duration(100)
         .attr("fill-opacity", 1);
 
       nodeEnter.merge(node).transition().duration(duration)
@@ -405,7 +406,7 @@ export default function CollaTree({
 
     selLinks
       .transition()
-      .duration(300)
+      .duration(100)
       .attr("stroke", (linkData) => {
         const source = linkData.source as any;
         const target = linkData.target as any;
