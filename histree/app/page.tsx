@@ -40,19 +40,21 @@ export default function Page() {
             .then((res) => res.text())
             .then((text) => {
                 const raw = d3.csvParseRows(text);
-                const headers = raw[0].slice(1); 
-                const longFormat: { group: string; variable: string; value: number }[] = [];
+                const headers = raw[0].slice(1);
+                const longFormat: { row: string; column: string; value: number }[] = [];
                 for (let i = 1; i < raw.length; i++) {
                     const rowName = raw[i][0];
                     const rowValues = raw[i].slice(1);
                     for (let j = 0; j < headers.length; j++) {
                         longFormat.push({
-                            row: rowName,               
+                            row: rowName,
                             column: headers[j],
-                            value: +rowValues[j],        
+                            value: +rowValues[j],
                         });
-                    }}
-                setThetaData(longFormat);});
+                    }
+                }
+                setThetaData(longFormat);
+            });
     }, []);
 
     const handleThetaUpload = (data: any[], name: string) => {
@@ -89,7 +91,7 @@ export default function Page() {
 
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-r from-cyan-100 via-blue-300 to-indigo-400 p-6 relative">
+        <div className="min-h-screen flex flex-1 overflow-auto items-center justify-center bg-linear-to-r from-cyan-100 via-blue-300 to-indigo-400 p-6 relative">
             <SidebarProvider>
                 <AppSideBar
                     jsonData={jsonData}
@@ -114,20 +116,6 @@ export default function Page() {
                     selectedSchemeName={selectedSchemeName}
                     setSelectedSchemeName={setSelectedSchemeName}
                 />
-                <AnimatePresence>
-                    {showMatrix && (
-                        <motion.div
-                            key="theta-matrix"
-                            initial={{ x: -100, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            exit={{ x: -100, opacity: 0 }}
-                            transition={{ duration: 0.4, ease: "easeInOut" }}
-                        >
-                            <ThetaMatrix data={thetaData} mutationNames={geneticEventsName} />
-                            <ThetaUpload onThetaUpload={handleThetaUpload} />
-                        </motion.div>
-                    )}
-                </AnimatePresence>
                 <SidebarInset>
                     <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
                         <SidebarTrigger className="-ml-1" />
@@ -141,18 +129,38 @@ export default function Page() {
                             className="mr-2 data-[orientation=vertical]:h-4"
                         />
                         <p> {thetaFileName || "BREAST_oMHN.csv"} </p>
-                        <Button onClick={() => { setHighlightMutation(""); setIsExpanded(!isExpanded)}} variant="outline" className="ml-auto transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-800 text-slate-700 hover:text-white">
+                        <Separator
+                            orientation="vertical"
+                            className="mr-2 data-[orientation=vertical]:h-4"
+                        />
+                        <Button onClick={() => { setHighlightMutation(""); setIsExpanded(!isExpanded) }} className="transition hover:-translate-y-1">
                             {isExpanded ? ' Collapse All' : ' Expand All'}
                         </Button >
 
                     </header>
-                    <div className="flex flex-1 p-10">
+                    <div className="flex flex-1 overflow-auto p-10">
+                        <AnimatePresence>
+                            {showMatrix && (
+                                <motion.div
+                                    key="theta-matrix"
+                                    initial={{ x: -70, opacity: 0 }}
+                                    animate={{ x: 0, opacity: 1 }}
+                                    exit={{ x: -70, opacity: 0 }}
+                                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                                >
+                                    <ThetaMatrix data={thetaData} mutationNames={geneticEventsName} />
+                                    <ThetaUpload onThetaUpload={handleThetaUpload} />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                        <div>
                         {rawdata && (
                             <CollaTree key={`${fileName}`} treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={[scalingFactor]} onMutationNamesReady={(allMutationNames) => {
                                 setGeneticEventsName(allMutationNames);
                                 setSelectedMutations(allMutationNames);
                             }} selectedMutations={selectedMutations} threshold={threshold} highlightMutation={highlightMutation} onHighlightMutationChange={handleHighlightChange}
                             />)}
+                    </div>
                     </div>
                     <div className="flex justify-between font-bold text-xl p-5 w-full">
                         <FileUpload onUpload={handleUpload} />

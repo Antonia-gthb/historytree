@@ -33,7 +33,7 @@ interface CollaTreeProps {
 
 export default function CollaTree({
   treedata,
-  width = 1400,
+  width = 1200,
   colorScheme,
   threshold,
   shouldExpand,
@@ -130,7 +130,6 @@ export default function CollaTree({
     d3.select(svgRef.current).selectAll("*").remove();
 
     const svg = d3.select<SVGSVGElement, unknown>(svgRef.current)
-      .attr("width", "100%")
       .attr("viewBox", [-margin.left, -margin.top, width, dx])
       .style("height", "auto")
       .style("font", "14px sans-serif")  // hier kann ich die Schriftgröße einstellen
@@ -246,12 +245,20 @@ export default function CollaTree({
         .attr("stroke-width", 3);
 
       //Tooltip
+
       nodeEnter.append("title")
         .text(d => {
           const count = d.data.count ?? 0;
-          const childCount = d.data.children?.length ?? 0;
-          return `${d.data.originalName} | Count this far: ${count} |`;
+
+          const ancestorNames = d.ancestors()
+            .reverse() // von vorne (bei root) starten
+            .map(a => a.data.originalName || a.data.name)
+            .filter(name => name !== "root")
+            .join(" → ");
+
+          return `${ancestorNames} | Patient Count: ${count}`;
         });
+
 
       nodeEnter.append("text")
         .attr("dy", "0.31em")

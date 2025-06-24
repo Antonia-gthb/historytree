@@ -62,8 +62,6 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
         const maxVal = Math.max(...values);
         const minVal = Math.min(...values);
 
-        console.log('max:', maxVal, 'min:', minVal)
-
         const colorScale = d3.scaleLinear<string>()
             .domain([minVal, 0, maxVal])
             .range(["blue", "white", "red"]);
@@ -118,7 +116,7 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .enter()
             .append("text")
             .attr("class", "y-label")
-            .attr("x", -10)
+            .attr("x", -5)
             .attr("y", (d) => y(d)! + y.bandwidth() / 2)
             .attr("text-anchor", "end")
             .attr("alignment-baseline", "middle")
