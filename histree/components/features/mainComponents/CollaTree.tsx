@@ -33,6 +33,7 @@ interface CollaTreeProps {
 
 {/* Der Code vom Baum. Hier wird das SVG erstellt und hier ist auch sehr viel funktionaler Code dabei. Der Code ist allerdings extrem lang.*/ }
 
+
 export default function CollaTree({
   treedata,
   width = 1200,  //Breite vom SVG
@@ -55,6 +56,7 @@ export default function CollaTree({
   const highlightedLinkRef = useRef<d3.HierarchyLink<MyNode> | null>(null);
   const rootRef = useRef<MyNode | null>(null);
   const highlightRef = useRef<string>(highlightMutation);
+
 
   //die Refs oben sind dazu da, dass der Baum nicht jedes mal neu rendert, wenn etwas anders eingestellt wird
 
@@ -152,7 +154,7 @@ export default function CollaTree({
       .attr("stroke-opacity", 0.4)
       .attr("stroke", "555")
       .attr("stroke-width", "1.5")
-    
+
     //Erstellen der Gruppe Node
     const gNode = svg.append("g")
       .attr("cursor", "pointer")
@@ -190,8 +192,8 @@ export default function CollaTree({
     colorScaleRef.current = d3.scaleOrdinal<string, string>()
       .domain(mutationNames)
       .range(colorScheme);
-    
-    {/*UPDATE FUNKTION */}  //nach dem 1. rendern wird diese Funktion aufgerufen, wenn sich treedata, shouldExpand, selectedMutations oder threshold ändern
+
+    {/*UPDATE FUNKTION */ }  //nach dem 1. rendern wird diese Funktion aufgerufen, wenn sich treedata, shouldExpand, selectedMutations oder threshold ändern
     //dann wird der Baum neu gerendert
 
     function update(source: MyNode) {
@@ -203,7 +205,7 @@ export default function CollaTree({
 
       let left = root;
       let right = root;
-      
+
 
       //Welcher Knoten steht am weitesten oben/unten? Daraus wird dann die Höhe berechnet. x und y sind umgedreht, da der Baum horizontal läuft
       root.eachBefore(node => {
@@ -215,7 +217,7 @@ export default function CollaTree({
 
       // Nodes updaten, durch Aufruf der Gruppe, Auswahla aller Nodes und verbinden mit den Daten (Name und Tiefe, die für die Symbole wichtig ist)
       const node = gNode.selectAll<SVGGElement, MyNode>("g").data(nodes, d => d.data.name + "-" + d.depth);
- 
+
       //Definition der Transition
       const transition: d3.Transition<SVGSVGElement, unknown, null, undefined> = svg.transition()
         .duration(duration)
@@ -238,8 +240,8 @@ export default function CollaTree({
           d.children = d.children ? undefined : d._children;
           update(d);
         });
-      
-        //Symbol wird hinzugefügt
+
+      //Symbol wird hinzugefügt
       nodeEnter.append("path")
         .attr("d", d => {
 
@@ -259,16 +261,16 @@ export default function CollaTree({
         })
         .attr("fill", d => {
           const isLeaf = !d.children && !d._children;
-          return isLeaf  
+          return isLeaf
             ? "none"                                                       //wenn ein Knoten keine Children hat, soll das Symbol innen transparent sein mit stroke
-            : colorScaleRef.current!(d.data.originalName || d.data.name);  
+            : colorScaleRef.current!(d.data.originalName || d.data.name);
         })
         .attr("stroke", d => {
           return colorScaleRef.current!(d.data.originalName || d.data.name); //Rand
         })
         .attr("stroke-width", 3);  //Dicke des Rands
-      
-        //Hier wird der Text an die Nodes gebracht
+
+      //Hier wird der Text an die Nodes gebracht
       nodeEnter.append("text")
         .attr("dy", "0.31em")
         .attr("x", d => d._children ? -10 : 10)
@@ -308,11 +310,11 @@ export default function CollaTree({
           const o = { x: d.source.x0 ?? d.source.x, y: d.source.y0 ?? d.source.y };
           return diagonal({ source: o, target: o });
         });
-      
-        //Tooltip für Anklicken zum Highlighten
+
+      //Tooltip für Anklicken zum Highlighten
       linkEnter.append("title")
         .text("Highlight this path");
-      
+
       //Links Mergen
       const linkAll = linkEnter.merge(link);
 
@@ -331,7 +333,7 @@ export default function CollaTree({
         }
       });
 
-      {/* SCALING */}
+      {/* SCALING */ }
 
       //Code für die Scale
       const counts = root.descendants().filter(d => d.data.originalName !== root.data.originalName).map(d => d.data.count ?? 0);  //alle Counts außer den von root
@@ -344,13 +346,13 @@ export default function CollaTree({
         : d3.scaleLinear<number>()
           .domain([0, maxCount])
           .range([factorRef.current, defaultMax]);  //Breite wird verteilt auf den aktuellen Faktor, den wir über die Page bekommen und der Maximalen Breite, abhängig von Count
-      
-          //
+
+      //
       linkAll.transition(transition as any)
         .attr("d", diagonal as any)
         .attr("stroke-width", d => baseScale(d.target.data.count ?? 0));
-      
-        //alte Links gehen weg
+
+      //alte Links gehen weg
       link.exit().transition(transition as any).remove()
         .attr("d", d => {
           const o = { x: source.x, y: source.y };
@@ -399,9 +401,9 @@ export default function CollaTree({
   }, [treedata, shouldExpand, selectedMutations, threshold]);
 
 
-//Hier folgen jetzt mehrere useEffects, damit der Baum nicht jedes Mal neu gerendert werden muss
+  //Hier folgen jetzt mehrere useEffects, damit der Baum nicht jedes Mal neu gerendert werden muss
 
- {/* USEEFFECT FARBSCHEMA */}
+  {/* USEEFFECT FARBSCHEMA */ }
   useEffect(() => {
     if (colorScaleRef.current && nodeSelectionRef.current) {
       colorScaleRef.current.range(colorScheme);
@@ -420,7 +422,7 @@ export default function CollaTree({
     }
   }, [colorScheme]);
 
-  {/* USEEFFECT HIGHLIGHT MUTATION*/}
+  {/* USEEFFECT HIGHLIGHT MUTATION*/ }
 
   useEffect(() => {
     highlightRef.current = highlightMutation;
@@ -460,7 +462,7 @@ export default function CollaTree({
       });
   }, [highlightMutation]);
 
-{/* USEEFFECT SCALING */}
+  {/* USEEFFECT SCALING */ }
   useEffect(() => {
     if (!selectedLinksRef.current) return;
 
