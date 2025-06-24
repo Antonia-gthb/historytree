@@ -238,6 +238,9 @@ export function AppSideBar({
                 <Button className="ml-1 mt-2 transition hover:-translate-y-1">
                   <Link href="https://www.overleaf.com/project/67c5947a93babe7ce8dafd44" target="_blank" rel="noopener noreferrer">Master Thesis</Link>
                 </Button>
+                  <Button className="ml-1 mt-2 transition hover:-translate-y-1">
+                  <Link href="https://miro.com/app/board/uXjVIxUGLv0=/?share_link_id=356747018988" target="_blank" rel="noopener noreferrer">Miro</Link>
+                </Button>
               </SidebarGroupContent>
             </CollapsibleContent>
           </SidebarGroup>
