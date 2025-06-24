@@ -94,3 +94,31 @@
 - Arbeit
   - Formulierungen
   - Struktur: Kurzbeschreibung der App vor den technischen Details
+
+
+## 17.06.2025
+
+- Orga
+  - Präsentation am 29.07.
+- App
+  - smaller order set
+  - theta matrix will be updated
+  - app in the top level
+  - README
+  - comment code
+  - added miro board for structured explanation of the app implementation
+- Arbeit
+  - korrigierte Teile überarbeiten
+  - User Guide
+
+## 24.06.2025
+
+- Context tsx 
+  - Alle states in eine Datei
+    - Abhängigkeiten auch dort definieren (was geupdated wird, wenn eine State sich ändert)
+- eslint no explicit any deaktivieren -> keine Fehler bei den Pfaden mehr
+  - Dann kann man den auch die neue Version verwenden
+- im developer mode langsam normal
+- weirder Bug beim Upload von JSON mit gleichem Namen
+- Farbenzahl nicht hardcoden
+- npm run build ausprobieren
