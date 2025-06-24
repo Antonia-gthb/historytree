@@ -27,6 +27,11 @@ import { HighlightEvent } from "@/components/features/highlightEvent";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 
+{/* */}
+
+{/* Hier ist der Code für den Sidebar. Alle Zustände/States werden hier von der page.tsx an den Sidebar übergeben. Der funktionale Teil von Scaling (die Dicke der Linien)
+  wird hier auch definiert. Hat in einer Komponente wenig Sinn gemacht bzw. nicht funktioniert. Die Links zur Masterarbeit etc. sind hier auch eingefügt */}
+
 export interface AppSidebarProps {
   jsonData: any;
   fileName: string;
@@ -211,7 +216,7 @@ export function AppSideBar({
 
         {/* DOWNLOAD */}
         <div className="ml-13 mt-3">
-          <Download downloadName={jsonData ? fileName : 'tonis_orders_tree_2.json'} />
+          <Download downloadName={jsonData ? fileName : 'BREAST_orders_toni.json'} />
         </div>
 
         {/* THETAMATRIX BUTTON */}
