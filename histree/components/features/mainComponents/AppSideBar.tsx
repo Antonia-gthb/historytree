@@ -20,65 +20,36 @@ import {
 import Download from "@/components/features/download";
 import ColorTheme from "@/components/features/colorSchemes";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Slider } from "@/components/ui/slider"
+import { Slider } from "@/components/ui/slider";
 import Threshold from "@/components/features/threshold";
 import { Eventfilter } from "@/components/features/eventFilter";
 import { HighlightEvent } from "@/components/features/highlightEvent";
 import { Button } from "@/components/ui/button";
-import Link from 'next/link';
+import Link from "next/link";
 import useGlobalContext from "@/app/Context";
 
-{/* */ }
+export function AppSideBar() {
+  const {
+    jsonFile,
+    scalingEnabled,
+    scalingFactor,
+    threshold,
+    geneticEventsName,
+    selectedMutations,
+    highlightMutation,
+    showMatrix,
+    selectedSchemeName,
+    setColorScheme,
+    setScalingEnabled,
+    setScalingFactor,
+    setThreshold,
+    setSelectedMutations,
+    setHighlightMutation,
+    setShowMatrix,
+    setSelectedSchemeName,
+    resetFilters, 
+  } = useGlobalContext();
 
-{/* Hier ist der Code für den Sidebar. Alle Zustände/States werden hier von der page.tsx an den Sidebar übergeben. Der funktionale Teil von Scaling (die Dicke der Linien)
-  wird hier auch definiert. Hat in einer Komponente wenig Sinn gemacht bzw. nicht funktioniert. Die Links zur Masterarbeit etc. sind hier auch eingefügt */}
-
-export interface AppSidebarProps {
-  jsonData: any;
-  fileName: string;
-  colorScheme: string[];
-  scalingEnabled: boolean;
-  scalingFactor: number;
-  threshold: number;
-  geneticEventsName: string[];
-  selectedMutations: string[];
-  highlightMutation: string;
-  showMatrix: boolean;
-  selectedSchemeName: string,
-  handleUpload: (data: any, name: string) => void;
-  setColorScheme: (schemes: string[]) => void;
-  setScalingEnabled: (on: boolean) => void;
-  setScalingFactor: (v: number) => void;
-  setThreshold: (v: number) => void;
-  setSelectedMutations: (items: string[]) => void;
-  setHighlightMutation: (item: string) => void;
-  setShowMatrix: (on: boolean) => void;
-  resetFilters: () => void;
-  setSelectedSchemeName: (name: string) => void;
-}
-
-export function AppSideBar({
-  jsonData,
-  fileName,
-  scalingEnabled,
-  scalingFactor,
-  threshold,
-  geneticEventsName,
-  selectedMutations,
-  highlightMutation,
-  showMatrix,
-  selectedSchemeName,
-  setColorScheme,
-  setScalingEnabled,
-  setScalingFactor,
-  setThreshold,
-  setSelectedMutations,
-  setHighlightMutation,
-  setShowMatrix,
-  resetFilters,
-  setSelectedSchemeName
-}: AppSidebarProps) {
-  const { setIsExpanded } = useGlobalContext();
   return (
     <Sidebar>
       <SidebarHeader className="font-semibold p-5 mb-3 bg-indigo-800/90 text-white/95">
@@ -86,16 +57,17 @@ export function AppSideBar({
       </SidebarHeader>
 
       <SidebarContent>
-
-        {/* UPLOAD */}
+        {/* RESET */}
         <div className="ml-15 mt-3">
-          <Button onClick={resetFilters} className="transition hover:-translate-y-1">Reset Filters</Button>
+          <Button onClick={resetFilters} className="transition hover:-translate-y-1">
+            Reset Filters
+          </Button>
         </div>
 
         {/* COLOR SCHEME */}
         <Collapsible title="Color Scheme" className="group/collapsible">
           <SidebarGroup>
-            <SidebarGroupLabel asChild className="group/label group-data-[state=open]/collapsible:mb-1 ">
+            <SidebarGroupLabel asChild>
               <CollapsibleTrigger className="flex w-full justify-between">
                 Color Scheme
                 <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
@@ -116,7 +88,7 @@ export function AppSideBar({
         {/* SCALING */}
         <Collapsible title="Scaling" className="group/collapsible">
           <SidebarGroup>
-            <SidebarGroupLabel asChild className="group/label group-data-[state=open]/collapsible:mb-1 ">
+            <SidebarGroupLabel asChild>
               <CollapsibleTrigger className="flex w-full justify-between">
                 Scaling
                 <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
@@ -130,9 +102,9 @@ export function AppSideBar({
                     onCheckedChange={(on) => {
                       const isChecked = on === true;
                       setScalingEnabled(isChecked);
-                      if (isChecked) {
-                        if (scalingFactor === 0) setScalingFactor(1); // oder dein Wunschwert
-                      } else {
+                      if (isChecked && scalingFactor === 0) {
+                        setScalingFactor(1);
+                      } else if (!isChecked) {
                         setScalingFactor(0);
                       }
                     }}
@@ -158,14 +130,16 @@ export function AppSideBar({
         {/* THRESHOLD */}
         <Collapsible title="Threshold" className="group/collapsible">
           <SidebarGroup>
-            <SidebarGroupLabel asChild className="group/label group-data-[state=open]/collapsible:mb-1 ">
+            <SidebarGroupLabel asChild>
               <CollapsibleTrigger className="flex w-full justify-between">
                 Threshold
                 <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
               </CollapsibleTrigger>
             </SidebarGroupLabel>
             <CollapsibleContent className="p-3">
-              <p className="block text-gray-700 text-sm mb-3 "> Only paths found in at least {threshold} patients/tumors will be shown </p>
+              <p className="text-sm mb-3 text-gray-700">
+                Only paths found in at least {threshold} patients/tumors will be shown
+              </p>
               <SidebarGroupContent className="ml-5 mb-1">
                 <Threshold value={threshold} onChange={setThreshold} />
               </SidebarGroupContent>
@@ -176,7 +150,7 @@ export function AppSideBar({
         {/* EVENTFILTER */}
         <Collapsible title="Eventfilter" className="group/collapsible">
           <SidebarGroup>
-            <SidebarGroupLabel asChild className="group/label group-data-[state=open]/collapsible:mb-1 ">
+            <SidebarGroupLabel asChild>
               <CollapsibleTrigger className="flex w-full justify-between">
                 Eventfilter
                 <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
@@ -195,10 +169,10 @@ export function AppSideBar({
           </SidebarGroup>
         </Collapsible>
 
-        {/* HIGHLIGHT MUTATION */}
+        {/* HIGHLIGHT */}
         <Collapsible title="Highlight Mutation" className="group/collapsible">
           <SidebarGroup>
-            <SidebarGroupLabel asChild className="group/label group-data-[state=open]/collapsible:mb-1">
+            <SidebarGroupLabel asChild>
               <CollapsibleTrigger className="flex w-full justify-between">
                 Highlight Mutation
                 <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
@@ -218,10 +192,10 @@ export function AppSideBar({
 
         {/* DOWNLOAD */}
         <div className="ml-13 mt-3">
-          <Download downloadName={jsonData ? fileName : 'BREAST_orders_toni.json'} />
+          <Download downloadName={jsonFile ? jsonFile.name : "BREAST_orders_toni.json"} />
         </div>
 
-        {/* THETAMATRIX BUTTON */}
+        {/* THETAMATRIX TOGGLE */}
         <div className="ml-10 mt-3">
           <Button className="transition hover:-translate-y-1" onClick={() => setShowMatrix(!showMatrix)}>
             {showMatrix ? "Hide Theta Matrix" : "Show Theta Matrix"}
@@ -231,7 +205,7 @@ export function AppSideBar({
         {/* INFO */}
         <Collapsible title="Info" className="group/collapsible">
           <SidebarGroup>
-            <SidebarGroupLabel asChild className="group/label group-data-[state=open]/collapsible:mb-1">
+            <SidebarGroupLabel asChild>
               <CollapsibleTrigger className="flex w-full justify-between">
                 More Information
                 <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
@@ -252,10 +226,7 @@ export function AppSideBar({
             </CollapsibleContent>
           </SidebarGroup>
         </Collapsible>
-
-
       </SidebarContent>
-
       <SidebarRail />
     </Sidebar>
   );

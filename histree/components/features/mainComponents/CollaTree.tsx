@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import { useRef, useEffect } from "react";
+import useGlobalContext from "@/app/Context";
 
 type MyNode = d3.HierarchyPointNode<TreeNode> & {
   x0: number;
@@ -8,7 +9,7 @@ type MyNode = d3.HierarchyPointNode<TreeNode> & {
   color?: string;
 }
 
-type TreeNode = {
+ export type TreeNode = {
   name: string;
   children?: TreeNode[];
   originalName?: string,  // ? bedeutet hier: eigenschaft muss nicht im JSON Datensatz vorhanden sein und ist optional! 
@@ -19,16 +20,8 @@ type TreeNode = {
 };
 
 interface CollaTreeProps {
-  treedata: TreeNode;
-  width?: number;
-  colorScheme: string[];
-  shouldExpand: boolean;
-  threshold?: number;
-  lineWidthFactor: number[];
-  onMutationNamesReady?: (names: string[]) => void;
-  selectedMutations?: string[] | undefined;
-  highlightMutation?: string;
-  onHighlightMutationChange?: (value: string) => void;
+  treedata: TreeNode; // wird durch Context ersetzt, also optional
+  width: number;
 }
 
 {/* Der Code vom Baum. Hier wird das SVG erstellt und hier ist auch sehr viel funktionaler Code dabei. Der Code ist allerdings extrem lang.*/ }
@@ -36,26 +29,33 @@ interface CollaTreeProps {
 
 export default function CollaTree({
   treedata,
-  width = 1200,  //Breite vom SVG
-  colorScheme,
-  threshold,
-  shouldExpand,
-  lineWidthFactor,
-  onMutationNamesReady,
-  selectedMutations = [],
-  highlightMutation = "",
-  onHighlightMutationChange,
+  width,  //Breite vom SVG
 }: CollaTreeProps) {
+  const {
+    jsonFile,
+    colorScheme,
+    isExpanded,
+    threshold,
+    scalingFactor,
+    selectedMutations,
+    highlightMutation,
+    setGeneticEventsName,
+    setSelectedMutations,
+    setHighlightMutation,
+  } = useGlobalContext();
+
+
   const svgRef = useRef<SVGSVGElement | null>(null);
   const colorScaleRef = useRef<d3.ScaleOrdinal<string, string, never> | null>(null);
   const nodeSelectionRef = useRef<d3.Selection<SVGGElement, MyNode, SVGGElement, unknown> | null>(null);
   const selectedLinksRef = useRef<d3.Selection<SVGPathElement, d3.HierarchyLink<MyNode>, SVGGElement, unknown> | null>(null);
   const mutationNamesRef = useRef<string[] | null>(null); // wird nur einmal gesetzt
-  const factorRef = useRef<number>(lineWidthFactor[0]);
+  const factorRef = useRef<number>(scalingFactor);
   const maxCountRef = useRef<number>(1);
   const highlightedLinkRef = useRef<d3.HierarchyLink<MyNode> | null>(null);
   const rootRef = useRef<MyNode | null>(null);
   const highlightRef = useRef<string>(highlightMutation);
+
 
 
   //die Refs oben sind dazu da, dass der Baum nicht jedes mal neu rendert, wenn etwas anders eingestellt wird
@@ -94,11 +94,15 @@ export default function CollaTree({
       ?.map(child => filterTreeData(child, selectedMutations))
       .filter(child => child !== null) as TreeNode[] | undefined;
 
+      console.log(tree.children)
+
     return {
       ...tree,
       children: filteredChildren?.length ? filteredChildren : undefined,
     };
   }
+
+  
 
   //Funktion zum Filtern, wenn ein Threshold eingestellt ist
   function filterByThreshold(node: TreeNode, thr: number): TreeNode | null {
@@ -175,15 +179,14 @@ export default function CollaTree({
           return ancestors.has(d.target) ? 1 : 0.4;
         });
     }
-    // if-Schleife, um die Mutationsnamen zu updaten und an Page.tsx zu übergeben. Mit onMutationNamesReady werden die neuen Mutationsnamen in page.tsx im State gespeichert
-    if (!mutationNamesRef.current) {
+    // if-Schleife, um die Mutationsnamen zu updaten 
+    if (!mutationNamesRef.current && treedata) {
       const mutationNames: string[] = [];
-      numberNodes(treedata, "", mutationNames);
+      numberNodes(treedata, "", mutationNames); // Mutationsnamen sammeln
       mutationNamesRef.current = mutationNames;
 
-      if (onMutationNamesReady) {
-        onMutationNamesReady([...new Set(mutationNames)]);
-      }
+      setGeneticEventsName([...new Set(mutationNames)]);
+      setSelectedMutations([...new Set(mutationNames)]); // optional: direkt setzen
     }
 
     //Farbschema auf den Baum anwenden
@@ -193,7 +196,7 @@ export default function CollaTree({
       .domain(mutationNames)
       .range(colorScheme);
 
-    {/*UPDATE FUNKTION */ }  //nach dem 1. rendern wird diese Funktion aufgerufen, wenn sich treedata, shouldExpand, selectedMutations oder threshold ändern
+    {/*UPDATE FUNKTION */ }  //nach dem 1. rendern wird diese Funktion aufgerufen, wenn sich treedata, isExpanded, selectedMutations oder threshold ändern
     //dann wird der Baum neu gerendert
 
     function update(source: MyNode) {
@@ -320,16 +323,14 @@ export default function CollaTree({
 
       //Durch Klicken kann ein Link gehighlighted werden in Lila
       linkAll.on("click", (_, d) => {
-        onHighlightMutationChange?.("");
-        if (onHighlightMutationChange) {
-          onHighlightMutationChange("");
-        }
         if (highlightedLinkRef.current === d) {
           highlightedLinkRef.current = null;
           highlightPath(null, false);
+          setHighlightMutation("");
         } else {
           highlightedLinkRef.current = d;
           highlightPath(d, true);
+          setHighlightMutation(""); // optional, wenn du bei Klick resetten willst
         }
       });
 
@@ -384,7 +385,7 @@ export default function CollaTree({
     // Tree initialisieren
     root.x0 = 0;
     root.y0 = 0;
-    if (shouldExpand) {
+    if (isExpanded) {
       root.descendants().forEach(d => {
         d._children = d.children;
         d.children = d._children;
@@ -398,7 +399,7 @@ export default function CollaTree({
 
     update(root);
 
-  }, [treedata, shouldExpand, selectedMutations, threshold]);
+  }, [treedata, isExpanded, selectedMutations, threshold]);
 
 
   //Hier folgen jetzt mehrere useEffects, damit der Baum nicht jedes Mal neu gerendert werden muss
@@ -466,7 +467,7 @@ export default function CollaTree({
   useEffect(() => {
     if (!selectedLinksRef.current) return;
 
-    factorRef.current = lineWidthFactor[0];
+    factorRef.current = scalingFactor;
 
     const defaultMax = 10 + factorRef.current;
     const defaultWidth = 1.5;
@@ -478,7 +479,7 @@ export default function CollaTree({
 
     selectedLinksRef.current
       .attr("stroke-width", d => baseScale(d.target.data.count ?? 0));
-  }, [lineWidthFactor]);
+  }, [scalingFactor]);
 
 
   return <svg ref={svgRef}></svg>;

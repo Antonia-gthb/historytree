@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { interpolateTurbo } from 'd3-scale-chromatic';
 import { Button } from "@/components/ui/button";
 import * as d3 from "d3";
@@ -13,27 +13,31 @@ import ThetaMatrix from '@/components/features/mainComponents/ThetaMatrix';
 import ThetaUpload from "@/components/features/thetaUpload";
 import { AnimatePresence, motion } from "motion/react"
 import FileUpload from '@/components/features/upload';
+import useGlobalContext from '@/app/Context';
+import { TreeNode } from "@/components/features/mainComponents/CollaTree";
 
 
 export default function App() {
-
-  const [jsonData, setJsonData] = useState(null); // hochgeladener Datensatz
-  const [fileName, setFileName] = useState("");
-  const [thetaFileName, setThetaFileName] = useState("BREAST_oMHN.csv");
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [scalingFactor, setScalingFactor] = useState<number>(1);
-  const [scalingEnabled, setScalingEnabled] = useState<boolean>(true);
-  const [geneticEventsName, setGeneticEventsName] = useState<string[]>([]);
-  const [selectedMutations, setSelectedMutations] = useState<string[]>([]);
-  const [threshold, setThreshold] = useState<number>(1);
-  const [highlightMutation, setHighlightMutation] = useState<string>("");
-  const [thetaData, setThetaData] = useState<any[]>([]);
-  const [showMatrix, setShowMatrix] = useState(false);
-  const [colorScheme, setColorScheme] = useState<string[]>(
-    d3.quantize(interpolateTurbo, 13)
-  );
-  const [selectedSchemeName, setSelectedSchemeName] = useState("Turbo");
-
+  const {
+    jsonFile,
+    setJsonFile,
+    thetaFile,
+    setThetaFile,
+    isExpanded,
+    setIsExpanded,
+    scalingFactor,
+    setScalingFactor,
+    geneticEventsName,
+    setGeneticEventsName,
+    selectedMutations,
+    setSelectedMutations,
+    threshold,
+    highlightMutation,
+    setHighlightMutation,
+    showMatrix,
+    colorScheme,
+    setColorScheme,
+  } = useGlobalContext();
 
   useEffect(() => {
     fetch('/BREAST_oMHN.csv')
@@ -53,34 +57,22 @@ export default function App() {
             });
           }
         }
-        setThetaData(longFormat);
+        setThetaFile({ name: "BREAST_oMHN.csv", data: longFormat });
       });
-  }, []);
+  }, [setThetaFile]);
 
-  const handleThetaUpload = (data: any[], name: string) => {
-    setThetaData(data);
-    setThetaFileName(name);
+  const handleThetaUpload = (data: any, name: string) => {
+    setThetaFile({ name, data });
   };
-
 
   function handleHighlightChange(v: string) {
     setHighlightMutation(v);
   }
 
-  function resetFilters() {
-    setIsExpanded(false);
-    setScalingEnabled(true);
-    setScalingFactor(1);
-    setThreshold(1);
-    setSelectedMutations(geneticEventsName);
-    setColorScheme(d3.quantize(interpolateTurbo, 13));
-    setHighlightMutation("");
-    setSelectedSchemeName("Turbo");
-  }
+  const { resetFilters } = useGlobalContext();
 
-  const handleUpload = (data: any, fileName: string) => {
-    setJsonData(data); // speichert hochgeladene Daten 
-    setFileName(fileName); // dateiname speichern
+  const handleUpload = (data: any, name: string) => {
+    setJsonFile({ name, data });
     setIsExpanded(false);
     setScalingFactor(1);
     setSelectedMutations([]);
@@ -88,55 +80,27 @@ export default function App() {
     setHighlightMutation("");
   };
 
-
-
   return (
-    <div className="min-h-screen flex flex-1 overflow-auto items-center justify-center bg-linear-to-r from-cyan-100 via-blue-300 to-indigo-400 p-6 relative">
+    <div className="min-h-screen flex flex-1 overflow-auto items-center justify-center bg-gradient-to-r from-cyan-100 via-blue-300 to-indigo-400 p-6 relative">
       <SidebarProvider>
-        <AppSideBar
-          jsonData={jsonData}
-          fileName={fileName}
-          colorScheme={colorScheme}
-          scalingEnabled={scalingEnabled}
-          scalingFactor={scalingFactor}
-          threshold={threshold}
-          geneticEventsName={geneticEventsName}
-          selectedMutations={selectedMutations}
-          highlightMutation={highlightMutation}
-          showMatrix={showMatrix}
-          handleUpload={handleUpload}
-          setColorScheme={setColorScheme}
-          setScalingEnabled={setScalingEnabled}
-          setScalingFactor={setScalingFactor}
-          setThreshold={setThreshold}
-          setSelectedMutations={setSelectedMutations}
-          setHighlightMutation={setHighlightMutation}
-          setShowMatrix={setShowMatrix}
-          resetFilters={resetFilters}
-          selectedSchemeName={selectedSchemeName}
-          setSelectedSchemeName={setSelectedSchemeName}
-        />
+        <AppSideBar />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
             <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
-            <p> {jsonData ? fileName : 'BREAST_orders_toni.json'}</p>
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
-            <p> {thetaFileName || "BREAST_oMHN.csv"} </p>
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
-            <Button onClick={() => { setHighlightMutation(""); setIsExpanded(!isExpanded) }} className="transition hover:-translate-y-1">
-              {isExpanded ? ' Collapse All' : ' Expand All'}
-            </Button >
-
+            <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
+            <p>{jsonFile ? jsonFile.name : "BREAST_orders_toni.json"}</p>
+            <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
+            <p>{thetaFile?.name ?? "BREAST_oMHN.csv"}</p>
+            <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
+            <Button
+              onClick={() => {
+                setHighlightMutation("");
+                setIsExpanded(!isExpanded);
+              }}
+              className="transition hover:-translate-y-1"
+            >
+              {isExpanded ? 'Collapse All' : 'Expand All'}
+            </Button>
           </header>
           <div className="flex flex-1 overflow-auto p-10">
             <AnimatePresence>
@@ -148,18 +112,20 @@ export default function App() {
                   exit={{ x: -70, opacity: 0 }}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                 >
-                  <ThetaMatrix data={thetaData} mutationNames={geneticEventsName} />
+                  <ThetaMatrix data={thetaFile?.data ?? []} mutationNames={geneticEventsName} />
                   <ThetaUpload onThetaUpload={handleThetaUpload} />
                 </motion.div>
               )}
             </AnimatePresence>
             <div>
-              {rawdata && (
-                <CollaTree key={`${fileName}`} treedata={jsonData || rawdata} colorScheme={colorScheme} shouldExpand={isExpanded} lineWidthFactor={[scalingFactor]} onMutationNamesReady={(allMutationNames) => {
-                  setGeneticEventsName(allMutationNames);
-                  setSelectedMutations(allMutationNames);
-                }} selectedMutations={selectedMutations} threshold={threshold} highlightMutation={highlightMutation} onHighlightMutationChange={handleHighlightChange}
-                />)}
+              {(jsonFile?.data || rawdata) && (
+                <CollaTree
+                  key={jsonFile?.name || "default-tree"}
+                  treedata={(jsonFile?.data as TreeNode) || rawdata}
+                  width={1200}
+                />
+              )}
+
             </div>
           </div>
           <div className="flex justify-between font-bold text-xl p-5 w-full">
@@ -170,4 +136,3 @@ export default function App() {
     </div>
   );
 }
-
