@@ -472,8 +472,7 @@ export default function CollaTree({
       ? () => defaultWidth
       : d3.scaleLinear<number>()
         .domain([0, maxCountRef.current])
-        .range([factorRef.current, defaultMax])
-        .clamp(true);
+        .range([factorRef.current, defaultMax]);
 
     selectedLinksRef.current
       .attr("stroke-width", d => baseScale(d.target.data.count ?? 0));

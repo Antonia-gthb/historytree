@@ -88,8 +88,8 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
         const onMouseMove = (event: MouseEvent, d: any) => {
             tooltip
                 .html(`<strong>${d.column} ➞ ${d.row}</strong><br/>`)
-                .style("left", event.pageX + 4 + "px")
-                .style("top", event.pageY - 28 + "px");
+                .style("left", event.pageX + "px") 
+                .style("top", event.pageY + "px");
         };
         const onMouseLeave = () => tooltip.style("opacity", 0);
 
@@ -109,7 +109,7 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .style("font-family", "sans-serif")
             .attr("text-anchor", "start")
             .text((d) => d);
-            //.text((d) => String(d).split(/[ /]/)[0]); // Split bei Leerzeichen oder Slash
+        //.text((d) => String(d).split(/[ /]/)[0]); // Split bei Leerzeichen oder Slash
 
         g.selectAll(".y-label")
             .data(rows)
@@ -123,10 +123,10 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .style("font-size", "6px")
             .style("font-family", "sans-serif")
             .text((d) => d)
-           // .text((d) =>
-               // d === "BaseRate" ? "Base Rate" :
-              //      d === "Observation" ? "Observation" :
-                //        String(d).split(/[ /]/)[0]
+        // .text((d) =>
+        // d === "BaseRate" ? "Base Rate" :
+        //      d === "Observation" ? "Observation" :
+        //        String(d).split(/[ /]/)[0]
         //    );
 
         // Matrixzellen
