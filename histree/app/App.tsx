@@ -5,7 +5,7 @@ import { interpolateTurbo } from 'd3-scale-chromatic';
 import { Button } from "@/components/ui/button";
 import * as d3 from "d3";
 import CollaTree from '../components/features/mainComponents/CollaTree';
-import rawdata from '@/app/BREAST_orders_toni 1 (1).json';
+import rawdata from '@/app/BREAST_shortened_orders_toni.json';
 import { AppSideBar } from "@/components/features/mainComponents/AppSideBar"
 import { Separator } from "@/components/ui/sidebar/separator"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar/sidebar"
@@ -25,17 +25,11 @@ export default function App() {
     setThetaFile,
     isExpanded,
     setIsExpanded,
-    scalingFactor,
     setScalingFactor,
     geneticEventsName,
-    setGeneticEventsName,
-    selectedMutations,
     setSelectedMutations,
-    threshold,
-    highlightMutation,
     setHighlightMutation,
     showMatrix,
-    colorScheme,
     setColorScheme,
   } = useGlobalContext();
 
@@ -65,11 +59,6 @@ export default function App() {
     setThetaFile({ name, data });
   };
 
-  function handleHighlightChange(v: string) {
-    setHighlightMutation(v);
-  }
-
-  const { resetFilters } = useGlobalContext();
 
   const handleUpload = (data: any, name: string) => {
     setJsonFile({ name, data });
@@ -88,7 +77,7 @@ export default function App() {
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
-            <p>{jsonFile ? jsonFile.name : "BREAST_orders_toni.json"}</p>
+            <p>{jsonFile ? jsonFile.name : "BREAST_orders.json"}</p>
             <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
             <p>{thetaFile?.name ?? "BREAST_oMHN.csv"}</p>
             <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
@@ -125,7 +114,6 @@ export default function App() {
                   width={1200}
                 />
               )}
-
             </div>
           </div>
           <div className="flex justify-between font-bold text-xl p-5 w-full">

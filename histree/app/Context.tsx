@@ -55,7 +55,7 @@ export function GlobalWrapper({ children }: { children: React.ReactNode }) {
   const [thetaFile, setThetaFile] = useState<ThetaFile | null>(null);
   const [jsonFile, setJsonFile] = useState<File | null>(null);
   const [threshold, setThreshold] = useState<number>(1);
-   const [colorScheme, setColorScheme] = useState<string[]>(
+  const [colorScheme, setColorScheme] = useState<string[]>(
     d3.quantize(interpolateTurbo, 13)
   );
   const [fileName, setFileName] = useState("");  //später noch löschen

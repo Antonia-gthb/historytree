@@ -26,13 +26,11 @@ interface CollaTreeProps {
 
 {/* Der Code vom Baum. Hier wird das SVG erstellt und hier ist auch sehr viel funktionaler Code dabei. Der Code ist allerdings extrem lang.*/ }
 
-
 export default function CollaTree({
   treedata,
   width,  //Breite vom SVG
 }: CollaTreeProps) {
   const {
-    jsonFile,
     colorScheme,
     isExpanded,
     threshold,
@@ -44,7 +42,6 @@ export default function CollaTree({
     setHighlightMutation,
   } = useGlobalContext();
 
-
   const svgRef = useRef<SVGSVGElement | null>(null);
   const colorScaleRef = useRef<d3.ScaleOrdinal<string, string, never> | null>(null);
   const nodeSelectionRef = useRef<d3.Selection<SVGGElement, MyNode, SVGGElement, unknown> | null>(null);
@@ -55,8 +52,6 @@ export default function CollaTree({
   const highlightedLinkRef = useRef<d3.HierarchyLink<MyNode> | null>(null);
   const rootRef = useRef<MyNode | null>(null);
   const highlightRef = useRef<string>(highlightMutation);
-
-
 
   //die Refs oben sind dazu da, dass der Baum nicht jedes mal neu rendert, wenn etwas anders eingestellt wird
 
@@ -94,15 +89,12 @@ export default function CollaTree({
       ?.map(child => filterTreeData(child, selectedMutations))
       .filter(child => child !== null) as TreeNode[] | undefined;
 
-      console.log(tree.children)
-
     return {
       ...tree,
       children: filteredChildren?.length ? filteredChildren : undefined,
     };
   }
 
-  
 
   //Funktion zum Filtern, wenn ein Threshold eingestellt ist
   function filterByThreshold(node: TreeNode, thr: number): TreeNode | null {
@@ -330,7 +322,7 @@ export default function CollaTree({
         } else {
           highlightedLinkRef.current = d;
           highlightPath(d, true);
-          setHighlightMutation(""); // optional, wenn du bei Klick resetten willst
+          setHighlightMutation(""); 
         }
       });
 

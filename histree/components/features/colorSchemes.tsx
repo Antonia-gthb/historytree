@@ -17,6 +17,7 @@ import {
   interpolateTurbo,
   interpolateRainbow,
 } from "d3-scale-chromatic"
+import useGlobalContext from "@/app/Context"
 
 const colorSchemes = [
   { name: "Violett to Green", fn: interpolatePRGn },
@@ -33,23 +34,20 @@ interface ColorSchemesProps {
   onSelectChange: (name: string) => void
 }
 
+
 export default function ColorSchemes({ selected, onSchemeChange, onSelectChange }: ColorSchemesProps) {
+  const { geneticEventsName } = useGlobalContext();
 
-  useEffect(() => {
-    const defaultScheme = colorSchemes.find(s => s.name.includes("Turbo"))
-    if (defaultScheme) {
-      onSchemeChange(d3.quantize(defaultScheme.fn, 13))
+  const handleChange = (name: string) => {
+    onSelectChange(name);
+    const scheme = colorSchemes.find(s => s.name === name);
+    if (scheme) {
+      const n = geneticEventsName.length;
+      console.log('Anzahl', n)
+      const colors = d3.quantize(scheme.fn, n);
+      onSchemeChange(colors);
     }
-  }, [])
-
-const handleChange = (name: string) => {
-  onSelectChange(name); // z. B. "Turbo"
-  const scheme = colorSchemes.find(s => s.name === name);
-  if (scheme) {
-    const colors = d3.quantize(scheme.fn, 13);
-    onSchemeChange(colors);
-  }
-};
+  };
 
   return (
     <Select value={selected} onValueChange={handleChange}>

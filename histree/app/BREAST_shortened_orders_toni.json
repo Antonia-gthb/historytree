@@ -1,0 +1,1490 @@
+{
+    "name": "root",
+    "count": 100,
+    "children": [
+        {
+            "name": "MDM4/1q (Amp)",
+            "count": 58,
+            "children": [
+                {
+                    "name": "CCND1/11q (Amp)",
+                    "count": 26,
+                    "children": [
+                        {
+                            "name": "TP53 (M)",
+                            "count": 2,
+                            "children": [
+                                {
+                                    "name": "MYC/8q (Amp)",
+                                    "count": 2,
+                                    "children": [
+                                        {
+                                            "name": "GNAS/20q (Amp)",
+                                            "count": 2,
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "TP53/17p (Del)",
+                            "count": 2,
+                            "children": [
+                                {
+                                    "name": "RB1/13q (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "PLCG2/16q (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "TP53 (M)",
+                                                    "count": 1,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "TP53 (M)",
+                                    "count": 1,
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "PIK3CA (M)",
+                            "count": 2,
+                            "children": [
+                                {
+                                    "name": "MYC/8q (Amp)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "GNAS/20q (Amp)",
+                                            "count": 1,
+                                            "children": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "TP53 (M)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "MYC/8q (Amp)",
+                                            "count": 1,
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "GNAS/20q (Amp)",
+                            "count": 6,
+                            "children": [
+                                {
+                                    "name": "TP53/17p (Del)",
+                                    "count": 2,
+                                    "children": [
+                                        {
+                                            "name": "RB1/13q (Del)",
+                                            "count": 2,
+                                            "children": [
+                                                {
+                                                    "name": "PIK3CA (M)",
+                                                    "count": 1,
+                                                    "children": [
+                                                        {
+                                                            "name": "TP53 (M)",
+                                                            "count": 1,
+                                                            "children": []
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "PLCG2/16q (Del)",
+                                                    "count": 1,
+                                                    "children": [
+                                                        {
+                                                            "name": "RAC2/22q (Del)",
+                                                            "count": 1,
+                                                            "children": [
+                                                                {
+                                                                    "name": "GATA3 (M)",
+                                                                    "count": 1,
+                                                                    "children": []
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "RAC2/22q (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "TP53/17p (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "PIK3CA (M)",
+                                                    "count": 1,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "ERBB2/17q (Amp)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "TP53/17p (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "RB1/13q (Del)",
+                                                    "count": 1,
+                                                    "children": [
+                                                        {
+                                                            "name": "PIK3CA (M)",
+                                                            "count": 1,
+                                                            "children": [
+                                                                {
+                                                                    "name": "PLCG2/16q (Del)",
+                                                                    "count": 1,
+                                                                    "children": [
+                                                                        {
+                                                                            "name": "RAC2/22q (Del)",
+                                                                            "count": 1,
+                                                                            "children": [
+                                                                                {
+                                                                                    "name": "TP53 (M)",
+                                                                                    "count": 1,
+                                                                                    "children": []
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "PLCG2/16q (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "RAC2/22q (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "TP53/17p (Del)",
+                                                    "count": 1,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "GATA3 (M)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "PLCG2/16q (Del)",
+                                            "count": 1,
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "MYC/8q (Amp)",
+                            "count": 11,
+                            "children": [
+                                {
+                                    "name": "GNAS/20q (Amp)",
+                                    "count": 9,
+                                    "children": [
+                                        {
+                                            "name": "ERBB2/17q (Amp)",
+                                            "count": 4,
+                                            "children": [
+                                                {
+                                                    "name": "RB1/13q (Del)",
+                                                    "count": 2,
+                                                    "children": [
+                                                        {
+                                                            "name": "PIK3CA (M)",
+                                                            "count": 1,
+                                                            "children": [
+                                                                {
+                                                                    "name": "TP53 (M)",
+                                                                    "count": 1,
+                                                                    "children": []
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "TP53 (M)",
+                                                            "count": 1,
+                                                            "children": []
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "TP53/17p (Del)",
+                                                    "count": 1,
+                                                    "children": [
+                                                        {
+                                                            "name": "RB1/13q (Del)",
+                                                            "count": 1,
+                                                            "children": [
+                                                                {
+                                                                    "name": "TP53 (M)",
+                                                                    "count": 1,
+                                                                    "children": []
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "RAC2/22q (Del)",
+                                                    "count": 1,
+                                                    "children": [
+                                                        {
+                                                            "name": "TP53/17p (Del)",
+                                                            "count": 1,
+                                                            "children": [
+                                                                {
+                                                                    "name": "GATA3 (M)",
+                                                                    "count": 1,
+                                                                    "children": []
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "TP53/17p (Del)",
+                                            "count": 4,
+                                            "children": [
+                                                {
+                                                    "name": "RB1/13q (Del)",
+                                                    "count": 3,
+                                                    "children": [
+                                                        {
+                                                            "name": "PLCG2/16q (Del)",
+                                                            "count": 1,
+                                                            "children": [
+                                                                {
+                                                                    "name": "RAC2/22q (Del)",
+                                                                    "count": 1,
+                                                                    "children": []
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "GATA3 (M)",
+                                                            "count": 1,
+                                                            "children": []
+                                                        },
+                                                        {
+                                                            "name": "PIK3CA (M)",
+                                                            "count": 1,
+                                                            "children": []
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "PIK3CA (M)",
+                                                    "count": 1,
+                                                    "children": [
+                                                        {
+                                                            "name": "TP53 (M)",
+                                                            "count": 1,
+                                                            "children": []
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "RB1/13q (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "PLCG2/16q (Del)",
+                                                    "count": 1,
+                                                    "children": [
+                                                        {
+                                                            "name": "RAC2/22q (Del)",
+                                                            "count": 1,
+                                                            "children": []
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "RAC2/22q (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "TP53/17p (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "RB1/13q (Del)",
+                                                    "count": 1,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "ERBB2/17q (Amp)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "TP53/17p (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "RB1/13q (Del)",
+                                                    "count": 1,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "RAC2/22q (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "TP53/17p (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "RB1/13q (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "PIK3CA (M)",
+                                                    "count": 1,
+                                                    "children": [
+                                                        {
+                                                            "name": "MYC/8q (Amp)",
+                                                            "count": 1,
+                                                            "children": []
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "ERBB2/17q (Amp)",
+                            "count": 2,
+                            "children": [
+                                {
+                                    "name": "TP53 (M)",
+                                    "count": 2,
+                                    "children": [
+                                        {
+                                            "name": "MYC/8q (Amp)",
+                                            "count": 2,
+                                            "children": [
+                                                {
+                                                    "name": "PLCG2/16q (Del)",
+                                                    "count": 1,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "MYC/8q (Amp)",
+                    "count": 12,
+                    "children": [
+                        {
+                            "name": "GNAS/20q (Amp)",
+                            "count": 8,
+                            "children": [
+                                {
+                                    "name": "ERBB2/17q (Amp)",
+                                    "count": 7,
+                                    "children": [
+                                        {
+                                            "name": "RB1/13q (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "PLCG2/16q (Del)",
+                                                    "count": 1,
+                                                    "children": [
+                                                        {
+                                                            "name": "TP53 (M)",
+                                                            "count": 1,
+                                                            "children": []
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "RAC2/22q (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "TP53/17p (Del)",
+                                                    "count": 1,
+                                                    "children": [
+                                                        {
+                                                            "name": "GATA3 (M)",
+                                                            "count": 1,
+                                                            "children": [
+                                                                {
+                                                                    "name": "PIK3CA (M)",
+                                                                    "count": 1,
+                                                                    "children": []
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "GATA3 (M)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "PIK3CA (M)",
+                                                    "count": 1,
+                                                    "children": []
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "TP53/17p (Del)",
+                                            "count": 4,
+                                            "children": [
+                                                {
+                                                    "name": "RB1/13q (Del)",
+                                                    "count": 4,
+                                                    "children": [
+                                                        {
+                                                            "name": "PLCG2/16q (Del)",
+                                                            "count": 4,
+                                                            "children": [
+                                                                {
+                                                                    "name": "RAC2/22q (Del)",
+                                                                    "count": 2,
+                                                                    "children": []
+                                                                },
+                                                                {
+                                                                    "name": "TP53 (M)",
+                                                                    "count": 2,
+                                                                    "children": []
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "RAC2/22q (Del)",
+                                    "count": 1,
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "RAC2/22q (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "TP53/17p (Del)",
+                                    "count": 1,
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "ERBB2/17q (Amp)",
+                            "count": 2,
+                            "children": [
+                                {
+                                    "name": "PLCG2/16q (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "RAC2/22q (Del)",
+                                            "count": 1,
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "PLCG2/16q (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "RAC2/22q (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "TP53/17p (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "GATA3 (M)",
+                                                    "count": 1,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "GNAS/20q (Amp)",
+                    "count": 2,
+                    "children": [
+                        {
+                            "name": "PIK3CA (M)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "TP53/17p (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "TP53 (M)",
+                                            "count": 1,
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "TP53 (M)",
+                            "count": 1,
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "name": "TP53 (M)",
+                    "count": 5,
+                    "children": [
+                        {
+                            "name": "MYC/8q (Amp)",
+                            "count": 5,
+                            "children": [
+                                {
+                                    "name": "GNAS/20q (Amp)",
+                                    "count": 3,
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "ERBB2/17q (Amp)",
+                    "count": 3,
+                    "children": [
+                        {
+                            "name": "RAC2/22q (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "TP53/17p (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "RB1/13q (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "TP53 (M)",
+                                                    "count": 1,
+                                                    "children": [
+                                                        {
+                                                            "name": "MYC/8q (Amp)",
+                                                            "count": 1,
+                                                            "children": []
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "TP53 (M)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "MYC/8q (Amp)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "GNAS/20q (Amp)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "GATA3 (M)",
+                                                    "count": 1,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "GATA3 (M)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "TP53/17p (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "PIK3CA (M)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "PLCG2/16q (Del)",
+                                                    "count": 1,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "PIK3CA (M)",
+                    "count": 7,
+                    "children": [
+                        {
+                            "name": "MYC/8q (Amp)",
+                            "count": 5,
+                            "children": [
+                                {
+                                    "name": "PLCG2/16q (Del)",
+                                    "count": 1,
+                                    "children": []
+                                },
+                                {
+                                    "name": "GNAS/20q (Amp)",
+                                    "count": 3,
+                                    "children": [
+                                        {
+                                            "name": "PLCG2/16q (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "RAC2/22q (Del)",
+                                                    "count": 1,
+                                                    "children": [
+                                                        {
+                                                            "name": "TP53/17p (Del)",
+                                                            "count": 1,
+                                                            "children": [
+                                                                {
+                                                                    "name": "TP53 (M)",
+                                                                    "count": 1,
+                                                                    "children": []
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "GATA3 (M)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "PLCG2/16q (Del)",
+                                                    "count": 1,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "TP53/17p (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "RB1/13q (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "PLCG2/16q (Del)",
+                                                    "count": 1,
+                                                    "children": [
+                                                        {
+                                                            "name": "RAC2/22q (Del)",
+                                                            "count": 1,
+                                                            "children": [
+                                                                {
+                                                                    "name": "GATA3 (M)",
+                                                                    "count": 1,
+                                                                    "children": []
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "PLCG2/16q (Del)",
+                            "count": 2,
+                            "children": [
+                                {
+                                    "name": "RAC2/22q (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "TP53/17p (Del)",
+                                            "count": 1,
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "TP53/17p (Del)",
+                    "count": 2,
+                    "children": [
+                        {
+                            "name": "TP53 (M)",
+                            "count": 1,
+                            "children": []
+                        },
+                        {
+                            "name": "PLCG2/16q (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "TP53 (M)",
+                                    "count": 1,
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "CCND1/11q (Amp)",
+            "count": 13,
+            "children": [
+                {
+                    "name": "GNAS/20q (Amp)",
+                    "count": 1,
+                    "children": [
+                        {
+                            "name": "RB1/13q (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "TP53 (M)",
+                                    "count": 1,
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "RB1/13q (Del)",
+                    "count": 2,
+                    "children": [
+                        {
+                            "name": "PLCG2/16q (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "RAC2/22q (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "GATA3 (M)",
+                                            "count": 1,
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "TP53 (M)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "MYC/8q (Amp)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "GNAS/20q (Amp)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "RAC2/22q (Del)",
+                                                    "count": 1,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "ERBB2/17q (Amp)",
+                    "count": 2,
+                    "children": [
+                        {
+                            "name": "RAC2/22q (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "TP53/17p (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "RB1/13q (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "TP53 (M)",
+                                                    "count": 1,
+                                                    "children": [
+                                                        {
+                                                            "name": "MYC/8q (Amp)",
+                                                            "count": 1,
+                                                            "children": []
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "RB1/13q (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "TP53 (M)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "MYC/8q (Amp)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "GNAS/20q (Amp)",
+                                                    "count": 1,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "MYC/8q (Amp)",
+                    "count": 4,
+                    "children": [
+                        {
+                            "name": "GNAS/20q (Amp)",
+                            "count": 2,
+                            "children": [
+                                {
+                                    "name": "ERBB2/17q (Amp)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "TP53/17p (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "RB1/13q (Del)",
+                                                    "count": 1,
+                                                    "children": [
+                                                        {
+                                                            "name": "PIK3CA (M)",
+                                                            "count": 1,
+                                                            "children": [
+                                                                {
+                                                                    "name": "PLCG2/16q (Del)",
+                                                                    "count": 1,
+                                                                    "children": [
+                                                                        {
+                                                                            "name": "TP53 (M)",
+                                                                            "count": 1,
+                                                                            "children": []
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "GATA3 (M)",
+                                    "count": 1,
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "TP53/17p (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "RB1/13q (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "PLCG2/16q (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "RAC2/22q (Del)",
+                                                    "count": 1,
+                                                    "children": [
+                                                        {
+                                                            "name": "TP53 (M)",
+                                                            "count": 1,
+                                                            "children": []
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "ERBB2/17q (Amp)",
+                            "count": 1,
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "name": "TP53/17p (Del)",
+                    "count": 1,
+                    "children": [
+                        {
+                            "name": "RB1/13q (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "PIK3CA (M)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "TP53 (M)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "MYC/8q (Amp)",
+                                                    "count": 1,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "TP53 (M)",
+                    "count": 2,
+                    "children": [
+                        {
+                            "name": "MYC/8q (Amp)",
+                            "count": 2,
+                            "children": [
+                                {
+                                    "name": "GNAS/20q (Amp)",
+                                    "count": 2,
+                                    "children": [
+                                        {
+                                            "name": "TP53/17p (Del)",
+                                            "count": 1,
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "PIK3CA (M)",
+                    "count": 1,
+                    "children": [
+                        {
+                            "name": "TP53 (M)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "MYC/8q (Amp)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "GNAS/20q (Amp)",
+                                            "count": 1,
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "ERBB2/17q (Amp)",
+            "count": 7,
+            "children": [
+                {
+                    "name": "TP53 (M)",
+                    "count": 2,
+                    "children": [
+                        {
+                            "name": "MYC/8q (Amp)",
+                            "count": 1,
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "name": "RAC2/22q (Del)",
+                    "count": 1,
+                    "children": [
+                        {
+                            "name": "TP53/17p (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "RB1/13q (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "TP53 (M)",
+                                            "count": 1,
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "TP53/17p (Del)",
+                    "count": 2,
+                    "children": [
+                        {
+                            "name": "RB1/13q (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "TP53 (M)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "MYC/8q (Amp)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "GNAS/20q (Amp)",
+                                                    "count": 1,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "TP53 (M)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "MYC/8q (Amp)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "PLCG2/16q (Del)",
+                                            "count": 1,
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "GNAS/20q (Amp)",
+            "count": 3,
+            "children": [
+                {
+                    "name": "PIK3CA (M)",
+                    "count": 2,
+                    "children": [
+                        {
+                            "name": "RAC2/22q (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "GATA3 (M)",
+                                    "count": 1,
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "PLCG2/16q (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "TP53 (M)",
+                                    "count": 1,
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "ERBB2/17q (Amp)",
+                    "count": 1,
+                    "children": [
+                        {
+                            "name": "PLCG2/16q (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "RAC2/22q (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "TP53/17p (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "GATA3 (M)",
+                                                    "count": 1,
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "TP53 (M)",
+            "count": 4,
+            "children": [
+                {
+                    "name": "MYC/8q (Amp)",
+                    "count": 3,
+                    "children": [
+                        {
+                            "name": "GNAS/20q (Amp)",
+                            "count": 1,
+                            "children": []
+                        },
+                        {
+                            "name": "RAC2/22q (Del)",
+                            "count": 1,
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "PIK3CA (M)",
+            "count": 4,
+            "children": []
+        },
+        {
+            "name": "MYC/8q (Amp)",
+            "count": 3,
+            "children": [
+                {
+                    "name": "GNAS/20q (Amp)",
+                    "count": 1,
+                    "children": [
+                        {
+                            "name": "TP53/17p (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "RB1/13q (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "PLCG2/16q (Del)",
+                                            "count": 1,
+                                            "children": [
+                                                {
+                                                    "name": "RAC2/22q (Del)",
+                                                    "count": 1,
+                                                    "children": [
+                                                        {
+                                                            "name": "TP53 (M)",
+                                                            "count": 1,
+                                                            "children": []
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "TP53/17p (Del)",
+                    "count": 1,
+                    "children": []
+                },
+                {
+                    "name": "ERBB2/17q (Amp)",
+                    "count": 1,
+                    "children": [
+                        {
+                            "name": "TP53/17p (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "PLCG2/16q (Del)",
+                                    "count": 1,
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "RB1/13q (Del)",
+            "count": 2,
+            "children": [
+                {
+                    "name": "TP53 (M)",
+                    "count": 1,
+                    "children": [
+                        {
+                            "name": "MYC/8q (Amp)",
+                            "count": 1,
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "name": "PIK3CA (M)",
+                    "count": 1,
+                    "children": [
+                        {
+                            "name": "TP53 (M)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "MYC/8q (Amp)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "GNAS/20q (Amp)",
+                                            "count": 1,
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "TP53/17p (Del)",
+            "count": 2,
+            "children": [
+                {
+                    "name": "RB1/13q (Del)",
+                    "count": 2,
+                    "children": [
+                        {
+                            "name": "PLCG2/16q (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "RAC2/22q (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "TP53 (M)",
+                                            "count": 1,
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "PIK3CA (M)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "PLCG2/16q (Del)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "RAC2/22q (Del)",
+                                            "count": 1,
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "RAC2/22q (Del)",
+            "count": 1,
+            "children": [
+                {
+                    "name": "TP53/17p (Del)",
+                    "count": 1,
+                    "children": [
+                        {
+                            "name": "RB1/13q (Del)",
+                            "count": 1,
+                            "children": [
+                                {
+                                    "name": "TP53 (M)",
+                                    "count": 1,
+                                    "children": [
+                                        {
+                                            "name": "MYC/8q (Amp)",
+                                            "count": 1,
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
