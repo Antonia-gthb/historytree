@@ -26,8 +26,9 @@ import { Eventfilter } from "@/components/features/eventFilter";
 import { HighlightEvent } from "@/components/features/highlightEvent";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
+import useGlobalContext from "@/app/Context";
 
-{/* */}
+{/* */ }
 
 {/* Hier ist der Code für den Sidebar. Alle Zustände/States werden hier von der page.tsx an den Sidebar übergeben. Der funktionale Teil von Scaling (die Dicke der Linien)
   wird hier auch definiert. Hat in einer Komponente wenig Sinn gemacht bzw. nicht funktioniert. Die Links zur Masterarbeit etc. sind hier auch eingefügt */}
@@ -77,6 +78,7 @@ export function AppSideBar({
   resetFilters,
   setSelectedSchemeName
 }: AppSidebarProps) {
+  const { setIsExpanded } = useGlobalContext();
   return (
     <Sidebar>
       <SidebarHeader className="font-semibold p-5 mb-3 bg-indigo-800/90 text-white/95">
@@ -243,7 +245,7 @@ export function AppSideBar({
                 <Button className="ml-1 mt-2 transition hover:-translate-y-1">
                   <Link href="https://www.overleaf.com/project/67c5947a93babe7ce8dafd44" target="_blank" rel="noopener noreferrer">Master Thesis</Link>
                 </Button>
-                  <Button className="ml-1 mt-2 transition hover:-translate-y-1">
+                <Button className="ml-1 mt-2 transition hover:-translate-y-1">
                   <Link href="https://miro.com/app/board/uXjVIxUGLv0=/?share_link_id=356747018988" target="_blank" rel="noopener noreferrer">Miro</Link>
                 </Button>
               </SidebarGroupContent>
