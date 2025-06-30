@@ -122,3 +122,13 @@
 - weirder Bug beim Upload von JSON mit gleichem Namen
 - Farbenzahl nicht hardcoden
 - npm run build ausprobieren
+
+## 30.06.2025
+
+- moved almost everything to context
+- color scheme is still giving problems
+- theta matrix tooltip still shifted
+- finish app until ~wednesday
+- then meeting to close the app
+- from then on focus on thesis
+- introduction finished
