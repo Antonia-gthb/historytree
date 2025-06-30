@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 import {
   Select,
   SelectContent,
@@ -8,7 +7,6 @@ import {
   SelectLabel,
   SelectGroup,
 } from "@/components/ui/select"
-import * as d3 from "d3"
 import {
   interpolatePRGn,
   interpolateRdBu,
@@ -17,47 +15,28 @@ import {
   interpolateTurbo,
   interpolateRainbow,
 } from "d3-scale-chromatic"
-import useGlobalContext from "@/app/Context"
-
-const colorSchemes = [
-  { name: "Violett to Green", fn: interpolatePRGn },
-  { name: "Red to Blue", fn: interpolateRdBu },
-  { name: "Spectral", fn: interpolateSpectral },
-  { name: "Brown to Blue", fn: interpolateBrBG },
-  { name: "Turbo", fn: interpolateTurbo },
-  { name: "Rainbow", fn: interpolateRainbow },
-]
 
 interface ColorSchemesProps {
-  selected: string;
-  onSchemeChange: (colors: string[]) => void
+  selectedScheme: string;
   onSelectChange: (name: string) => void
 }
 
 
-export default function ColorSchemes({ selected, onSchemeChange, onSelectChange }: ColorSchemesProps) {
-  const { geneticEventsName } = useGlobalContext();
+export default function ColorSchemes({ selectedScheme, onSelectChange }: ColorSchemesProps) {
 
   const handleChange = (name: string) => {
     onSelectChange(name);
-    const scheme = colorSchemes.find(s => s.name === name);
-    if (scheme) {
-      const n = geneticEventsName.length;
-      console.log('Anzahl', n)
-      const colors = d3.quantize(scheme.fn, n);
-      onSchemeChange(colors);
-    }
   };
-
+ //selected enthält aktuellen Namen, vllt im Context speichern?
   return (
-    <Select value={selected} onValueChange={handleChange}>
+    <Select value={selectedScheme} onValueChange={handleChange}>
       <SelectTrigger className="w-[180px] border-black">
-        <SelectValue>{selected ? selected : "Select color scheme"}</SelectValue>
+        <SelectValue>{selectedScheme ? selectedScheme : "Select color scheme"}</SelectValue>   
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Schemes</SelectLabel>
-          {colorSchemes.map(({ name }) => (
+          {cSchemes.map(({ name }) => (
             <SelectItem
               key={name}
               value={name}
@@ -69,5 +48,16 @@ export default function ColorSchemes({ selected, onSchemeChange, onSelectChange 
         </SelectGroup>
       </SelectContent>
     </Select>
+    
   )
 }
+
+
+export const cSchemes = [
+  { name: "Violett to Green", fn: interpolatePRGn },
+  { name: "Red to Blue", fn: interpolateRdBu },
+  { name: "Spectral", fn: interpolateSpectral },
+  { name: "Brown to Blue", fn: interpolateBrBG },
+  { name: "Turbo", fn: interpolateTurbo },
+  { name: "Rainbow", fn: interpolateRainbow },
+]

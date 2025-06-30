@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from 'react';
-import { interpolateTurbo } from 'd3-scale-chromatic';
 import { Button } from "@/components/ui/button";
 import * as d3 from "d3";
 import CollaTree from '../components/features/mainComponents/CollaTree';
@@ -30,7 +29,7 @@ export default function App() {
     setSelectedMutations,
     setHighlightMutation,
     showMatrix,
-    setColorScheme,
+    setSelectedSchemeName,
   } = useGlobalContext();
 
   useEffect(() => {
@@ -65,7 +64,7 @@ export default function App() {
     setIsExpanded(false);
     setScalingFactor(1);
     setSelectedMutations([]);
-    setColorScheme(d3.quantize(interpolateTurbo, 13));
+    setSelectedSchemeName("Turbo");
     setHighlightMutation("");
   };
 

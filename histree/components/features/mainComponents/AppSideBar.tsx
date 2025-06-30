@@ -39,7 +39,6 @@ export function AppSideBar() {
     highlightMutation,
     showMatrix,
     selectedSchemeName,
-    setColorScheme,
     setScalingEnabled,
     setScalingFactor,
     setThreshold,
@@ -76,9 +75,8 @@ export function AppSideBar() {
             <CollapsibleContent className="p-3 mb-2">
               <SidebarGroupContent>
                 <ColorTheme
-                  onSchemeChange={setColorScheme}
                   onSelectChange={setSelectedSchemeName}
-                  selected={selectedSchemeName}
+                  selectedScheme={selectedSchemeName}
                 />
               </SidebarGroupContent>
             </CollapsibleContent>

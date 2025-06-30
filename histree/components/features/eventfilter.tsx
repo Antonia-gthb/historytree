@@ -1,7 +1,6 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -54,7 +53,7 @@ export function Eventfilter({ items = [], selectedItems, onSubmit, onReset }: Ev
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                {items?.slice(1).map((item) => {
+                {items?.map((item) => {     
                   const isChecked = field.value?.includes(item) ?? false
 
                   return (

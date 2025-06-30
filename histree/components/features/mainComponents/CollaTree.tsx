@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 import { useRef, useEffect } from "react";
 import useGlobalContext from "@/app/Context";
+import { cSchemes } from "../colorSchemes";
 
 type MyNode = d3.HierarchyPointNode<TreeNode> & {
   x0: number;
@@ -9,7 +10,7 @@ type MyNode = d3.HierarchyPointNode<TreeNode> & {
   color?: string;
 }
 
- export type TreeNode = {
+export type TreeNode = {
   name: string;
   children?: TreeNode[];
   originalName?: string,  // ? bedeutet hier: eigenschaft muss nicht im JSON Datensatz vorhanden sein und ist optional! 
@@ -31,15 +32,17 @@ export default function CollaTree({
   width,  //Breite vom SVG
 }: CollaTreeProps) {
   const {
-    colorScheme,
+    selectedSchemeName,
     isExpanded,
     threshold,
     scalingFactor,
     selectedMutations,
     highlightMutation,
+    geneticEventsName,
     setGeneticEventsName,
     setSelectedMutations,
     setHighlightMutation,
+    setSelectedSchemeName,
   } = useGlobalContext();
 
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -72,7 +75,6 @@ export default function CollaTree({
       );
     }
   }
-
   //Funktion zum Filtern der Daten für den Eventfilter. Nur die Mutationen, die ausgewählt sind, werden herausgefiltert.
   function filterTreeData(tree: TreeNode, selectedMutations: string[]): TreeNode | null {
     const isActive = (name: string | undefined) => {
@@ -140,7 +142,7 @@ export default function CollaTree({
     const svg = d3.select<SVGSVGElement, unknown>(svgRef.current)
       .attr("viewBox", [-margin.left, -margin.top, width, dx])
       .style("height", "auto")
-      .style("font", "14px sans-serif")  // hier kann ich die Schriftgröße einstellen
+      .style("font", "12px sans-serif")  // hier kann ich die Schriftgröße einstellen
       .style("user-select", "none")
       .attr("id", "histree-chart")
 
@@ -172,21 +174,18 @@ export default function CollaTree({
         });
     }
     // if-Schleife, um die Mutationsnamen zu updaten 
-    if (!mutationNamesRef.current && treedata) {
+    if (!mutationNamesRef.current) {
       const mutationNames: string[] = [];
       numberNodes(treedata, "", mutationNames); // Mutationsnamen sammeln
       mutationNamesRef.current = mutationNames;
 
-      setGeneticEventsName([...new Set(mutationNames)]);
-      setSelectedMutations([...new Set(mutationNames)]); // optional: direkt setzen
+      const nameswoRoot = [...new Set(mutationNames)]
+        .filter(name => name !== "root");
+
+      setSelectedMutations(mutationNames); // optional: direkt setzen
+      setGeneticEventsName(nameswoRoot); //new Set entfernt Duplikate
+
     }
-
-    //Farbschema auf den Baum anwenden
-    const mutationNames = mutationNamesRef.current!;
-
-    colorScaleRef.current = d3.scaleOrdinal<string, string>()
-      .domain(mutationNames)
-      .range(colorScheme);
 
     {/*UPDATE FUNKTION */ }  //nach dem 1. rendern wird diese Funktion aufgerufen, wenn sich treedata, isExpanded, selectedMutations oder threshold ändern
     //dann wird der Baum neu gerendert
@@ -197,6 +196,32 @@ export default function CollaTree({
       const links = root.links() as unknown as d3.HierarchyLink<MyNode>[];  //Array von allen Links
 
       tree(root);  //macht das Layout
+
+
+      const leaves = root.leaves();   //Blätter in der Reihenfolge ziehen wie sie im SVG stehen
+
+      const uniqueEvents = leaves
+        .map(d => d.data.originalName!)
+        .filter((n, i, arr) => arr.indexOf(n) === i && n !== "root");
+
+      setGeneticEventsName(uniqueEvents);
+
+      if (!geneticEventsName.length) return;
+
+      console.log(selectedSchemeName)  //da passiert nichts im dev mode
+
+      colorScaleRef.current = d3.scaleOrdinal<string, string>()
+        .domain(uniqueEvents)
+        .range(
+          d3.quantize(
+            cSchemes.find(s => s.name === selectedSchemeName)!.fn,
+            uniqueEvents.length
+          )
+        );
+
+
+      console.log(uniqueEvents)
+      console.log('geneticEventsName', geneticEventsName)
 
       let left = root;
       let right = root;
@@ -268,7 +293,7 @@ export default function CollaTree({
       //Hier wird der Text an die Nodes gebracht
       nodeEnter.append("text")
         .attr("dy", "0.31em")
-        .attr("x", d => d._children ? -10 : 10)
+        .attr("x", d => d._children ? -12 : 12)
         .attr("text-anchor", d => d._children ? "end" : "start")
         .text(d => (d.data.originalName || d.data.name))      //.split(/[ /]/)[0])
         .attr("fill-opacity", 0)
@@ -322,7 +347,7 @@ export default function CollaTree({
         } else {
           highlightedLinkRef.current = d;
           highlightPath(d, true);
-          setHighlightMutation(""); 
+          setHighlightMutation("");
         }
       });
 
@@ -391,29 +416,40 @@ export default function CollaTree({
 
     update(root);
 
-  }, [treedata, isExpanded, selectedMutations, threshold]);
+  }, [treedata, isExpanded, selectedMutations, threshold, selectedSchemeName]);
 
 
   //Hier folgen jetzt mehrere useEffects, damit der Baum nicht jedes Mal neu gerendert werden muss
 
   {/* USEEFFECT FARBSCHEMA */ }
+
   useEffect(() => {
-    if (colorScaleRef.current && nodeSelectionRef.current) {
-      colorScaleRef.current.range(colorScheme);
-      nodeSelectionRef.current
-        .select("path")
-        .transition()
-        .attr("fill", d => {
-          const isLeaf = !d.children && !d._children;
-          return isLeaf
-            ? "none"
-            : colorScaleRef.current!(d.data.originalName || d.data.name);
-        })
-        .attr("stroke", d =>
-          colorScaleRef.current!(d.data.originalName || d.data.name)
-        );
-    }
-  }, [colorScheme]);
+    const scale = colorScaleRef.current;
+    const nodes = nodeSelectionRef.current;
+    if (!scale || !nodes) return;
+
+    // Interpolator zur Auswahl finden
+    const fn = cSchemes.find(s => s.name === selectedSchemeName)!.fn;
+    // so viele Farben wie Domain-Länge
+    const newColors = d3.quantize(fn, scale.domain().length);
+
+    // **nur** range updaten, domain bleibt exakt uniqueEvents
+    scale.range(newColors);
+
+    // Pfade animiert umfärben
+    nodes
+      .select("path")
+      .transition().duration(600)
+      .attr("fill", d =>
+        !d.children && !d._children
+          ? "none"
+          : scale(d.data.originalName || d.data.name)
+      )
+      .attr("stroke", d =>
+        scale(d.data.originalName || d.data.name)
+      );
+  }, [selectedSchemeName]);
+
 
   {/* USEEFFECT HIGHLIGHT MUTATION*/ }
 
