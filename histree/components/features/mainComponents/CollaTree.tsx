@@ -39,9 +39,11 @@ export default function CollaTree({
     selectedMutations,
     highlightMutation,
     geneticEventsName,
+    leafOrder,
     setGeneticEventsName,
     setSelectedMutations,
     setHighlightMutation,
+    setLeafOrder,
     setSelectedSchemeName,
   } = useGlobalContext();
 
@@ -55,6 +57,7 @@ export default function CollaTree({
   const highlightedLinkRef = useRef<d3.HierarchyLink<MyNode> | null>(null);
   const rootRef = useRef<MyNode | null>(null);
   const highlightRef = useRef<string>(highlightMutation);
+
 
   //die Refs oben sind dazu da, dass der Baum nicht jedes mal neu rendert, wenn etwas anders eingestellt wird
 
@@ -112,6 +115,16 @@ export default function CollaTree({
     };
   }
 
+  function collectAllNames(node: TreeNode, out: string[] = []): string[] {
+    const name = node.originalName ?? node.name;
+    if (name !== "root") out.push(name);
+    if (node.children) {
+      node.children.forEach(child => collectAllNames(child, out));
+    }
+    const allNames = [...new Set(out)]
+    return allNames;
+  }
+
   useEffect(() => {
     if (!svgRef.current) return;
 
@@ -126,6 +139,12 @@ export default function CollaTree({
     const filteredWithThreshold = threshold
       ? filterByThreshold(filteredData, threshold) ?? { name: "No genetic events with this threshold available", children: [] }
       : filteredData;
+
+    const allGeneticEvents = collectAllNames(treedata);
+    setGeneticEventsName(allGeneticEvents)
+
+    console.log("all", allGeneticEvents)
+
 
     //mit diesen Daten wird dann die root und der Baum erstellt
     const root = d3.hierarchy(filteredWithThreshold) as MyNode;
@@ -179,13 +198,10 @@ export default function CollaTree({
       numberNodes(treedata, "", mutationNames); // Mutationsnamen sammeln
       mutationNamesRef.current = mutationNames;
 
-      const nameswoRoot = [...new Set(mutationNames)]
-        .filter(name => name !== "root");
-
       setSelectedMutations(mutationNames); // optional: direkt setzen
-      setGeneticEventsName(nameswoRoot); //new Set entfernt Duplikate
-
     }
+
+    console.log("Mutation Namen", mutationNamesRef)
 
     {/*UPDATE FUNKTION */ }  //nach dem 1. rendern wird diese Funktion aufgerufen, wenn sich treedata, isExpanded, selectedMutations oder threshold ändern
     //dann wird der Baum neu gerendert
@@ -195,36 +211,25 @@ export default function CollaTree({
       const nodes = root.descendants().reverse();  //holt sich die Nodes, verkehrt herum, damit wir bei den übergeordneten starten
       const links = root.links() as unknown as d3.HierarchyLink<MyNode>[];  //Array von allen Links
 
-      tree(root);  //macht das Layout
+      tree(root);  //macht das Layout 
+
+      const firstOrders = root
+        .descendants()
+        .filter(d => d.depth === 1)
+        .map(d => d.data.originalName)
+        .filter((n): n is string => typeof n === "string" && n !== "root");
 
 
-      const leaves = root.leaves();   //Blätter in der Reihenfolge ziehen wie sie im SVG stehen
+      
+      const finalOrder = [
+        ...new Set([
+          ...firstOrders,
+          ...geneticEventsName
+        ])
+      ];
 
-      const uniqueEvents = leaves
-        .map(d => d.data.originalName!)
-        .filter((n, i, arr) => arr.indexOf(n) === i && n !== "root");
+      console.log("Final", finalOrder)
 
-      setGeneticEventsName(uniqueEvents);
-
-      if (!geneticEventsName.length) return;
-
-      console.log(selectedSchemeName)
-
-      if (!isExpanded) {
-        colorScaleRef.current = d3.scaleOrdinal<string, string>()
-          .domain(uniqueEvents)
-          .range(
-            d3.quantize(
-              cSchemes.find(s => s.name === selectedSchemeName)!.fn,
-              uniqueEvents.length
-            )
-          );
-      }
-
-
-
-      console.log(uniqueEvents)
-      console.log('geneticEventsName', geneticEventsName)
 
       let left = root;
       let right = root;
@@ -254,22 +259,30 @@ export default function CollaTree({
         .attr("fill-opacity", 0)
         .attr("stroke-opacity", 0)
         .on("click", (_, d) => {
-          if (!d._children) return;
+          if (d._children || d.children) {
 
-          root.eachBefore((node) => {
-            node.x0 = node.x;
-            node.y0 = node.y;
-          })
+            root.eachBefore((node) => {
+              node.x0 = node.x;
+              node.y0 = node.y;
+            })
 
-          d.children = d.children ? undefined : d._children;
-          update(d);
+            d.children = d.children ? undefined : d._children;
+            update(d);
+          }
         });
+
+      const schemeFn = cSchemes.find(s => s.name === selectedSchemeName)!.fn;
+
+
+      colorScaleRef.current = d3.scaleOrdinal<string, string>()
+        .domain(finalOrder)
+        .range(d3.quantize(schemeFn, allGeneticEvents.length));
 
       //Symbol wird hinzugefügt
 
       const symbols = [d3.symbolCircle, d3.symbolSquare, d3.symbolTriangle];
       const shapeScale = d3.scaleOrdinal<string, d3.SymbolType>()
-        .domain(uniqueEvents)    // Deine einmalige Liste im ersten Traversal
+        .domain(finalOrder)    // Deine einmalige Liste im ersten Traversal
         .range(symbols);
 
       nodeEnter.append("path")
@@ -281,13 +294,11 @@ export default function CollaTree({
         .attr("fill", d => {
           const isLeaf = !d.children && !d._children;
           return isLeaf
-            ? "none"                                                       //wenn ein Knoten keine Children hat, soll das Symbol innen transparent sein mit stroke
-            : colorScaleRef.current!(d.data.originalName || d.data.name);
+            ? "none"
+            : colorScaleRef.current!(d.data.originalName!);             // hol die einmal festgelegte Farbe
         })
-        .attr("stroke", d => {
-          return colorScaleRef.current!(d.data.originalName || d.data.name); //Rand
-        })
-        .attr("stroke-width", 3);  //Dicke des Rands
+        .attr("stroke", d => colorScaleRef.current!(d.data.originalName!))  // Rand auch aus d.data.color
+
 
       //Hier wird der Text an die Nodes gebracht
       nodeEnter.append("text")
@@ -314,6 +325,7 @@ export default function CollaTree({
         .attr("stroke-opacity", 0);
 
       nodeSelectionRef.current = nodeEnter.merge(node);
+
 
       // Links updaten
       const link = gLink.selectAll<SVGPathElement, d3.HierarchyLink<MyNode>>("path")
@@ -414,6 +426,8 @@ export default function CollaTree({
         if (d.depth && d.data.name.length !== 1) d.children = undefined;  //beim ersten Rendern wird nur die erste Ebene angezeigt
       });
     }
+
+
 
 
     update(root);

@@ -1,3 +1,4 @@
+import { Leaf } from "lucide-react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 
@@ -7,6 +8,7 @@ interface GlobalContextType {
   jsonFile: File | null;
   setJsonFile: (file: File | null) => void;
   scalingEnabled: boolean;
+  leafOrder: string[];
   scalingFactor: number;
   threshold: number;
   geneticEventsName: string[];
@@ -22,6 +24,7 @@ interface GlobalContextType {
   setHighlightMutation: (item: string) => void;
   setShowMatrix: (on: boolean) => void;
   setSelectedSchemeName: (name: string) => void;
+  setLeafOrder: (order: string[]) => void;
   isExpanded: boolean;
   setIsExpanded: (val: boolean) => void;
   resetFilters: any;
@@ -60,6 +63,7 @@ export function GlobalWrapper({ children }: { children: React.ReactNode }) {
   const [highlightMutation, setHighlightMutation] = useState<string>("");
   const [showMatrix, setShowMatrix] = useState(false);
   const [selectedSchemeName, setSelectedSchemeName] = useState("Turbo");  //Standard Einstellung
+  const [leafOrder, setLeafOrder] = useState<string[]>([]);
 
 
   function resetFilters() {
@@ -95,6 +99,8 @@ export function GlobalWrapper({ children }: { children: React.ReactNode }) {
     setShowMatrix,
     selectedSchemeName,
     setSelectedSchemeName,
+    leafOrder, 
+    setLeafOrder,
     resetFilters, 
   }), [
     thetaFile,
@@ -108,6 +114,7 @@ export function GlobalWrapper({ children }: { children: React.ReactNode }) {
     highlightMutation,
     showMatrix,
     selectedSchemeName,
+    leafOrder,
     resetFilters, 
   ]);
 
