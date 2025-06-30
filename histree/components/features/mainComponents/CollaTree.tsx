@@ -39,12 +39,9 @@ export default function CollaTree({
     selectedMutations,
     highlightMutation,
     geneticEventsName,
-    leafOrder,
     setGeneticEventsName,
     setSelectedMutations,
     setHighlightMutation,
-    setLeafOrder,
-    setSelectedSchemeName,
   } = useGlobalContext();
 
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -129,7 +126,7 @@ export default function CollaTree({
     if (!svgRef.current) return;
 
     const margin = { top: 20, right: 20, bottom: 20, left: 40 };   //der Abstand um den Baum herum
-    const dx = 25;  // sorgt für Abstand zwischen den Knoten
+    const dx = 35;  // sorgt für Abstand zwischen den Knoten
 
 
     //hier werden die gefilterten Daten zusammengebracht, wenn nur bestimmte Mutationen ausgewählt sind und ein Threshold gesetzt ist
@@ -143,7 +140,6 @@ export default function CollaTree({
     const allGeneticEvents = collectAllNames(treedata);
     setGeneticEventsName(allGeneticEvents)
 
-    console.log("all", allGeneticEvents)
 
 
     //mit diesen Daten wird dann die root und der Baum erstellt
@@ -201,7 +197,6 @@ export default function CollaTree({
       setSelectedMutations(mutationNames); // optional: direkt setzen
     }
 
-    console.log("Mutation Namen", mutationNamesRef)
 
     {/*UPDATE FUNKTION */ }  //nach dem 1. rendern wird diese Funktion aufgerufen, wenn sich treedata, isExpanded, selectedMutations oder threshold ändern
     //dann wird der Baum neu gerendert
@@ -220,7 +215,7 @@ export default function CollaTree({
         .filter((n): n is string => typeof n === "string" && n !== "root");
 
 
-      
+
       const finalOrder = [
         ...new Set([
           ...firstOrders,
@@ -271,8 +266,9 @@ export default function CollaTree({
           }
         });
 
-      const schemeFn = cSchemes.find(s => s.name === selectedSchemeName)!.fn;
+      {/* FARBSCHEMA */ }
 
+      const schemeFn = cSchemes.find(s => s.name === selectedSchemeName)!.fn;
 
       colorScaleRef.current = d3.scaleOrdinal<string, string>()
         .domain(finalOrder)
@@ -300,8 +296,48 @@ export default function CollaTree({
         .attr("stroke", d => colorScaleRef.current!(d.data.originalName!))  // Rand auch aus d.data.color
 
 
+      const textEnter = nodeEnter.append("text")
+        .attr("text-anchor", d => {
+          if (d.depth === 0) return "start"; // root bleibt links
+          return Array.isArray(d.children) && d.children.length > 0
+            ? "middle" // expanded → zentriert
+            : "start"; // leaf → linksbündig rechts daneben
+        })
+        .attr("x", d => {
+          if (d.depth === 0) return -25; // root leicht links
+          return Array.isArray(d.children) && d.children.length > 0
+            ? 0      // expanded → mittig
+            : 12;    // leaf → rechts daneben
+        })
+        .attr("y", d => {
+          if (d.depth === 0) return 4; // root mittig
+          return Array.isArray(d.children) && d.children.length > 0
+            ? -12   // expanded → deutlich über Symbol
+            : 4;    // sonst leicht rechts daneben
+        });
+
+
+
+      textEnter.each(function (d) {
+        const full = d.data.originalName || d.data.name;
+        const [main, rest] = full.split(" (");
+        const text = d3.select(this);
+
+        text.append("tspan")
+          .text(main)
+          .style("font-size", "11px");
+
+        if (rest) {
+          text.append("tspan")
+            .text(` (${rest}`)
+            .style("font-size", "8px");
+        }
+      });
+
+
+
       //Hier wird der Text an die Nodes gebracht
-      nodeEnter.append("text")
+      {/*      nodeEnter.append("text")
         .attr("dy", "0.31em")
         .attr("x", d => d._children ? -12 : 12)
         .attr("text-anchor", d => d._children ? "end" : "start")
@@ -309,7 +345,7 @@ export default function CollaTree({
         .attr("fill-opacity", 0)
         .transition()
         .duration(100)
-        .attr("fill-opacity", 1);
+        .attr("fill-opacity", 1);  */}
 
       //hier wird alles gemerged und mit der Transition verbunden
       nodeEnter.merge(node).transition().duration(duration)
