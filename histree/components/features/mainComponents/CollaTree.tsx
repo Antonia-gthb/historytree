@@ -208,16 +208,19 @@ export default function CollaTree({
 
       if (!geneticEventsName.length) return;
 
-      console.log(selectedSchemeName)  //da passiert nichts im dev mode
+      console.log(selectedSchemeName)
 
-      colorScaleRef.current = d3.scaleOrdinal<string, string>()
-        .domain(uniqueEvents)
-        .range(
-          d3.quantize(
-            cSchemes.find(s => s.name === selectedSchemeName)!.fn,
-            uniqueEvents.length
-          )
-        );
+      if (!isExpanded) {
+        colorScaleRef.current = d3.scaleOrdinal<string, string>()
+          .domain(uniqueEvents)
+          .range(
+            d3.quantize(
+              cSchemes.find(s => s.name === selectedSchemeName)!.fn,
+              uniqueEvents.length
+            )
+          );
+      }
+
 
 
       console.log(uniqueEvents)
@@ -244,6 +247,7 @@ export default function CollaTree({
         .attr("height", height)
         .attr("viewBox", `${-margin.left} ${left.x - margin.top} ${width} ${height}`)  //Dynamische Berechnung der ViewBox 
 
+
       //Hier werden die neuen Nodes berechnet
       const nodeEnter = node.enter().append<SVGGElement>("g")
         .attr("transform", d => `translate(${source.y0},${source.x0})`)
@@ -262,22 +266,17 @@ export default function CollaTree({
         });
 
       //Symbol wird hinzugefügt
+
+      const symbols = [d3.symbolCircle, d3.symbolSquare, d3.symbolTriangle];
+      const shapeScale = d3.scaleOrdinal<string, d3.SymbolType>()
+        .domain(uniqueEvents)    // Deine einmalige Liste im ersten Traversal
+        .range(symbols);
+
       nodeEnter.append("path")
         .attr("d", d => {
-
           if (d.depth === 0) return "";
-          const symbols = [d3.symbolCircle, d3.symbolSquare, d3.symbolTriangle];  //drei verschiedene Symbole
-
-          const hash = (str: string) => {  //hash für die Alterierung, gleiche Namen bekommen das gleiche Symbol
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) {
-              hash = str.charCodeAt(i) + ((hash << 5) - hash);
-            }
-            return hash;
-          };
-          const nodeName = d.data.originalName || d.data.name;
-          const symbolIndex = Math.abs(hash(nodeName)) % symbols.length;
-          return d3.symbol().type(symbols[symbolIndex]).size(100)();
+          const type = shapeScale(d.data.originalName!);
+          return d3.symbol().type(type).size(100)();
         })
         .attr("fill", d => {
           const isLeaf = !d.children && !d._children;
@@ -319,6 +318,7 @@ export default function CollaTree({
       // Links updaten
       const link = gLink.selectAll<SVGPathElement, d3.HierarchyLink<MyNode>>("path")
         .data(links, d => d.target.data.name + "-" + d.target.depth);
+
 
       //neue Links erstellen
       const linkEnter = link.enter().append("path")
@@ -399,7 +399,8 @@ export default function CollaTree({
       });
     }
 
-    // Tree initialisieren
+
+    //Tree Initialisieren
     root.x0 = 0;
     root.y0 = 0;
     if (isExpanded) {
@@ -414,9 +415,10 @@ export default function CollaTree({
       });
     }
 
+
     update(root);
 
-  }, [treedata, isExpanded, selectedMutations, threshold, selectedSchemeName]);
+  }, [treedata, selectedMutations, threshold, isExpanded, selectedSchemeName]);
 
 
   //Hier folgen jetzt mehrere useEffects, damit der Baum nicht jedes Mal neu gerendert werden muss
@@ -428,15 +430,12 @@ export default function CollaTree({
     const nodes = nodeSelectionRef.current;
     if (!scale || !nodes) return;
 
-    // Interpolator zur Auswahl finden
     const fn = cSchemes.find(s => s.name === selectedSchemeName)!.fn;
     // so viele Farben wie Domain-Länge
     const newColors = d3.quantize(fn, scale.domain().length);
 
-    // **nur** range updaten, domain bleibt exakt uniqueEvents
     scale.range(newColors);
 
-    // Pfade animiert umfärben
     nodes
       .select("path")
       .transition().duration(600)
@@ -449,6 +448,7 @@ export default function CollaTree({
         scale(d.data.originalName || d.data.name)
       );
   }, [selectedSchemeName]);
+
 
 
   {/* USEEFFECT HIGHLIGHT MUTATION*/ }
