@@ -71,25 +71,23 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .range(["white", "grey"]);
 
         // Tooltip
-        const container = d3.select(ref.current!.parentElement!);
-        const tooltip = container
+        const tooltip = d3.select("body")
             .append("div")
-            .style("opacity", 0)
             .attr("class", "tooltip")
             .style("position", "absolute")
-            .style("background-color", "white")
-            .style("border", "2px solid #999")
-            .style("border-radius", "2px")
-            .style("padding", "1px")
-            .style("font-size", "10px")
-            .style("pointer-events", "none");
+            .style("pointer-events", "none")
+            .style("opacity", 0)
+            .style("background", "white")
+            .style("border", "1px solid #ccc")
+            .style("padding", "4px")
+            .style("font-size", "12px");
 
         const onMouseOver = () => tooltip.style("opacity", 1);
         const onMouseMove = (event: MouseEvent, d: any) => {
             tooltip
                 .html(`<strong>${d.column} ➞ ${d.row}</strong><br/>`)
-                .style("left", event.pageX + "px") 
-                .style("top", event.pageY + "px");
+                .style("left", event.pageX + 10 + "px")
+                .style("top", event.pageY + 10 + "px");
         };
         const onMouseLeave = () => tooltip.style("opacity", 0);
 
@@ -123,11 +121,6 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .style("font-size", "6px")
             .style("font-family", "sans-serif")
             .text((d) => d)
-        // .text((d) =>
-        // d === "BaseRate" ? "Base Rate" :
-        //      d === "Observation" ? "Observation" :
-        //        String(d).split(/[ /]/)[0]
-        //    );
 
         // Matrixzellen
         g.selectAll("rect.matrix")
@@ -141,6 +134,8 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .attr("height", y.bandwidth())
             .style("fill", "white")
             .style("stroke", "black")
+            .style("cursor", "default")
+            .style("user-select", "none");
 
         g.selectAll("rect.matrix")
             .data(coloredData)
@@ -156,7 +151,9 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .style("opacity", 0.7)
             .on("mouseover", onMouseOver)
             .on("mousemove", onMouseMove)
-            .on("mouseleave", onMouseLeave);
+            .on("mouseleave", onMouseLeave)
+            .style("cursor", "default")
+            .style("user-select", "none");
 
         g.selectAll(".value-text")
             .data(coloredData)
@@ -168,7 +165,10 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .attr("text-anchor", "middle")
             .attr("alignment-baseline", "middle")
             .style("font-size", "6px")
-            .text((d) => d.value === 0 ? "" : d.value.toFixed(2));
+            .text((d) => d.value === 0 ? "" : d.value.toFixed(2))
+            .style("cursor", "default")
+            .style("user-select", "none");
+            
 
         // Base Rate Zellen (Diagonale)
         g.selectAll(".baserate-cell")
@@ -182,9 +182,9 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .attr("height", y.bandwidth())
             .style("fill", (d) => d.value === 0 ? "white" : baseRateColor(d.value))
             .style("stroke", "black")
-            .on("mouseover", onMouseOver)
-            .on("mousemove", onMouseMove)
-            .on("mouseleave", onMouseLeave);
+            .style("cursor", "default")
+            .style("user-select", "none");
+
 
         g.selectAll(".baserate-text")
             .data(baseRate)
@@ -195,7 +195,9 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .attr("text-anchor", "middle")
             .attr("alignment-baseline", "middle")
             .style("font-size", "6px")
-            .text((d) => d.value === 0 ? "" : d.value.toFixed(2));
+            .text((d) => d.value === 0 ? "" : d.value.toFixed(2))
+            .style("cursor", "default")
+            .style("user-select", "none");
 
         g.append("text")
             .attr("x", -10)
@@ -205,7 +207,9 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .style("font-size", "6px")
             .style("font-family", "sans-serif")
             .style("font-weight", "bold")
-            .text("Base Rate");
+            .text("Base Rate")
+            .style("cursor", "default")
+            .style("user-select", "none");
 
         // Observation Zellen
         g.selectAll(".observation-cell")
@@ -219,9 +223,8 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .attr("height", y.bandwidth())
             .style("fill", (d) => d.value === 0 ? "white" : colorScale(d.value))
             .style("stroke", "black")
-            .on("mouseover", onMouseOver)
-            .on("mousemove", onMouseMove)
-            .on("mouseleave", onMouseLeave);
+            .style("cursor", "default")
+            .style("user-select", "none");
 
         g.selectAll(".observation-text")
             .data(observationRow)
@@ -232,7 +235,9 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .attr("text-anchor", "middle")
             .attr("alignment-baseline", "middle")
             .style("font-size", "6px")
-            .text((d) => d.value === 0 ? "" : d.value.toFixed(2));
+            .text((d) => d.value === 0 ? "" : d.value.toFixed(2))
+            .style("cursor", "default")
+            .style("user-select", "none");
 
 
         g.append("text")
@@ -243,7 +248,9 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .style("font-size", "6px")
             .style("font-family", "sans-serif")
             .style("font-weight", "bold")
-            .text("Observation");
+            .text("Observation")
+            .style("cursor", "default")
+            .style("user-select", "none");
     }, [data, mutationNames.join(",")]);
 
 

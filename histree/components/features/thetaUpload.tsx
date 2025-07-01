@@ -20,22 +20,23 @@ export default function ThetaUpload({ onThetaUpload }: FileUploadProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const text = await file.text();
+    const text = (await file.text()).replace(/^\uFEFF/, "");
     const raw = d3.csvParseRows(text);
-    const headers = raw[0].slice(1); // Spaltennamen ohne erstes leeres Feld
-
-    const longFormat: { group: string; variable: string; value: number }[] = [];
+    const headers = raw[0].slice(1).map(h => h.trim());
+    const longFormat: { row: string; column: string; value: number }[] = [];
 
     for (let i = 1; i < raw.length; i++) {
-      const rowName = raw[i][0];
+      const rowName = raw[i][0].trim();
       const rowValues = raw[i].slice(1);
-
       for (let j = 0; j < headers.length; j++) {
-        longFormat.push({
-          group: rowName,
-          variable: headers[j],
-          value: +rowValues[j],
-        });
+        const val = +rowValues[j];
+        if (!isNaN(val)) {
+          longFormat.push({
+            row: rowName,
+            column: headers[j],
+            value: val,
+          });
+        }
       }
     }
 
@@ -43,7 +44,7 @@ export default function ThetaUpload({ onThetaUpload }: FileUploadProps) {
   };
 
   return (
-    <div className ="mb-5">
+    <div className="mb-5">
       <input
         type="file"
         accept=".csv"

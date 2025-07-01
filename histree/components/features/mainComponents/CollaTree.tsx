@@ -139,6 +139,7 @@ export default function CollaTree({
 
     const allGeneticEvents = collectAllNames(treedata);
     setGeneticEventsName(allGeneticEvents)
+    //kann ich hier nicht auch selectMutations machen und so für den Eventfilter setzen?
 
 
 
@@ -214,17 +215,12 @@ export default function CollaTree({
         .map(d => d.data.originalName)
         .filter((n): n is string => typeof n === "string" && n !== "root");
 
-
-
       const finalOrder = [
         ...new Set([
           ...firstOrders,
           ...geneticEventsName
         ])
       ];
-
-      console.log("Final", finalOrder)
-
 
       let left = root;
       let right = root;
@@ -278,7 +274,7 @@ export default function CollaTree({
 
       const symbols = [d3.symbolCircle, d3.symbolSquare, d3.symbolTriangle];
       const shapeScale = d3.scaleOrdinal<string, d3.SymbolType>()
-        .domain(finalOrder)    // Deine einmalige Liste im ersten Traversal
+        .domain(finalOrder)    
         .range(symbols);
 
       nodeEnter.append("path")
@@ -298,25 +294,14 @@ export default function CollaTree({
 
       const textEnter = nodeEnter.append("text")
         .attr("text-anchor", d => {
-          if (d.depth === 0) return "start"; // root bleibt links
-          return Array.isArray(d.children) && d.children.length > 0
-            ? "middle" // expanded → zentriert
-            : "start"; // leaf → linksbündig rechts daneben
-        })
+          if (d.depth === 0) return "start"; 
+          return Array.isArray(d.children) && d.children.length > 0 ? "middle" : "start"; })
         .attr("x", d => {
-          if (d.depth === 0) return -25; // root leicht links
-          return Array.isArray(d.children) && d.children.length > 0
-            ? 0      // expanded → mittig
-            : 12;    // leaf → rechts daneben
-        })
+          if (d.depth === 0) return -25; 
+          return Array.isArray(d.children) && d.children.length > 0 ? 0 : 12; })
         .attr("y", d => {
-          if (d.depth === 0) return 4; // root mittig
-          return Array.isArray(d.children) && d.children.length > 0
-            ? -12   // expanded → deutlich über Symbol
-            : 4;    // sonst leicht rechts daneben
-        });
-
-
+          if (d.depth === 0) return 4; 
+          return Array.isArray(d.children) && d.children.length > 0 ? -12 : 4;});
 
       textEnter.each(function (d) {
         const full = d.data.originalName || d.data.name;
