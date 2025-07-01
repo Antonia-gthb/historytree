@@ -128,7 +128,7 @@ export default function CollaTree({
     const margin = { top: 20, right: 20, bottom: 20, left: 40 };   //der Abstand um den Baum herum
     const dx = 35;  // sorgt für Abstand zwischen den Knoten
 
-        // if-Schleife, um die Mutationsnamen zu updaten 
+    // if-Schleife, um die Mutationsnamen zu updaten 
     if (!mutationNamesRef.current) {
       const mutationNames: string[] = [];
       numberNodes(treedata, "", mutationNames); // Mutationsnamen sammeln
@@ -136,7 +136,7 @@ export default function CollaTree({
 
       setSelectedMutations(mutationNames); // optional: direkt setzen
     }
-     //wichtig für Eventfilter
+    //wichtig für Eventfilter
     if (selectedMutations.length === 0 && geneticEventsName.length > 0) {
       setSelectedMutations(mutationNamesRef.current);
       return; // useEffect nochmal triggern
@@ -439,7 +439,7 @@ export default function CollaTree({
 
     update(root);
 
-  }, [treedata, selectedMutations, threshold, isExpanded, selectedSchemeName]);
+  }, [treedata, selectedMutations, threshold, isExpanded]);
 
 
   //Hier folgen jetzt mehrere useEffects, damit der Baum nicht jedes Mal neu gerendert werden muss
@@ -448,8 +448,9 @@ export default function CollaTree({
 
   useEffect(() => {
     const scale = colorScaleRef.current;
-    const nodes = nodeSelectionRef.current;
-    if (!scale || !nodes) return;
+    const node = nodeSelectionRef.current!
+
+    if (!scale || !node) return;
 
     const fn = cSchemes.find(s => s.name === selectedSchemeName)!.fn;
     // so viele Farben wie Domain-Länge
@@ -457,9 +458,10 @@ export default function CollaTree({
 
     scale.range(newColors);
 
-    nodes
-      .select("path")
-      .transition().duration(600)
+    node
+      .selectAll<SVGPathElement, MyNode>("path")
+      .transition()
+      .duration(600)
       .attr("fill", d =>
         !d.children && !d._children
           ? "none"
@@ -469,6 +471,8 @@ export default function CollaTree({
         scale(d.data.originalName || d.data.name)
       );
   }, [selectedSchemeName]);
+
+
 
 
   {/* USEEFFECT HIGHLIGHT MUTATION*/ }

@@ -16,7 +16,6 @@ import { useEffect } from "react"
 import useGlobalContext from "@/app/Context"
 
 
-
 interface EventfilterProps {
   items?: string[] | undefined,
   selectedItems: string[],
@@ -40,9 +39,6 @@ export function Eventfilter({ items = [], selectedItems, onSubmit, onReset }: Ev
   function handleSubmit(data: { items: string[] }) {
     onSubmit(data.items)
   }
-   console.log("selectedEvents", selectedItems )
-
-  console.log("GeneticEvents", geneticEventsName)
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
