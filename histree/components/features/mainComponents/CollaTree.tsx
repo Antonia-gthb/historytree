@@ -169,6 +169,7 @@ export default function CollaTree({
     //Hier wird das SVG erstellt
     const svg = d3.select<SVGSVGElement, unknown>(svgRef.current)
       .attr("viewBox", [-margin.left, -margin.top, width, dx])
+      .attr("width", "100%")
       .style("height", "auto")
       .style("font", "12px sans-serif")  // hier kann ich die Schriftgröße einstellen
       .style("user-select", "none")

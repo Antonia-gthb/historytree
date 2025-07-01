@@ -59,7 +59,7 @@ export function AppSideBar() {
         {/* RESET */}
         <div className="ml-15 mt-3">
           <Button onClick={resetFilters} className="transition hover:-translate-y-1">
-            Reset Filters
+            Reset All
           </Button>
         </div>
 

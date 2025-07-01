@@ -90,7 +90,7 @@ export default function App() {
               {isExpanded ? 'Collapse All' : 'Expand All'}
             </Button>
           </header>
-          <div className="flex flex-1 overflow-auto p-10">
+          <div className="relative flex flex-1 p-5">
             <AnimatePresence>
               {showMatrix && (
                 <motion.div
@@ -101,11 +101,10 @@ export default function App() {
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                 >
                   <ThetaMatrix data={thetaFile?.data ?? []} mutationNames={geneticEventsName} />
-                  <ThetaUpload onThetaUpload={handleThetaUpload} />
                 </motion.div>
               )}
             </AnimatePresence>
-            <div>
+            <div className="flex flex-1">
               {(jsonFile?.data || rawdata) && (
                 <CollaTree
                   key={jsonFile?.name || "default-tree"}
@@ -115,7 +114,20 @@ export default function App() {
               )}
             </div>
           </div>
-          <div className="flex justify-between font-bold text-xl p-5 w-full">
+          <div className="flex flex-row gap-90 font-bold text-xl p-5 w-full">
+              <AnimatePresence>
+                 {showMatrix && (
+                <motion.div
+                  key="theta-matrix"
+                  initial={{ x: -70, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: -70, opacity: 0 }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
+                >
+            <ThetaUpload onThetaUpload={handleThetaUpload} />
+            </motion.div>
+                 )}
+            </AnimatePresence>
             <FileUpload onUpload={handleUpload} />
           </div>
         </SidebarInset>

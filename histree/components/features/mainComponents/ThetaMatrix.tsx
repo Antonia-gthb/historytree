@@ -19,7 +19,7 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
         const svg = d3.select(ref.current);
         svg.selectAll("*").remove();
 
-        const margin = { top: 120, right: 80, bottom: 80, left: 120 };  //Abstand der Matrix
+        const margin = { top: 60, right: 40, bottom: 60, left: 70 };  //Abstand der Matrix
 
         const observationRow = data.filter((d) => d.row === "Observation");  //Observation Daten
         const matrixData = data.filter((d) => d.row !== "Observation");   //alle Daten ohne Observation
@@ -107,7 +107,6 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .style("font-family", "sans-serif")
             .attr("text-anchor", "start")
             .text((d) => d);
-        //.text((d) => String(d).split(/[ /]/)[0]); // Split bei Leerzeichen oder Slash
 
         g.selectAll(".y-label")
             .data(rows)
