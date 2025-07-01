@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { useEffect } from "react"
+import useGlobalContext from "@/app/Context"
 
 
 
@@ -20,24 +21,28 @@ interface EventfilterProps {
   items?: string[] | undefined,
   selectedItems: string[],
   onSubmit: (selected: string[]) => void,
-  onReset?: () => void 
+  onReset?: () => void
 }
 
 export function Eventfilter({ items = [], selectedItems, onSubmit, onReset }: EventfilterProps) {
 
+  const { geneticEventsName } = useGlobalContext();
+
 
   const form = useForm<{ items: string[] }>({
-    defaultValues: { items: selectedItems },
+    defaultValues: { items: geneticEventsName },
   });
 
   useEffect(() => {
     form.reset({ items: selectedItems });
-  }, [selectedItems, form]);
+  }, [selectedItems, form, geneticEventsName]);
 
   function handleSubmit(data: { items: string[] }) {
     onSubmit(data.items)
   }
+   console.log("selectedEvents", selectedItems )
 
+  console.log("GeneticEvents", geneticEventsName)
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
@@ -53,8 +58,8 @@ export function Eventfilter({ items = [], selectedItems, onSubmit, onReset }: Ev
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                {items?.map((item) => {     
-                  const isChecked = field.value?.includes(item) ?? false
+                {items?.map((item) => {
+                  const isChecked = field.value?.includes(item);
 
                   return (
                     <FormItem
@@ -84,10 +89,17 @@ export function Eventfilter({ items = [], selectedItems, onSubmit, onReset }: Ev
             </FormItem>
           )}
         />
-            <div className="flex space-x-8">
-        <Button type="submit" className="ease-in-out hover:-translate-y-1">Submit</Button>
-          <Button type="button" className="transition hover:-translate-y-1" onClick={() => {form.reset({ items: selectedItems }) 
-          onReset?.()}} >Reset </Button>
+        <div className="flex space-x-8">
+          <Button type="submit" className="ease-in-out hover:-translate-y-1">Submit</Button>
+          <Button type="button" className="ease-in-out hover:-translate-y-1"
+            onClick={() => {
+              form.reset({ items: items }); // 
+              onReset?.();
+            }}
+
+          >
+            Reset
+          </Button>
         </div>
       </form>
     </Form>

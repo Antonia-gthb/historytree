@@ -160,7 +160,7 @@ export function AppSideBar() {
                   items={geneticEventsName}
                   selectedItems={selectedMutations}
                   onSubmit={setSelectedMutations}
-                  onReset={() => setSelectedMutations(geneticEventsName)}
+                  onReset={() => setSelectedMutations([])}
                 />
               </SidebarGroupContent>
             </CollapsibleContent>

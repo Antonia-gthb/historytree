@@ -68,7 +68,7 @@ export function GlobalWrapper({ children }: { children: React.ReactNode }) {
     setScalingEnabled(true);
     setScalingFactor(1);
     setThreshold(1);
-    //setSelectedMutations(geneticEventsName);  //das macht das Problem bei Reset Filters, weil Anfangs leer!
+    setSelectedMutations([]);  //das macht das Problem bei Reset Filters, weil Anfangs leer!
     setHighlightMutation("");
     setSelectedSchemeName("Turbo");
   }

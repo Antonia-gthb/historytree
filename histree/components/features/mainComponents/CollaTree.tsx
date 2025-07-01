@@ -128,7 +128,19 @@ export default function CollaTree({
     const margin = { top: 20, right: 20, bottom: 20, left: 40 };   //der Abstand um den Baum herum
     const dx = 35;  // sorgt für Abstand zwischen den Knoten
 
+        // if-Schleife, um die Mutationsnamen zu updaten 
+    if (!mutationNamesRef.current) {
+      const mutationNames: string[] = [];
+      numberNodes(treedata, "", mutationNames); // Mutationsnamen sammeln
+      mutationNamesRef.current = mutationNames;
 
+      setSelectedMutations(mutationNames); // optional: direkt setzen
+    }
+     //wichtig für Eventfilter
+    if (selectedMutations.length === 0 && geneticEventsName.length > 0) {
+      setSelectedMutations(mutationNamesRef.current);
+      return; // useEffect nochmal triggern
+    }
     //hier werden die gefilterten Daten zusammengebracht, wenn nur bestimmte Mutationen ausgewählt sind und ein Threshold gesetzt ist
     const filteredData = selectedMutations && selectedMutations.length > 0
       ? filterTreeData(treedata, selectedMutations) ?? { name: "No mutations selected", children: [] }
@@ -188,14 +200,6 @@ export default function CollaTree({
           const ancestors = new Set(link.target.ancestors());
           return ancestors.has(d.target) ? 1 : 0.4;
         });
-    }
-    // if-Schleife, um die Mutationsnamen zu updaten 
-    if (!mutationNamesRef.current) {
-      const mutationNames: string[] = [];
-      numberNodes(treedata, "", mutationNames); // Mutationsnamen sammeln
-      mutationNamesRef.current = mutationNames;
-
-      setSelectedMutations(mutationNames); // optional: direkt setzen
     }
 
 
@@ -263,7 +267,6 @@ export default function CollaTree({
         });
 
       {/* FARBSCHEMA */ }
-
       const schemeFn = cSchemes.find(s => s.name === selectedSchemeName)!.fn;
 
       colorScaleRef.current = d3.scaleOrdinal<string, string>()
@@ -271,10 +274,9 @@ export default function CollaTree({
         .range(d3.quantize(schemeFn, allGeneticEvents.length));
 
       //Symbol wird hinzugefügt
-
       const symbols = [d3.symbolCircle, d3.symbolSquare, d3.symbolTriangle];
       const shapeScale = d3.scaleOrdinal<string, d3.SymbolType>()
-        .domain(finalOrder)    
+        .domain(finalOrder)
         .range(symbols);
 
       nodeEnter.append("path")
@@ -294,14 +296,17 @@ export default function CollaTree({
 
       const textEnter = nodeEnter.append("text")
         .attr("text-anchor", d => {
-          if (d.depth === 0) return "start"; 
-          return Array.isArray(d.children) && d.children.length > 0 ? "middle" : "start"; })
+          if (d.depth === 0) return "start";
+          return Array.isArray(d.children) && d.children.length > 0 ? "middle" : "start";
+        })
         .attr("x", d => {
-          if (d.depth === 0) return -25; 
-          return Array.isArray(d.children) && d.children.length > 0 ? 0 : 12; })
+          if (d.depth === 0) return -25;
+          return Array.isArray(d.children) && d.children.length > 0 ? 0 : 12;
+        })
         .attr("y", d => {
-          if (d.depth === 0) return 4; 
-          return Array.isArray(d.children) && d.children.length > 0 ? -12 : 4;});
+          if (d.depth === 0) return 4;
+          return Array.isArray(d.children) && d.children.length > 0 ? -12 : 4;
+        });
 
       textEnter.each(function (d) {
         const full = d.data.originalName || d.data.name;
@@ -319,19 +324,6 @@ export default function CollaTree({
         }
       });
 
-
-
-      //Hier wird der Text an die Nodes gebracht
-      {/*      nodeEnter.append("text")
-        .attr("dy", "0.31em")
-        .attr("x", d => d._children ? -12 : 12)
-        .attr("text-anchor", d => d._children ? "end" : "start")
-        .text(d => (d.data.originalName || d.data.name))      //.split(/[ /]/)[0])
-        .attr("fill-opacity", 0)
-        .transition()
-        .duration(100)
-        .attr("fill-opacity", 1);  */}
-
       //hier wird alles gemerged und mit der Transition verbunden
       nodeEnter.merge(node).transition().duration(duration)
         .attr("transform", d => `translate(${d.y},${d.x})`)
@@ -347,11 +339,9 @@ export default function CollaTree({
 
       nodeSelectionRef.current = nodeEnter.merge(node);
 
-
       // Links updaten
       const link = gLink.selectAll<SVGPathElement, d3.HierarchyLink<MyNode>>("path")
         .data(links, d => d.target.data.name + "-" + d.target.depth);
-
 
       //neue Links erstellen
       const linkEnter = link.enter().append("path")
@@ -432,7 +422,6 @@ export default function CollaTree({
       });
     }
 
-
     //Tree Initialisieren
     root.x0 = 0;
     root.y0 = 0;
@@ -447,9 +436,6 @@ export default function CollaTree({
         if (d.depth && d.data.name.length !== 1) d.children = undefined;  //beim ersten Rendern wird nur die erste Ebene angezeigt
       });
     }
-
-
-
 
     update(root);
 
@@ -483,7 +469,6 @@ export default function CollaTree({
         scale(d.data.originalName || d.data.name)
       );
   }, [selectedSchemeName]);
-
 
 
   {/* USEEFFECT HIGHLIGHT MUTATION*/ }
@@ -543,7 +528,6 @@ export default function CollaTree({
     selectedLinksRef.current
       .attr("stroke-width", d => baseScale(d.target.data.count ?? 0));
   }, [scalingFactor]);
-
 
   return <svg ref={svgRef}></svg>;
 }
