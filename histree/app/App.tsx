@@ -60,6 +60,11 @@ export default function App() {
 
 
   const handleUpload = (data: any, name: string) => {
+
+    if (jsonFile?.name === name) {
+      return; // Don't process the same file
+    }
+
     setJsonFile({ name, data });
     setIsExpanded(false);
     setScalingFactor(1);
