@@ -225,7 +225,7 @@ export default function CollaTree({
       const finalOrder = [
         ...new Set([
           ...firstOrders,
-          ...geneticEventsName
+          ...allGeneticEvents
         ])
       ];
 
@@ -283,6 +283,10 @@ export default function CollaTree({
       const shapeScale = d3.scaleOrdinal<string, d3.SymbolType>()
         .domain(finalOrder)
         .range(symbols);
+
+        console.log("final", finalOrder)
+        console.log("allGeneticEvents", allGeneticEvents)
+        console.log("geneticEventsName", geneticEventsName)
 
       nodeEnter.append("path")
         .attr("d", d => {
