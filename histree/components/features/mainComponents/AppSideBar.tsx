@@ -46,7 +46,9 @@ export function AppSideBar() {
     setHighlightMutation,
     setShowMatrix,
     setSelectedSchemeName,
-    resetFilters, 
+    resetFilters,
+    openMenus,
+    setOpenMenus
   } = useGlobalContext();
 
   return (
@@ -64,7 +66,10 @@ export function AppSideBar() {
         </div>
 
         {/* COLOR SCHEME */}
-        <Collapsible title="Color Scheme" className="group/collapsible">
+        <Collapsible title="Color Scheme" open={openMenus.colorScheme}
+          onOpenChange={(val) =>
+            setOpenMenus((prev) => ({ ...prev, colorScheme: val }))
+          } className="group/collapsible">
           <SidebarGroup>
             <SidebarGroupLabel asChild>
               <CollapsibleTrigger className="flex w-full justify-between">
@@ -84,7 +89,10 @@ export function AppSideBar() {
         </Collapsible>
 
         {/* SCALING */}
-        <Collapsible title="Scaling" className="group/collapsible">
+        <Collapsible title="Scaling" open={openMenus.scaling}
+          onOpenChange={(val) =>
+            setOpenMenus((prev) => ({ ...prev, scaling: val }))
+          } className="group/collapsible">
           <SidebarGroup>
             <SidebarGroupLabel asChild>
               <CollapsibleTrigger className="flex w-full justify-between">
@@ -126,7 +134,10 @@ export function AppSideBar() {
         </Collapsible>
 
         {/* THRESHOLD */}
-        <Collapsible title="Threshold" className="group/collapsible">
+        <Collapsible title="Threshold" open={openMenus.threshold}
+          onOpenChange={(val) =>
+            setOpenMenus((prev) => ({ ...prev, threshold: val }))
+          } className="group/collapsible">
           <SidebarGroup>
             <SidebarGroupLabel asChild>
               <CollapsibleTrigger className="flex w-full justify-between">
@@ -146,7 +157,10 @@ export function AppSideBar() {
         </Collapsible>
 
         {/* EVENTFILTER */}
-        <Collapsible title="Eventfilter" className="group/collapsible">
+        <Collapsible title="Eventfilter" open={openMenus.eventfilter}
+          onOpenChange={(val) =>
+            setOpenMenus((prev) => ({ ...prev, eventfilter: val }))
+          } className="group/collapsible">
           <SidebarGroup>
             <SidebarGroupLabel asChild>
               <CollapsibleTrigger className="flex w-full justify-between">
@@ -168,7 +182,10 @@ export function AppSideBar() {
         </Collapsible>
 
         {/* HIGHLIGHT */}
-        <Collapsible title="Highlight Mutation" className="group/collapsible">
+        <Collapsible title="Highlight Mutation" open={openMenus.highlight}
+          onOpenChange={(val) =>
+            setOpenMenus((prev) => ({ ...prev, highlight: val }))
+          } className="group/collapsible">
           <SidebarGroup>
             <SidebarGroupLabel asChild>
               <CollapsibleTrigger className="flex w-full justify-between">

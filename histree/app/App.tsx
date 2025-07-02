@@ -115,8 +115,8 @@ export default function App() {
             </div>
           </div>
           <div className="flex flex-row gap-50 font-bold text-xl p-5 w-full">
-              <AnimatePresence>
-                 {showMatrix && (
+            <AnimatePresence>
+              {showMatrix && (
                 <motion.div
                   key="theta-matrix"
                   initial={{ x: -70, opacity: 0 }}
@@ -124,9 +124,9 @@ export default function App() {
                   exit={{ x: -70, opacity: 0 }}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                 >
-            <ThetaUpload onThetaUpload={handleThetaUpload} />
-            </motion.div>
-                 )}
+                  <ThetaUpload onThetaUpload={handleThetaUpload} />
+                </motion.div>
+              )}
             </AnimatePresence>
             <FileUpload onUpload={handleUpload} />
           </div>

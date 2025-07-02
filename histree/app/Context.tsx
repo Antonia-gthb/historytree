@@ -25,6 +25,14 @@ interface GlobalContextType {
   isExpanded: boolean;
   setIsExpanded: (val: boolean) => void;
   resetFilters: any;
+  openMenus: {
+    colorScheme: boolean;
+    scaling: boolean;
+    threshold: boolean;
+    eventfilter: boolean;
+    highlight: boolean;
+  };
+  setOpenMenus: React.Dispatch<React.SetStateAction<GlobalContextType["openMenus"]>>;
 }
 
 const GlobalContext = createContext<GlobalContextType>(
@@ -61,7 +69,7 @@ export function GlobalWrapper({ children }: { children: React.ReactNode }) {
   const [showMatrix, setShowMatrix] = useState(false);
   const [selectedSchemeName, setSelectedSchemeName] = useState("Turbo");  //Standard Einstellung
 
-    const resetFilters = useCallback(() => {
+  const resetFilters = useCallback(() => {
     setIsExpanded(false);
     setScalingEnabled(true);
     setScalingFactor(1);
@@ -69,7 +77,22 @@ export function GlobalWrapper({ children }: { children: React.ReactNode }) {
     setSelectedMutations([]);
     setHighlightMutation("");
     setSelectedSchemeName("Turbo");
+    setOpenMenus({
+    colorScheme: false,
+    scaling: false,
+    threshold: false,
+    eventfilter: false,
+    highlight: false,
+  });
   }, []);
+
+  const [openMenus, setOpenMenus] = useState({
+    colorScheme: false,
+    scaling: false,
+    threshold: false,
+    eventfilter: false,
+    highlight: false,
+  });
 
 
   const value = useMemo(() => ({
@@ -94,8 +117,10 @@ export function GlobalWrapper({ children }: { children: React.ReactNode }) {
     showMatrix,
     setShowMatrix,
     selectedSchemeName,
-    setSelectedSchemeName, 
-    resetFilters
+    setSelectedSchemeName,
+    resetFilters,
+    openMenus, 
+    setOpenMenus
   }), [
     thetaFile,
     jsonFile,
@@ -108,9 +133,10 @@ export function GlobalWrapper({ children }: { children: React.ReactNode }) {
     highlightMutation,
     showMatrix,
     selectedSchemeName,
-    resetFilters
+    resetFilters,
+    openMenus
   ]
-);
+  );
 
 
 
