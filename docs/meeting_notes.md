@@ -140,3 +140,9 @@
   - overleaf not accessible
   - black still as color
   - problem with reupload persists
+    - seems to be the browser (works in edge and chrome, not in firefox, try out with safari)
+    - Linda will try to find the reason
+  - README
+    - Linda schaut an
+  - Introduction
+  - Technical Implementation wird überarbeitet
