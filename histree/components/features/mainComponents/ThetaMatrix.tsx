@@ -10,6 +10,7 @@ interface ThetaMatrixProps {
 
 export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
     const ref = useRef<SVGSVGElement | null>(null);
+    const mutationNamesKey = mutationNames.join(",");
 
     useEffect(() => {
         if (!ref.current || !data || data.length === 0) return;
@@ -250,7 +251,7 @@ export default function ThetaMatrix({ mutationNames, data }: ThetaMatrixProps) {
             .text("Observation")
             .style("cursor", "default")
             .style("user-select", "none");
-    }, [data, mutationNames.join(",")]);
+    }, [data, mutationNamesKey]);
 
 
 

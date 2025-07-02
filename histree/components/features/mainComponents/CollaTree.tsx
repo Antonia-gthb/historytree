@@ -251,7 +251,7 @@ export default function CollaTree({
 
       //Hier werden die neuen Nodes berechnet
       const nodeEnter = node.enter().append<SVGGElement>("g")
-        .attr("transform", d => `translate(${source.y0},${source.x0})`)
+        .attr("transform", () => `translate(${source.y0},${source.x0})`)
         .attr("fill-opacity", 0)
         .attr("stroke-opacity", 0)
         .on("click", (_, d) => {
@@ -334,7 +334,7 @@ export default function CollaTree({
 
       //alte Knoten verschwinden
       node.exit().transition(transition as any).remove()
-        .attr("transform", d => `translate(${source.y},${source.x})`)
+        .attr("transform", () => `translate(${source.y},${source.x})`)
         .attr("fill-opacity", 0)
         .attr("stroke-opacity", 0);
 
@@ -351,190 +351,194 @@ export default function CollaTree({
         .attr("stroke", "#555")
         .attr("stroke-opacity", 0.4)
         .attr("d", d => {
-          const o = { x: d.source.x0 ?? d.source.x, y: d.source.y0 ?? d.source.y };
-          return diagonal({ source: o, target: o });
+          const o = {
+            x: (d.source as any).x0 ?? d.source.x,
+            y: (d.source as any).y0 ?? d.source.y
+          };
+        return (diagonal as any)({ source: o, target: o });
         });
 
-      //Tooltip für Anklicken zum Highlighten
-      linkEnter.append("title")
-        .text("Highlight this path");
 
-      //Links Mergen
-      const linkAll = linkEnter.merge(link);
+  //Tooltip für Anklicken zum Highlighten
+  linkEnter.append("title")
+    .text("Highlight this path");
 
-      //Durch Klicken kann ein Link gehighlighted werden in Lila
-      linkAll.on("click", (_, d) => {
-        if (highlightedLinkRef.current === d) {
-          highlightedLinkRef.current = null;
-          highlightPath(null, false);
-          setHighlightMutation("");
-        } else {
-          highlightedLinkRef.current = d;
-          highlightPath(d, true);
-          setHighlightMutation("");
-        }
-      });
+  //Links Mergen
+  const linkAll = linkEnter.merge(link);
 
-      {/* SCALING */ }
-
-      //Code für die Scale
-      const counts = root.descendants().filter(d => d.data.originalName !== root.data.originalName).map(d => d.data.count ?? 0);  //alle Counts außer den von root
-      const maxCount = counts.length > 0 ? Math.max(...counts) : 1;  //welcher Count ist der Größte davon?
-      const defaultWidth = 1.5;  //normalerweise immer 1.5 px als Standardgröße, bzw. wenn Scaling aus ist
-      maxCountRef.current = maxCount;
-      const defaultMax = 10 + factorRef.current;  //größer darf die Breite nicht sein
-      const baseScale = factorRef.current === 0
-        ? () => defaultWidth
-        : d3.scaleLinear<number>()
-          .domain([0, maxCount])
-          .range([factorRef.current, defaultMax]);  //Breite wird verteilt auf den aktuellen Faktor, den wir über die Page bekommen und der Maximalen Breite, abhängig von Count
-
-      //
-      linkAll.transition(transition as any)
-        .attr("d", diagonal as any)
-        .attr("stroke-width", d => baseScale(d.target.data.count ?? 0));
-
-      //alte Links gehen weg
-      link.exit().transition(transition as any).remove()
-        .attr("d", d => {
-          const o = { x: source.x, y: source.y };
-          return diagonal({ source: o, target: o });
-        })
-
-      selectedLinksRef.current = linkAll;
-
-      //Tooltip
-      nodeEnter.append("title")
-        .text(d => {
-          const count = d.data.count ?? 0;
-          const ancestorNames = d.ancestors()
-            .reverse() // von vorne (bei root) starten
-            .map(a => a.data.originalName || a.data.name)
-            .filter(name => name !== "root")
-            .join(" → ");
-
-          return `${ancestorNames} | Patient Count: ${count}`;
-        });
-
-      //altes speichern
-      root.eachBefore(d => {
-        d.x0 = d.x;
-        d.y0 = d.y;
-      });
-    }
-
-    //Tree Initialisieren
-    root.x0 = 0;
-    root.y0 = 0;
-    if (isExpanded) {
-      root.descendants().forEach(d => {
-        d._children = d.children;
-        d.children = d._children;
-      });
+  //Durch Klicken kann ein Link gehighlighted werden in Lila
+  linkAll.on("click", (_, d) => {
+    if (highlightedLinkRef.current === d) {
+      highlightedLinkRef.current = null;
+      highlightPath(null, false);
+      setHighlightMutation("");
     } else {
-      root.descendants().forEach(d => {
-        d._children = d.children;
-        if (d.depth && d.data.name.length !== 1) d.children = undefined;  //beim ersten Rendern wird nur die erste Ebene angezeigt
-      });
+      highlightedLinkRef.current = d;
+      highlightPath(d, true);
+      setHighlightMutation("");
     }
+  });
 
-    update(root);
+  {/* SCALING */ }
 
-  }, [treedata, selectedMutations, threshold, isExpanded]);
+  //Code für die Scale
+  const counts = root.descendants().filter(d => d.data.originalName !== root.data.originalName).map(d => d.data.count ?? 0);  //alle Counts außer den von root
+  const maxCount = counts.length > 0 ? Math.max(...counts) : 1;  //welcher Count ist der Größte davon?
+  const defaultWidth = 1.5;  //normalerweise immer 1.5 px als Standardgröße, bzw. wenn Scaling aus ist
+  maxCountRef.current = maxCount;
+  const defaultMax = 10 + factorRef.current;  //größer darf die Breite nicht sein
+  const baseScale = factorRef.current === 0
+    ? () => defaultWidth
+    : d3.scaleLinear<number>()
+      .domain([0, maxCount])
+      .range([factorRef.current, defaultMax]);  //Breite wird verteilt auf den aktuellen Faktor, den wir über die Page bekommen und der Maximalen Breite, abhängig von Count
 
+  //
+  linkAll.transition(transition as any)
+    .attr("d", diagonal as any)
+    .attr("stroke-width", d => baseScale(d.target.data.count as any ?? 0));
 
-  //Hier folgen jetzt mehrere useEffects, damit der Baum nicht jedes Mal neu gerendert werden muss
+  //alte Links gehen weg
+  link.exit().transition(transition as any).remove()
+    .attr("d", () => {
+      const o = { x: source.x, y: source.y };
+     return (diagonal as any)({ source: o, target: o });
+    })
 
-  {/* USEEFFECT FARBSCHEMA */ }
+  selectedLinksRef.current = linkAll;
 
-  useEffect(() => {
-    const scale = colorScaleRef.current;
-    const node = nodeSelectionRef.current!
+  //Tooltip
+  nodeEnter.append("title")
+    .text(d => {
+      const count = d.data.count ?? 0;
+      const ancestorNames = d.ancestors()
+        .reverse() // von vorne (bei root) starten
+        .map(a => a.data.originalName || a.data.name)
+        .filter(name => name !== "root")
+        .join(" → ");
 
-    if (!scale || !node) return;
-
-    const fn = cSchemes.find(s => s.name === selectedSchemeName)!.fn;
-    // so viele Farben wie Domain-Länge
-    const newColors = d3.quantize(fn, scale.domain().length);
-
-    scale.range(newColors);
-
-    node
-      .selectAll<SVGPathElement, MyNode>("path")
-      .transition()
-      .duration(600)
-      .attr("fill", d =>
-        !d.children && !d._children
-          ? "none"
-          : scale(d.data.originalName || d.data.name)
-      )
-      .attr("stroke", d =>
-        scale(d.data.originalName || d.data.name)
-      );
-  }, [selectedSchemeName]);
-
-
-
-
-  {/* USEEFFECT HIGHLIGHT MUTATION*/ }
-
-  useEffect(() => {
-    highlightRef.current = highlightMutation;
-    const selLinks = selectedLinksRef.current;
-    const root = rootRef.current;
-
-    if (!selLinks || !root || !highlightMutation) return;
-
-    const matches = root
-      .descendants()
-      .filter(d => (d.data.originalName || d.data.name) === highlightMutation);
-
-    const highlightSet = new Set<MyNode>();
-
-    matches.forEach((m) => {
-      m.ancestors().forEach(a => highlightSet.add(a as MyNode));
-      highlightSet.add(m as MyNode);
-      m.descendants().forEach(d => highlightSet.add(d as MyNode));
+      return `${ancestorNames} | Patient Count: ${count}`;
     });
 
-    selLinks
-      .transition()
-      .duration(100)
-      .attr("stroke", (linkData) => {
-        const source = linkData.source as any;
-        const target = linkData.target as any;
-        return highlightSet.has(source) && highlightSet.has(target)
-          ? "#372aac"
-          : "#555";
-      })
-      .attr("stroke-opacity", (linkData) => {
-        const source = linkData.source as any;
-        const target = linkData.target as any;
-        return highlightSet.has(source) && highlightSet.has(target)
-          ? 1
-          : 0.3;
-      });
-  }, [highlightMutation]);
+  //altes speichern
+  root.eachBefore(d => {
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
+}
 
-  {/* USEEFFECT SCALING */ }
-  useEffect(() => {
-    if (!selectedLinksRef.current) return;
+//Tree Initialisieren
+root.x0 = 0;
+root.y0 = 0;
+if (isExpanded) {
+  root.descendants().forEach(d => {
+    d._children = d.children;
+    d.children = d._children;
+  });
+} else {
+  root.descendants().forEach(d => {
+    d._children = d.children;
+    if (d.depth && d.data.name.length !== 1) d.children = undefined;  //beim ersten Rendern wird nur die erste Ebene angezeigt
+  });
+}
 
-    factorRef.current = scalingFactor;
+update(root);
 
-    const defaultMax = 10 + factorRef.current;
-    const defaultWidth = 1.5;
-    const baseScale = factorRef.current === 0
-      ? () => defaultWidth
-      : d3.scaleLinear<number>()
-        .domain([0, maxCountRef.current])
-        .range([factorRef.current, defaultMax]);
+  }, [treedata, selectedMutations, threshold, isExpanded, geneticEventsName]);
 
-    selectedLinksRef.current
-      .attr("stroke-width", d => baseScale(d.target.data.count ?? 0));
-  }, [scalingFactor]);
 
-  return <svg ref={svgRef}></svg>;
+//Hier folgen jetzt mehrere useEffects, damit der Baum nicht jedes Mal neu gerendert werden muss
+
+{/* USEEFFECT FARBSCHEMA */ }
+
+useEffect(() => {
+  const scale = colorScaleRef.current;
+  const node = nodeSelectionRef.current!
+
+  if (!scale || !node) return;
+
+  const fn = cSchemes.find(s => s.name === selectedSchemeName)!.fn;
+  // so viele Farben wie Domain-Länge
+  const newColors = d3.quantize(fn, scale.domain().length);
+
+  scale.range(newColors);
+
+  node
+    .selectAll<SVGPathElement, MyNode>("path")
+    .transition()
+    .duration(600)
+    .attr("fill", d =>
+      !d.children && !d._children
+        ? "none"
+        : scale(d.data.originalName || d.data.name)
+    )
+    .attr("stroke", d =>
+      scale(d.data.originalName || d.data.name)
+    );
+}, [selectedSchemeName]);
+
+
+
+
+{/* USEEFFECT HIGHLIGHT MUTATION*/ }
+
+useEffect(() => {
+  highlightRef.current = highlightMutation;
+  const selLinks = selectedLinksRef.current;
+  const root = rootRef.current;
+
+  if (!selLinks || !root || !highlightMutation) return;
+
+  const matches = root
+    .descendants()
+    .filter(d => (d.data.originalName || d.data.name) === highlightMutation);
+
+  const highlightSet = new Set<MyNode>();
+
+  matches.forEach((m) => {
+    m.ancestors().forEach(a => highlightSet.add(a as MyNode));
+    highlightSet.add(m as MyNode);
+    m.descendants().forEach(d => highlightSet.add(d as MyNode));
+  });
+
+  selLinks
+    .transition()
+    .duration(100)
+    .attr("stroke", (linkData) => {
+      const source = linkData.source as any;
+      const target = linkData.target as any;
+      return highlightSet.has(source) && highlightSet.has(target)
+        ? "#372aac"
+        : "#555";
+    })
+    .attr("stroke-opacity", (linkData) => {
+      const source = linkData.source as any;
+      const target = linkData.target as any;
+      return highlightSet.has(source) && highlightSet.has(target)
+        ? 1
+        : 0.3;
+    });
+}, [highlightMutation]);
+
+{/* USEEFFECT SCALING */ }
+useEffect(() => {
+  if (!selectedLinksRef.current) return;
+
+  factorRef.current = scalingFactor;
+
+  const defaultMax = 10 + factorRef.current;
+  const defaultWidth = 1.5;
+  const baseScale = factorRef.current === 0
+    ? () => defaultWidth
+    : d3.scaleLinear<number>()
+      .domain([0, maxCountRef.current])
+      .range([factorRef.current, defaultMax]);
+
+  selectedLinksRef.current
+    .attr("stroke-width", d => baseScale(d.target.data.count as any ?? 0));
+}, [scalingFactor]);
+
+return <svg ref={svgRef}></svg>;
 }
 
 

@@ -33,9 +33,7 @@ export default function Threshold({ value, onChange, min = 1 }: ThresholdProps) 
       return;
     }
     if (/^\d+$/.test(input)) {
-      setInput(input);
-      const parsed = parseInt(input, 10);
-    }
+      setInput(input);    }
   };
 
   const increment = () => {

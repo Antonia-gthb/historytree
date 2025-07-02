@@ -1,5 +1,4 @@
-import { Leaf } from "lucide-react";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useMemo, useState, useCallback } from "react";
 
 
 interface GlobalContextType {
@@ -62,16 +61,16 @@ export function GlobalWrapper({ children }: { children: React.ReactNode }) {
   const [showMatrix, setShowMatrix] = useState(false);
   const [selectedSchemeName, setSelectedSchemeName] = useState("Turbo");  //Standard Einstellung
 
-
-  function resetFilters() {
+    const resetFilters = useCallback(() => {
     setIsExpanded(false);
     setScalingEnabled(true);
     setScalingFactor(1);
     setThreshold(1);
-    setSelectedMutations([]);  //das macht das Problem bei Reset Filters, weil Anfangs leer!
+    setSelectedMutations([]);
     setHighlightMutation("");
     setSelectedSchemeName("Turbo");
-  }
+  }, []);
+
 
   const value = useMemo(() => ({
     thetaFile,
@@ -95,8 +94,8 @@ export function GlobalWrapper({ children }: { children: React.ReactNode }) {
     showMatrix,
     setShowMatrix,
     selectedSchemeName,
-    setSelectedSchemeName,
-    resetFilters, 
+    setSelectedSchemeName, 
+    resetFilters
   }), [
     thetaFile,
     jsonFile,
@@ -109,8 +108,9 @@ export function GlobalWrapper({ children }: { children: React.ReactNode }) {
     highlightMutation,
     showMatrix,
     selectedSchemeName,
-    resetFilters, 
-  ]);
+    resetFilters
+  ]
+);
 
 
 

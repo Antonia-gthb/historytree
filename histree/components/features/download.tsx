@@ -9,7 +9,7 @@ interface DownloadProps {
 export default function Download ({downloadName} : DownloadProps) {
     const downloadSVG = () => {
 
-        let svgHisTree = document.getElementById("histree-chart");
+        const svgHisTree = document.getElementById("histree-chart");
         if (!svgHisTree) {
             return;
         }
