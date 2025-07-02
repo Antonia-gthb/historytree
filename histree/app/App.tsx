@@ -114,7 +114,7 @@ export default function App() {
               )}
             </div>
           </div>
-          <div className="flex flex-row gap-90 font-bold text-xl p-5 w-full">
+          <div className="flex flex-row gap-50 font-bold text-xl p-5 w-full">
               <AnimatePresence>
                  {showMatrix && (
                 <motion.div

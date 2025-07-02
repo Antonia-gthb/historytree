@@ -444,7 +444,7 @@ if (isExpanded) {
 
 update(root);
 
-  }, [treedata, selectedMutations, threshold, isExpanded, geneticEventsName]);
+  }, [treedata, selectedMutations, threshold, isExpanded]);
 
 
 //Hier folgen jetzt mehrere useEffects, damit der Baum nicht jedes Mal neu gerendert werden muss
