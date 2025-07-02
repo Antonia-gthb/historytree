@@ -132,3 +132,11 @@
 - then meeting to close the app
 - from then on focus on thesis
 - introduction finished
+
+## 02.06.2025
+
+- comments App
+  - Miro editing enabled?
+  - overleaf not accessible
+  - black still as color
+  - problem with reupload persists
