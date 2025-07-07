@@ -146,3 +146,16 @@
     - Linda schaut an
   - Introduction
   - Technical Implementation wird überarbeitet
+
+## 07.07.2025
+
+- Repository
+  - missing: License
+  - Kommentare nicht so super ausführlich
+    - z.B. am Anfang der einzelnen Komponenten, was sie genau tun
+  - Fix not included yet
+- Thesis
+  - Oxford Comma inconsistent
+  - Introduction
+    - Könnte bisschen mehr Roten Faden vertragen
+  - History Tree chapter good for motivation
