@@ -1,6 +1,8 @@
 ## MHN History Patient Tree Application
 
 The **Mutual hazard networks (MHNs) Algorithm** is a Cancer Progression Model to calculate both promoting and inhibitory relationships between mutations, enabling the reconstruction of the probabilistic tumor evolution from patient data that can be visualized in history trees.
+<!-- Missing: base rates -->
+<!-- Eine Quelle zu den Bäumen noch einfügen (Figure in einem Paper) -->
 
 This project is an **interactive Web Application** to dynamically visualize MHN History Trees, making it much easier to explore tumor evolution pathways in real time.
 
@@ -8,7 +10,8 @@ This project is an **interactive Web Application** to dynamically visualize MHN 
 
 - Visualization of MHN-based tumor development as an interactive tree
 - Customizable view: threshold, eventfilter, scaling of edges, coloring, tooltip information, expand all button
-- Upload and Download files
+- Upload and Download files 
+<!-- what kind of files -->
 - Theta matrix display of relationships
 - Designed for bioinformaticians, oncologists and clinical researchers
 
