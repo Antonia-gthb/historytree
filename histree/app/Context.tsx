@@ -94,7 +94,12 @@ export function GlobalWrapper({ children }: { children: React.ReactNode }) {
     highlight: false,
   });
 
+  const svg = document.createElement("svg");
+const circle = document.createElement("circle");
+circle.setAttribute("fill", "red");
+svg.appendChild(circle);
 
+  
   const value = useMemo(() => ({
     thetaFile,
     setThetaFile,

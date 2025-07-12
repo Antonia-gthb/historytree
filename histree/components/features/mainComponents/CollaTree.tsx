@@ -153,7 +153,6 @@ export default function CollaTree({
 
     const allGeneticEvents = collectAllNames(treedata);
     setGeneticEventsName(allGeneticEvents)
-    //kann ich hier nicht auch selectMutations machen und so für den Eventfilter setzen?
 
 
 
