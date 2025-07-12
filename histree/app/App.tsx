@@ -11,7 +11,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import ThetaMatrix from '@/components/features/mainComponents/ThetaMatrix';
 import ThetaUpload from "@/components/features/thetaUpload";
 import { AnimatePresence, motion } from "motion/react"
-import FileUpload from '@/components/features/upload';
+import FileUpload from '@/components/features/jsonUpload';
 import useGlobalContext from '@/app/Context';
 import { TreeNode } from "@/components/features/mainComponents/CollaTree";
 
@@ -60,6 +60,11 @@ export default function App() {
 
 
   const handleUpload = (data: any, name: string) => {
+
+    if (jsonFile?.name === name) {
+      return; // Don't process the same file
+    }
+
     setJsonFile({ name, data });
     setIsExpanded(false);
     setScalingFactor(1);
