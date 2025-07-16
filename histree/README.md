@@ -1,19 +1,37 @@
-## MHN History Patient Tree Application
+## MHN History Patient Tree Application :dna: :computer:	
 
-The **Mutual hazard networks (MHNs) Algorithm** is a Cancer Progression Model to calculate both promoting and inhibitory relationships between mutations, enabling the reconstruction of the probabilistic tumor evolution from patient data that can be visualized in history trees.
+**Visualize genetic event histories using Mutual Hazard Networks (MHNs)**
+
+This web application allows users to upload and visualize MHN-inferred genetic event orders (History Trees) in tumors from CSV and JSON files. It is designed for scientists in biology, oncology, and bioinformatics, with or without programming background.
+
+
+## What is MHN?
+
+:woman_technologist:	
+:technologist:	
+:woman_scientist:	
+:scientist:	
+:woman_health_worker:	
+:health_worker:	
+
+:point_right:	
+:speech_balloon:	
+
+The **Mutual hazard networks (MHNs) Algorithm** is a Cancer Progression Model that considers both promoting and inhibitory relationships between genetic events as well as cyclic dependencies, enabling the reconstruction of the probabilistic tumor evolution from patient data that can be visualized in history trees.
+<!-- Missing: base rates -->
+<!-- Eine Quelle zu den Bäumen noch einfügen (Figure in einem Paper) -->
 
 This project is an **interactive Web Application** to dynamically visualize MHN History Trees, making it much easier to explore tumor evolution pathways in real time.
 
 ## Features
 
-- Visualization of MHN-based tumor development as an interactive tree
-- Customizable view: threshold, eventfilter, scaling of edges, coloring, tooltip information, expand all button
-- Upload and Download files
-- Theta matrix display of relationships
-- Designed for bioinformaticians, oncologists and clinical researchers
+:heavy_check_mark: Visualization of MHN-based tumor development as an interactive tree
+:heavy_check_mark: Customizable view: threshold, eventfilter, scaling of edges, coloring, tooltip information, expand all button
+:heavy_check_mark: Upload JSON files for History Tree View and CSV files for vizualisation of Theta Matrix
+:heavy_check_mark: Download SVG of History Tree
+:heavy_check_mark: Theta matrix display of relationships
 
-
-## Tech Stack
+:wrench:	## Tech Stack
 
 Here's a brief high-level overview of the tech stack the MHN History Tree Application uses:
 
@@ -23,30 +41,69 @@ Here's a brief high-level overview of the tech stack the MHN History Tree Applic
 
 - To ensure a consistent and visually appealing user interface, the UI component library [shadcn/ui](https://ui.shadcn.com/) was used. 
 
-## Background
+- For code safety, TypeScript [TypeScript](https://www.typescriptlang.org/) was used. 
 
-This application is part of a master's thesis with the aim of combining **methodical modelling with user-friendly visualization**. 
+:green_circle:	:high_brightness: :clipboard:		## Getting Started
 
-## How to use 
+:memo:
+:pencil:
 
-To work with the application, a JSON Order File and a CSV with promoting and inhibiting effects is necessary. 
+First, run the development server:
 
-Upload both files and use the features in the sidebar to adjust and examine the MHN Patient History.
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-Click the download button to download the SVG of the tree.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Getting started
+\subsection{Starting the Project}
 
+\begin{enumerate}
+    \item A terminal must be opened in the \textbf{unpacked project folder} by right-clicking on the folder and selecting \enquote{Open in Terminal}.
+    
+    As an alternative, a terminal can be opened manually and navigated to the project folder using the \code{cd} command:
+    
+      \faTerminal~Windows: Click on the \faMicrosoft~button or the \faSearch~symbol in the taskbar and search for \enquote{Terminal}. \\[0.5em]
+     \faFolder~For example:
+    \code{cd C:\textbackslash Users\textbackslash admin\textbackslash Downloads\textbackslash mhn-history-tree}
+      
+      \faTerminal~macOS: Open the Launchpad and enter \enquote{Terminal} in the search field. \\[0.5em]
+    \faFolder~ For example: 
+    \code{cd \textasciitilde/Downloads/mhn-history-tree}
 
+    \item The required dependencies are installed by entering and executing:\\[0.5em]
+    \code{npm install}\\[0.5em]
+    This step is only necessary during the initial setup.
 
+    \item The development server is started using the command:\\[0.5em]
+    \code{npm run dev}
 
-## Learn More
+    \item Once the server is running, the application can be accessed in a web browser via:\\[0.5em]
+    \code{http://localhost:3000}
+\end{enumerate}
 
-?
+  \begin{figure}[htbp] % [htbp]
+                \centering
+                \includegraphics[scale=0.2]{user_guide/localhost_app_initial_render.png} 
+                \caption{Initial user interface after starting the app locally with \footnotesize{\code{http://localhost:3000}}.}
+   \end{figure} 
 
-## Deployment
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## License
+:books:	## Learn More
 
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 

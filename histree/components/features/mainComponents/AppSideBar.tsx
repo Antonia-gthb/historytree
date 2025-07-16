@@ -207,7 +207,7 @@ export function AppSideBar() {
 
         {/* DOWNLOAD */}
         <div className="ml-13 mt-3">
-          <Download downloadName={jsonFile ? jsonFile.name : "BREAST_orders_toni.json"} />
+          <Download downloadName={jsonFile ? jsonFile.name : "BREAST_orders.json"} />
         </div>
 
         {/* THETAMATRIX TOGGLE */}
@@ -229,13 +229,13 @@ export function AppSideBar() {
             <CollapsibleContent className="p-3 mb-2">
               <SidebarGroupContent className="flex flex-col">
                 <Button className="ml-1 mt-2 transition hover:-translate-y-1">
-                  <Link href="/info" target="_blank" rel="noopener noreferrer">Tutorial</Link>
+                  <Link href="/info" target="_blank" rel="noopener noreferrer">User Guide</Link>
                 </Button>
                 <Button className="ml-1 mt-2 transition hover:-translate-y-1">
                   <Link href="https://www.overleaf.com/project/67c5947a93babe7ce8dafd44" target="_blank" rel="noopener noreferrer">Master Thesis</Link>
                 </Button>
                 <Button className="ml-1 mt-2 transition hover:-translate-y-1">
-                  <Link href="https://miro.com/app/board/uXjVIxUGLv0=/?share_link_id=356747018988" target="_blank" rel="noopener noreferrer">Miro</Link>
+                  <Link href="https://miro.com/app/board/uXjVIxUGLv0=/?share_link_id=356747018988" target="_blank" rel="noopener noreferrer">Project Structure</Link>
                 </Button>
               </SidebarGroupContent>
             </CollapsibleContent>
