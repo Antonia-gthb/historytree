@@ -1,109 +1,209 @@
-## MHN History Patient Tree Application :dna: :computer:	
+<div align="center">
+  <h1>🧬 MHN Patient History Tree Application 🌳</h1>
+  <p><i>Visualize Genetic Event Histories in Tumors using Mutual Hazard Networks (MHNs)</i></p>
+  <img src="/images/app_ganz_build.png" width="500"/>
+</div>
 
-**Visualize genetic event histories using Mutual Hazard Networks (MHNs)**
+# About the Project 💻	
 
-This web application allows users to upload and visualize MHN-inferred genetic event orders (History Trees) in tumors from CSV and JSON files. It is designed for scientists in biology, oncology, and bioinformatics, with or without programming background.
+This project is an **interactive web application** to dynamically visualize MHN Patient History Trees, making it much easier to explore tumor evolution pathways in real time.
+
+The web application allows users to upload and visualize MHN-inferred genetic event orders (History Trees) in tumors and relationship effects between events (Theta Matrix) from JSON and CSV files. It is designed for scientists in biology, oncology, and bioinformatics, with or without programming background.
 
 
-## What is MHN?
+## What is MHN?	
 
-:woman_technologist:	
-:technologist:	
-:woman_scientist:	
-:scientist:	
-:woman_health_worker:	
-:health_worker:	
+The **Mutual Hazard Networks (MHNs) Algorithm** is a Cancer Progression Model (CPM) that takes into account both **promoting and inhibitory relationships** between genetic events as well as **cyclic dependencies**, enabling the reconstruction of **the most likely tumor evolution path for every tumor** in patient data. These paths can be visualized in History Trees 🌳.
 
-:point_right:	
-:speech_balloon:	
+<div align="center">
+  <p><i>Example for a MHN Patient History Tree, Figure 5, Schill et al., 2023, modified</i></p>
+   <img src="images/tree_modified_schill.png" width="600" alt="History Tree Paper Schill et al" />
+</div>
 
-The **Mutual hazard networks (MHNs) Algorithm** is a Cancer Progression Model that considers both promoting and inhibitory relationships between genetic events as well as cyclic dependencies, enabling the reconstruction of the probabilistic tumor evolution from patient data that can be visualized in history trees.
-<!-- Missing: base rates -->
-<!-- Eine Quelle zu den Bäumen noch einfügen (Figure in einem Paper) -->
+#### <ins>The algorithm generates two files: </ins>
 
-This project is an **interactive Web Application** to dynamically visualize MHN History Trees, making it much easier to explore tumor evolution pathways in real time.
+### 📄 CSV - Theta Matrix
 
-## Features
+The CSV contains:
+- **multiplicative effects** between genetic events, promoting as well as inhibitory
+- the **base rate** (natural likelihood) of each genetic event to occur
+- the **observation rate** (likelihood for the presence of a genetic event to lead to clinical detection of the tumor)
+
+
+<div align="center">
+   <img src="theta_matrix.png" width="600" alt="theta matrix view in the web application" />
+</div>
+
+###  📄 JSON - History Tree
+
+Based on the Theta Matrix, the algorithm infers the **order of occurrence** of genetic events for the History Tree, which is stored in the corresponding JSON file.
+
+<div align="center">
+   <img src="expandedtree.png" width="600" alt="mhn history tree view in the application with nodes expanded" />
+</div>
+
+
+## Features Overview
+
+:heavy_check_mark: Theta matrix display of relationships between genetic events
 
 :heavy_check_mark: Visualization of MHN-based tumor development as an interactive tree
-:heavy_check_mark: Customizable view: threshold, eventfilter, scaling of edges, coloring, tooltip information, expand all button
-:heavy_check_mark: Upload JSON files for History Tree View and CSV files for vizualisation of Theta Matrix
+
+:heavy_check_mark: Customizable view: threshold, event filtering, scaling of edges, coloring, tooltip information, expand all button
+
+:heavy_check_mark: Upload JSON files for History Tree view and CSV files for visualization of Theta Matrix
+
 :heavy_check_mark: Download SVG of History Tree
-:heavy_check_mark: Theta matrix display of relationships
 
-:wrench:	## Tech Stack
+## Tech Stack 🔧
 
-Here's a brief high-level overview of the tech stack the MHN History Tree Application uses:
+Here's a brief high-level overview of the tech stack the MHN History Tree application uses:
 
 - This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-- The MHN patient history tree is vizualized by using the package [D3.js](https://d3js.org/) with the [Collapsible Tree](https://observablehq.com/@d3/collapsible-tree) template.
+- The History Tree and the Theta Matrix are visualized by using the package [D3.js](https://d3js.org/) with the [Collapsible Tree](https://observablehq.com/@d3/collapsible-tree) and [Heatmap with tooltip](https://d3-graph-gallery.com/graph/heatmap_tooltip.html) templates.
 
 - To ensure a consistent and visually appealing user interface, the UI component library [shadcn/ui](https://ui.shadcn.com/) was used. 
 
-- For code safety, TypeScript [TypeScript](https://www.typescriptlang.org/) was used. 
+- For code safety, [TypeScript](https://www.typescriptlang.org/) was used. 
 
-:green_circle:	:high_brightness: :clipboard:		## Getting Started
+<details>
+<summary><h2>📋 Getting Started </h2></summary>
 
-:memo:
-:pencil:
+### ❗Requirements 
 
-First, run the development server:
+- Node.js (version 18 or later) [Download](https://nodejs.org/en/download)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- npm (included in Node.js download) 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- modern web browser (for example, Google Chrome or Mozilla Firefox)
 
-\subsection{Starting the Project}
+### Download Project
 
-\begin{enumerate}
-    \item A terminal must be opened in the \textbf{unpacked project folder} by right-clicking on the folder and selecting \enquote{Open in Terminal}.
-    
-    As an alternative, a terminal can be opened manually and navigated to the project folder using the \code{cd} command:
-    
-      \faTerminal~Windows: Click on the \faMicrosoft~button or the \faSearch~symbol in the taskbar and search for \enquote{Terminal}. \\[0.5em]
-     \faFolder~For example:
-    \code{cd C:\textbackslash Users\textbackslash admin\textbackslash Downloads\textbackslash mhn-history-tree}
-      
-      \faTerminal~macOS: Open the Launchpad and enter \enquote{Terminal} in the search field. \\[0.5em]
-    \faFolder~ For example: 
-    \code{cd \textasciitilde/Downloads/mhn-history-tree}
+ 1. [Download Project ZIP](https://github.com/Antonia-gthb/histree/archive/refs/heads/main.zip)
 
-    \item The required dependencies are installed by entering and executing:\\[0.5em]
-    \code{npm install}\\[0.5em]
-    This step is only necessary during the initial setup.
+<!-- Click the **green code button** button and select **Download ZIP** -->
 
-    \item The development server is started using the command:\\[0.5em]
-    \code{npm run dev}
+ 2. Extract the ZIP file:  Right-click → **Extract All**
 
-    \item Once the server is running, the application can be accessed in a web browser via:\\[0.5em]
-    \code{http://localhost:3000}
-\end{enumerate}
+ ### Start Project
 
-  \begin{figure}[htbp] % [htbp]
-                \centering
-                \includegraphics[scale=0.2]{user_guide/localhost_app_initial_render.png} 
-                \caption{Initial user interface after starting the app locally with \footnotesize{\code{http://localhost:3000}}.}
-   \end{figure} 
+ 1. Open a terminal in the **unpacked project folder**  
+   - Right-click the folder → **Open in Terminal**  
+   - Or open a terminal manually and navigate to the folder using `cd`:
+       - **Example for Windows**
+        ```bash
+        cd C:\Users\admin\Downloads\historytree
+       ```
+   
+       -  **Example for macOS**
+        ```bash
+        cd ~/Downloads/historytree
+       ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+  2. Install dependencies
+   ```
+  npm install
+  ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+  3. Start the application
+   ```
+  npm start
+  ```
+   4. Open the application in your browser using the URL: 
+   ```bash
+  http://localhost:3000
+  ```
 
-:books:	## Learn More
+   5. To stop the application, press:
+   ```bash
+   Ctrl + C (Windows)
+   # or
+   Control + C (macOS)
+  ```
+</details>
 
-To learn more about Next.js, take a look at the following resources:
+<details>
+<summary><h2> 📚Learn More</h2></summary>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+##### Modelling Cancer Progression using Mutual Hazard Networks:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+📝 [Schill et al., 2019](https://doi.org/10.1093/bioinformatics/btz513)
 
+##### Overcoming Observation Bias for Cancer Progression Modeling:
+
+
+📝 [Schill et al., 2023](https://doi.org/10.1101/2023.12.03.569824)
+
+<p>&nbsp;</p>
+
+</details>
+
+<details>
+<summary><h2> 📷 Feature Demonstration </h2></summary>
+
+<p>&nbsp;</p>
+
+<div align="center">
+  <h3>Change the color scheme 🖌️</h3>
+ <img src="color_scheme.png" width="600" />
+</div>
+
+###
+###
+
+---
+
+###
+
+<p>&nbsp;</p>
+
+<div align="center">
+   <h3>Visualize specific genetic events ✅</h3>
+   <img src="eventfilter.png" width="600" alt="event filtering" />
+</div>
+
+###
+###
+
+---
+
+###
+
+<p>&nbsp;</p>
+
+<div align="center">
+   <h3>Select a specific genetic event and highlight all paths in the tree that include it ✨</h3>
+   <img src="highlighted_paths.png" width="600" alt="highlight paths" />
+</div>
+
+###
+###
+
+---
+
+###
+
+<p>&nbsp;</p>
+
+<div align="center">
+   <h3>Adjust the stroke width of the edges linearly to the patient count ↪️</h3>
+   <img src="scaling.png" width="600" alt="edge scaling" />
+</div>
+
+###
+###
+
+---
+
+###
+
+<p>&nbsp;</p>
+
+<div align="center">
+   <h3>Filter data based on a minimum patient count 👥</h3>
+   <img src="threshold.png" width="600" alt="threshold" />
+</div>
+
+
+</details>
