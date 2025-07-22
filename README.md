@@ -1,8 +1,9 @@
 <div align="center">
   <h1>🧬 MHN Patient History Tree Application 🌳</h1>
   <p><i>Visualize Genetic Event Histories in Tumors using Mutual Hazard Networks (MHNs)</i></p>
-  <img src="/images/app_ganz_build.png" width="500"/>
+  <img src="histree/public/images/app_ganz_build.png" width="500"/>
 </div>
+
 
 # About the Project 💻	
 
@@ -17,7 +18,7 @@ The **Mutual Hazard Networks (MHNs) Algorithm** is a Cancer Progression Model (C
 
 <div align="center">
   <p><i>Example for a MHN Patient History Tree, Figure 5, Schill et al., 2023, modified</i></p>
-   <img src="/images/tree_modified_schill.png" width="600" alt="History Tree Paper Schill et al" />
+   <img src="histree/public/images/tree_modified_schill.png" width="600" alt="History Tree Paper Schill et al" />
 </div>
 
 #### <ins>The algorithm generates two files: </ins>
@@ -31,7 +32,7 @@ The CSV contains:
 
 
 <div align="center">
-   <img src="/images/theta_matrix.png" width="600" alt="theta matrix view in the web application" />
+   <img src="histree/public/images/theta_matrix.png" width="600" alt="theta matrix view in the web application" />
 </div>
 
 ###  📄 JSON - History Tree
@@ -39,7 +40,7 @@ The CSV contains:
 Based on the Theta Matrix, the algorithm infers the **order of occurrence** of genetic events for the History Tree, which is stored in the corresponding JSON file.
 
 <div align="center">
-   <img src="/images/expandedtree.png" width="600" alt="mhn history tree view in the application with nodes expanded" />
+   <img src="histree/public/images/expandedtree.png" width="600" alt="mhn history tree view in the application with nodes expanded" />
 </div>
 
 ## Features Overview
@@ -145,7 +146,7 @@ Here's a brief high-level overview of the tech stack the MHN History Tree applic
 
 <div align="center">
   <h3>Change the color scheme 🖌️</h3>
- <img src="/images/color_scheme.png" width="600" />
+ <img src="histree/public/images/color_scheme.png" width="600" />
 </div>
 
 ###
@@ -159,7 +160,7 @@ Here's a brief high-level overview of the tech stack the MHN History Tree applic
 
 <div align="center">
    <h3>Visualize specific genetic events ✅</h3>
-   <img src="/images/eventfilter.png" width="600" alt="event filtering" />
+   <img src="histree/public/images/eventfilter.png" width="600" alt="event filtering" />
 </div>
 
 ###
@@ -173,7 +174,7 @@ Here's a brief high-level overview of the tech stack the MHN History Tree applic
 
 <div align="center">
    <h3>Select a specific genetic event and highlight all paths in the tree that include it ✨</h3>
-   <img src="/images/highlighted_paths.png" width="600" alt="highlight paths" />
+   <img src="histree/public/images/highlighted_paths.png" width="600" alt="highlight paths" />
 </div>
 
 ###
@@ -187,7 +188,7 @@ Here's a brief high-level overview of the tech stack the MHN History Tree applic
 
 <div align="center">
    <h3>Adjust the stroke width of the edges linearly to the patient count ↪️</h3>
-   <img src="/images/scaling.png" width="600" alt="edge scaling" />
+   <img src="histree/public/images/scaling.png" width="600" alt="edge scaling" />
 </div>
 
 ###
@@ -201,7 +202,7 @@ Here's a brief high-level overview of the tech stack the MHN History Tree applic
 
 <div align="center">
    <h3>Filter data based on a minimum patient count 👥</h3>
-   <img src="/images/threshold.png" width="600" alt="threshold" />
+   <img src="histree/public/images/threshold.png" width="600" alt="threshold" />
 </div>
 
 
