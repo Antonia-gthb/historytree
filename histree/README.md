@@ -142,6 +142,12 @@ Here's a brief high-level overview of the tech stack the MHN History Tree applic
 
 📝 [Schill et al., 2023](https://doi.org/10.1101/2023.12.03.569824)
 
+##### More about the project:
+
+📄 [User Guide](public/User_Guide.pdf)
+
+📄 [Master Thesis](public/Master_Thesis_Kaspar_signed.pdf)
+
 <p>&nbsp;</p>
 
 </details>
