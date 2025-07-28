@@ -61,7 +61,7 @@ Here's a brief high-level overview of the tech stack the MHN History Tree applic
 
 - This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-- The History Tree and the Theta Matrix are visualized by using the package [D3.js](https://d3js.org/) with the [Collapsible Tree](https://observablehq.com/@d3/collapsible-tree) and [Heatmap with tooltip](https://d3-graph-gallery.com/graph/heatmap_tooltip.html) templates.
+- The History Tree and the Theta Matrix are visualized by using the package [D3.js](https://d3js.org/) adapting and customizing the [Collapsible Tree](https://observablehq.com/@d3/collapsible-tree) and [Heatmap with tooltip](https://d3-graph-gallery.com/graph/heatmap_tooltip.html) templates.
 
 - To ensure a consistent and visually appealing user interface, the UI component library [shadcn/ui](https://ui.shadcn.com/) was used. 
 
@@ -80,7 +80,7 @@ Here's a brief high-level overview of the tech stack the MHN History Tree applic
 
 ### Download Project
 
- 1. Click the **green code button** button and select **Download ZIP** 
+ 1. Click the **green code button** and select **Download ZIP** 
 
  2. Extract the ZIP file:  Right-click → **Extract All**
 
