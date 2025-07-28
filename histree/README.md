@@ -13,7 +13,7 @@ The web application allows users to upload and visualize MHN-inferred genetic ev
 
 ## What is MHN?	
 
-The **Mutual Hazard Networks (MHNs) Algorithm** is a Cancer Progression Model (CPM) that takes into account both **promoting and inhibitory relationships** between genetic events as well as **cyclic dependencies**, enabling the reconstruction of **the most likely tumor evolution path for every tumor** in patient data. These paths can be visualized in History Trees 🌳.
+The **Mutual Hazard Networks (MHNs) algorithm** is a Cancer Progression Model (CPM) that takes into account both **promoting and inhibitory relationships** between genetic events as well as **cyclic dependencies**, enabling the reconstruction of **the most likely tumor evolution path for every tumor** in patient data. These paths can be visualized in History Trees 🌳.
 
 <div align="center">
   <p><i>Example for a MHN Patient History Tree, Figure 5, Schill et al., 2023, modified</i></p>
@@ -26,8 +26,8 @@ The **Mutual Hazard Networks (MHNs) Algorithm** is a Cancer Progression Model (C
 
 The CSV contains:
 - **multiplicative effects** between genetic events, promoting as well as inhibitory
-- the **base rate** (natural likelihood) of each genetic event to occur
-- the **observation rate** (likelihood for the presence of a genetic event to lead to clinical detection of the tumor)
+- the **base rate** of each genetic event 
+- the **observation rate** (effect of a genetic event on the observation event, (i.e., lead to clinical detection of the tumor))
 
 
 <div align="center">
@@ -61,7 +61,7 @@ Here's a brief high-level overview of the tech stack the MHN History Tree applic
 
 - This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-- The History Tree and the Theta Matrix are visualized by using the package [D3.js](https://d3js.org/) with the [Collapsible Tree](https://observablehq.com/@d3/collapsible-tree) and [Heatmap with tooltip](https://d3-graph-gallery.com/graph/heatmap_tooltip.html) templates.
+- The History Tree and the Theta Matrix are visualized by using the package [D3.js](https://d3js.org/) adapting and customizing the [Collapsible Tree](https://observablehq.com/@d3/collapsible-tree) and [Heatmap with tooltip](https://d3-graph-gallery.com/graph/heatmap_tooltip.html) templates.
 
 - To ensure a consistent and visually appealing user interface, the UI component library [shadcn/ui](https://ui.shadcn.com/) was used. 
 
@@ -80,9 +80,7 @@ Here's a brief high-level overview of the tech stack the MHN History Tree applic
 
 ### Download Project
 
- 1. [Download Project ZIP](https://github.com/Antonia-gthb/histree/archive/refs/heads/main.zip)
-
-<!-- Click the **green code button** button and select **Download ZIP** -->
+ 1. Click the **green code button** and select **Download ZIP** 
 
  2. Extract the ZIP file:  Right-click → **Extract All**
 
@@ -101,21 +99,34 @@ Here's a brief high-level overview of the tech stack the MHN History Tree applic
         cd ~/Downloads/historytree
        ```
 
-  2. Install dependencies
+  2. The app is located in the subordinate directory **historytree**, which can be reached by using the
+   ```
+  cd
+  ```
+  command as shown above
+
+  3. Install dependencies
    ```
   npm install
   ```
 
-  3. Start the application
+  4. The application is compiled with:
+   ```
+   npm run build
+   ```
+  
+   This step is only necessary during the initial setup.
+
+  5. The application is started in production mode using the command:
    ```
   npm start
   ```
-   4. Open the application in your browser using the URL: 
+   6. Open the application in your browser using the URL: 
    ```bash
   http://localhost:3000
   ```
 
-   5. To stop the application, press:
+   7. To stop the application, press:
    ```bash
    Ctrl + C (Windows)
    # or
