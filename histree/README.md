@@ -99,22 +99,18 @@ Here's a brief high-level overview of the tech stack the MHN History Tree applic
         cd ~/Downloads/historytree
        ```
 
-  2. The app is located in the subordinate directory **historytree**, which can be reached by using the
-   ```
-  cd
-  ```
-  command as shown above
+  2. The app is located in the subordinate directory `historytree`, which can be reached by using the  `cd` command as shown above
 
   3. Install dependencies
    ```
   npm install
   ```
+  This step is only necessary during the initial setup.
 
   4. The application is compiled with:
    ```
    npm run build
    ```
-  
    This step is only necessary during the initial setup.
 
   5. The application is started in production mode using the command:
