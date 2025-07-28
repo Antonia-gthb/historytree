@@ -164,7 +164,7 @@ export function AppSideBar() {
           <SidebarGroup>
             <SidebarGroupLabel asChild>
               <CollapsibleTrigger className="flex w-full justify-between">
-                Eventfilter
+                Event Filtering
                 <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
               </CollapsibleTrigger>
             </SidebarGroupLabel>
@@ -232,7 +232,7 @@ export function AppSideBar() {
                   <Link href="/info" target="_blank" rel="noopener noreferrer">User Guide</Link>
                 </Button>
                 <Button className="ml-1 mt-2 transition hover:-translate-y-1">
-                  <Link href="https://www.overleaf.com/project/67c5947a93babe7ce8dafd44" target="_blank" rel="noopener noreferrer">Master Thesis</Link>
+                  <Link href="/Master_Thesis_Kaspar_signed.pdf" target="_blank" rel="noopener noreferrer">Master Thesis</Link>
                 </Button>
                 <Button className="ml-1 mt-2 transition hover:-translate-y-1">
                   <Link href="https://miro.com/app/board/uXjVIxUGLv0=/?share_link_id=356747018988" target="_blank" rel="noopener noreferrer">Project Structure</Link>
