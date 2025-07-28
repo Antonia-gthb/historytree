@@ -14,7 +14,7 @@ The web application allows users to upload and visualize MHN-inferred genetic ev
 
 ## What is MHN?	
 
-The **Mutual Hazard Networks (MHNs) Algorithm** is a Cancer Progression Model (CPM) that takes into account both **promoting and inhibitory relationships** between genetic events as well as **cyclic dependencies**, enabling the reconstruction of **the most likely tumor evolution path for every tumor** in patient data. These paths can be visualized in History Trees 🌳.
+The **Mutual Hazard Networks (MHNs) algorithm** is a Cancer Progression Model (CPM) that takes into account both **promoting and inhibitory relationships** between genetic events as well as **cyclic dependencies**, enabling the reconstruction of **the most likely tumor evolution path for every tumor** in patient data. These paths can be visualized in History Trees 🌳.
 
 <div align="center">
   <p><i>Example for a MHN Patient History Tree, Figure 5, Schill et al., 2023, modified</i></p>
@@ -27,8 +27,8 @@ The **Mutual Hazard Networks (MHNs) Algorithm** is a Cancer Progression Model (C
 
 The CSV contains:
 - **multiplicative effects** between genetic events, promoting as well as inhibitory
-- the **base rate** (natural likelihood) of each genetic event to occur
-- the **observation rate** (likelihood for the presence of a genetic event to lead to clinical detection of the tumor)
+- the **base rate** of each genetic event to occur
+- the **observation rate** (effect of a genetic event on the observation event, i.e., to lead to clinical detection of the tumor)
 
 
 <div align="center">
@@ -80,9 +80,7 @@ Here's a brief high-level overview of the tech stack the MHN History Tree applic
 
 ### Download Project
 
- 1. [Download Project ZIP](https://github.com/Antonia-gthb/histree/archive/refs/heads/main.zip)
-
-<!-- Click the **green code button** button and select **Download ZIP** -->
+ 1. Click the **green code button** button and select **Download ZIP** 
 
  2. Extract the ZIP file:  Right-click → **Extract All**
 
